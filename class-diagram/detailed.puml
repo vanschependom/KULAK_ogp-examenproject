@@ -1,0 +1,12 @@
+@startuml
+
+package rpg {
+
+
+
+}
+
+'Dit wordt de uitgebreide UML
+'Later zetten we de minder uitgebreide (enkel publieke methoden) in de andere file
+
+@enduml
