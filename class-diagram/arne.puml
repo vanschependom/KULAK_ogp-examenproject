@@ -1,0 +1,159 @@
+@startuml
+
+top to bottom direction
+skinparam linetype ortho
+
+class AlchemicIngredient {
+ - completeName: String
+ - specialName: String
+ - ingredientType: IngredientType
+ - state: State
+ - quantity: Pair<int, Quantity>
+ - {static} maxTemperature: long
+ - temperature: long[2]
+ + AlchemicIngredient(Pair<int, Quantity> quantity, IngredientType type)
+ + AlchemicIngredient(Pair<int, Quantity> quantity)
+'water
+ + getSimpleName(): String
+ + getCompleteName(): String
+ + getSpecialName(): String
+ + getIngredientType(): IngredientType
+ + getState(): State
+ + getQuantity(): Pair<int, Quantity>
+ + getWarmth(): long
+ + getCoolness(): long
+ + getTemperature(): long[2]
+ + getMaxTemperature(): long
+ - cool(long):
+ - heat(long):
+}
+
+
+class IngredientType {
+ - name: String
+ - standardTemperature: long[2]
+ + IngredientType(String name, long[2] standardTemperature)
+ + getName(): String
+ + getStandardTemperature(): long[2]
+}
+
+enum State{
+ LIQUID,
+ POWDER
+}
+
+class Quantity{
+ - state: State
+ - amount: int
+ - quantity: StateQuantity
+ + Quantity(State, int, StateQuantity)
+}
+
+
+
+interface StateQuantity {
+}
+
+enum LiquidQuantity implements StateQuantity {
+ DROP,
+ SPOON,
+ VIAL,
+ BOTTLE,
+ JUG,
+ BARREL,
+ STOREROOM
+}
+
+enum PowderQuantity implements StateQuantity {
+ PINCH,
+ SPOON,
+ SACHET,
+ BOX,
+ SACK,
+ CHEST,
+ STOREROOM
+}
+
+class IngredientContainer {
+ - capacity: Quantity
+ - ingredientType: IngredientType
+ + getIngredientType(): IngredientType
+ + addIngredient(AlchemicIngredient ingredient):
+
+}
+
+abstract class Device {
+ - ingredients: List<IngredientContainer>
+ + Device()
+ + AddIngredient(IngredientContainer container):
+ + getResult(): IngredientContainer
+ + useDevice():
+}
+
+class CoolingBox extends Device {
+ - coolTemperature: long
+ + CoolingBox(long coolTemperature)
+ + changeCoolTemperature(long coolTemperature):
+ + useDevice():
+}
+
+class Oven extends Device {
+ - heatTemperature: long
+ + Oven(long heatTemperature)
+ + changeHeatTemperature(long coolTemperature):
+ + useDevice():
+}
+
+class Kettle extends Device {
+}
+
+class Transmogrifier extends Device {
+}
+
+class Laboratory {
+ - capacity: int
+ - ingredients: List<AlchemicIngredient>
+ - devices: List<Device>
+ + addContainer(IngredientContainer container):
+ + takeContainer(Pair<int, Quantity> quantity, String name): IngredientContainer
+ + takeAllIngredientsOfType(String name): IngredientContainer
+ + getIngredients(): List<AlchemicIngredient>
+ + execute(Recipe, int):
+}
+
+enum Instruction {
+ ADD,
+ HEAT,
+ COOL,
+ MIX
+}
+
+class Recipe {
+ - usedIngredients: List<Triplet<int, Quantity, String>>
+ - instructions: List<Instruction>
+ + Recipe(List<Instruction>, List<Triplet<int, Quantity, String>>)
+ + AddStep(Instruction, Triplet<int, Quantity, String>):
+}
+
+class RecipeBook {
+ - recipes: List<Recipe>
+ + RecipeBook(List<Recipe>)
+ + addRecipe(Recipe):
+ + ripOutRecipePage(Recipe):
+}
+
+
+Recipe --> "1..*" Instruction : has
+Recipe --> "1..*" AlchemicIngredient : has
+RecipeBook --> "0..*" Recipe : has
+
+Quantity --> StateQuantity
+Quantity --> State
+IngredientContainer --> Quantity
+IngredientContainer --> IngredientType
+IngredientContainer --> AlchemicIngredient
+
+Laboratory --> "1..4" Device : has
+Laboratory --> "1..*" AlchemicIngredient : has
+
+@enduml
