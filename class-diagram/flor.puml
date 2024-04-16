@@ -1,0 +1,135 @@
+@startuml
+
+package rpg {
+
+class IngredientType {
+
+}
+
+class AlchemicIngredient {
++ name: String
++ ingredientType: IngredientType
++ state: State
++ {static} quantity: Quantity
++ standardTemperature: ArrayList<int>
++ coldness: int
++ hotness: int
+
++ getSimpleName(): String
++ getCompleteName(): String
++ getSpecialName(): String
++ getTemperature(): ArrayList<int>
+}
+
+class IngredientContainer {
++ capacity
+}
+
+struct QuantityLiquid {
++ drop: int
++ spoon: int
++ vial: int
++ bottle: int
++ jug: int
++ barrel: int
++ storeroom: int
+}
+
+struct QuantityPowder {
++ pinch: int
++ spoon: int
++ sachet: int
++ box: int
++ sack: int
++ chest: int
++ storeroom: int
+}
+
+IngredientContainer -- AlchemicIngredient
+AlchemicIngredient -- IngredientType
+AlchemicIngredient -- QuantityLiquid
+AlchemicIngredient -- QuantityPowder
+State - AlchemicIngredient
+
+abstract Device {
++ labo: Laboratory
+
++ input(IngredientContainer container): void
++ getBack(IngredientContainer container): IngredientContainer
++ execute(): IngredientContainer
+}
+
+Device --|> CoolingBox
+Device --|> Oven
+Device --|> Kettle
+Device --|> Transmogrifier
+
+class CoolingBox {
++ ingredient: AlchemicIngredient
++ temperature: int
+}
+
+class Oven {
++ ingredient: AlchemicIngredient
++ temperature: int
+}
+
+class Kettle {
++ ingredients: ArrayList<IngredientContainer>
+}
+
+class Transmogrifier {
++ ingredient: AlchemicIngredient
+}
+
+class Laboratory {
++ capacity: int
++ ingredients: ArrayList<IngredientContainer>
++ coolingBox: coolingBox
++ oven: Oven
++ kettle: Ketlle
++ transmogrifier: Transmogrifier
+
++ input()
++ getBack()
++ addDevice()
++ removeDevice()
++ execute(Recipe, int)
+}
+
+CoolingBox "1" -- "1" Laboratory
+Oven "1" -- "1" Laboratory
+Kettle "1" -- "1" Laboratory
+Transmogrifier "1" -- "1" Laboratory
+
+enum State {
++ LIQUID
++ POWDER
+}
+
+enum Operations {
++ ADD
++ HEAT
++ COOL
++ MIX
+}
+
+class Recipe {
++ instructions: ArrayList<Operations>
++ ingredients: ArrayList<IngredientContainer>
+}
+
+class RecipeBook {
++ recipes: ArrayList<Recipe>
+
++ Recipebook()
++ addRecipe(Recipe recipe): void
++ removeRecipe(Recipe recipe): void
+}
+
+RecipeBook "*" <--  Recipe
+Recipe - Operations
+
+}
+
+@enduml
