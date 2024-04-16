@@ -1,0 +1,199 @@
+@startuml
+
+package rpg {
+
+    package alchemicals {
+
+    class AlchemicIngredient {
+    - {final} Quantity : Quantity
+    - temperature : Temperature
+    - name : Name
+    - type : IngredientType
+    - state : State
+
+    + AlchemicIngredient(Quantity, IngredientType)
+    + getColdness() : int
+    + getHotness() : int
+    + getTemperature() : int[2]
+    + heat() : void
+    + cool() : void
+    }
+
+    class Name {
+    - allowedSymbols : char[0..*]
+    - simpleName : String
+    - specialName : String
+    - prefixes : List<String>
+    - suffixes : List<String>
+    - state : State
+    + getSimpleName() : String
+    + getFullName() : String
+    + getSpecialName() : String
+    }
+
+    class IngredientType {
+    - name : Name??
+    - state : State
+    - standardTemp : Temperature
+
+    + IngredientType()
+    + IngredientType(Name, Temperature)
+    + getStandardTemp() : Temperature
+    }
+
+    enum State {
+        LIQUID,
+        POWDER
+    }
+
+    class Quantity {
+    - amount : int
+    - unit : Unit
+    }
+
+    enum Unit {
+    DROP(1, State.LIQUID)
+    SPOON(8, State.LIQUID)
+    VIAL(40, State.LIQUID)
+    ...
+    __
+    - baseValue : int
+    - state : State
+    }
+
+    class Temperature {
+    - hotness : int
+    - coldness : int
+    - {static} UPPER_BOUND : long
+    + heat(long) : void
+    + cool(long) : void
+    + getColdness() : int
+    + getHotness() : int
+    + getTemperature() : int[2]
+    }
+
+
+    AlchemicIngredient --> "1" Name : has
+    IngredientType --> "1" Name : has
+    AlchemicIngredient --> "1" IngredientType : has
+    AlchemicIngredient --> "1" State : has
+    AlchemicIngredient --> "1" Temperature : has
+    IngredientType --> "1" State : has
+    AlchemicIngredient --> "1" Quantity : has
+    Quantity --> Unit
+    Unit --> "1" State : has
+    IngredientType --> "1" Temperature : has
+
+
+    class IngredientContainer {
+    - capacity : Unit
+    - ingredients : ArrayList<AlchemicIngredient>
+    + destroy()
+    }
+
+
+    IngredientContainer --> Unit
+    IngredientContainer --> "0..*" AlchemicIngredient : "has"
+
+    note "Voor de kleinste en grootste units bestaan er geen containers." as N1
+    IngredientContainer .. N1
+
+    }
+
+    package lab {
+
+    package devices {
+
+    abstract class Device {
+    - ingredients : IngredientContainer
+    - result : AlchemicIngredient
+    - laboratory : Laboratory
+    + {abstract} addIngredients(IngredientContainer) : void
+    + {static} getResult() : IngredientContainer
+    + {abstract} executeOperation() : void
+    }
+
+    abstract class TemperatureDevice {
+    - temperature : Temperature
+    + setTemperature(Temperature) : void
+    + addIngredients(IngredientContainer) : void
+    }
+
+    class CoolingBox {
+    + executeOperation() : void
+    }
+
+    note "Kunnen maar 1 element bevatten." as N2
+    CoolingBox .. N2
+    Oven .. N2
+
+    class Oven {
+    + executeOperation() : void
+    }
+
+    class Kettle {
+    + addIngredients(IngredientContainer) : void
+    + executeOperation() : void
+    }
+
+    class Transmogrifier {
+    + executeOperation() : void
+    }
+
+    Device <|-- TemperatureDevice : is
+    TemperatureDevice <|-- CoolingBox : is
+    TemperatureDevice <|-- Oven : is
+    Device <|-- Kettle : is
+    Device <|-- Transmogrifier : is
+    Device --> "0..*" AlchemicIngredient
+
+    }
+
+    class Laboratory {
+    - capacity : int
+    - ingredients : ArrayList<AlchemicIngredient>
+    - devices : ArrayList<Device>
+    + storeIngredient(IngredientContainer) : void
+    + obtainIngredient(String, Quantity) : IngredientContainer
+    + obtainIngredient(String) : IngredientContainer
+    + getOverview() : String
+    + {abstract} execute(Recipe, int) : void
+    }
+
+    Laboratory --> "0..*" AlchemicIngredient
+    Laboratory "1" <--> "0..4" Device
+
+    }
+
+    package recipe {
+
+
+    class Recipe {
+    - operations : Operation[1..*]
+    - ingredients : AlchemicIngredient[1..*]
+    }
+
+    enum Operation {
+    ADD,
+    HEAT,
+    COOL,
+    MIX
+    }
+
+    class RecipeBook {
+    - recipes : ArrayList<Recipe>
+    + addRecipe(Recipe) : void
+    + removeRecipe(Recipe) : void
+    }
+
+    Recipe --> "1..*" Operation : has
+    Recipe --> "1..*" AlchemicIngredient : has
+    RecipeBook --> "0..*" Recipe : has
+
+
+    }
+
+
+}
+
+@enduml
