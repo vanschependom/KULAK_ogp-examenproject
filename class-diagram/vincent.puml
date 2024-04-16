@@ -51,15 +51,31 @@ package rpg {
     - unit : Unit
     }
 
-    enum Unit {
-    DROP(1, State.LIQUID)
-    SPOON(8, State.LIQUID)
-    VIAL(40, State.LIQUID)
-    ...
-    __
-    - baseValue : int
-    - state : State
+    interface Unit {
     }
+
+    enum LiquidUnit {
+    DROP(1),
+    SPOON(8),
+    VIAL(40),
+    BOTTLE(120),
+    JUG(840),
+    BARREL(12),
+    STOREROOM(60)
+    }
+
+    enum PowderUnit {
+    PINCH(1),
+    SPOON(6),
+    SACHET(7),
+    BOX(42),
+    SACK(126),
+    CHEST(1260),
+    STOREROOM(6300)
+    }
+
+    Unit <-- LiquidUnit : implements
+    Unit <-- PowderUnit : implements
 
     class Temperature {
     - hotness : int
