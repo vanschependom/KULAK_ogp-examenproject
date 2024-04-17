@@ -2,30 +2,39 @@
 
 package rpg {
 
-class IngredientType {
+package ingredients {
 
+class IngredientType {
++ standardTemperature: long[2]
++ simpleName: String
 }
 
 class AlchemicIngredient {
-+ name: String
++ completeName: String
++ specialName: String
 + ingredientType: IngredientType
 + state: State
++ {static} amount: int
 + {static} quantity: Quantity
-+ standardTemperature: ArrayList<int>
 + coldness: int
 + hotness: int
 
 + getSimpleName(): String
 + getCompleteName(): String
 + getSpecialName(): String
-+ getTemperature(): ArrayList<int>
++ getTemperature(): long[2]
 }
 
 class IngredientContainer {
-+ capacity
++ ingredient: AlchemicIngredient
++ quantity: Quantity
++ capacity: int
 }
 
-struct QuantityLiquid {
+class Quantity {
+}
+
+enum QuantityLiquid {
 + drop: int
 + spoon: int
 + vial: int
@@ -35,7 +44,12 @@ struct QuantityLiquid {
 + storeroom: int
 }
 
-struct QuantityPowder {
+enum State {
++ LIQUID
++ POWDER
+}
+
+enum QuantityPowder {
 + pinch: int
 + spoon: int
 + sachet: int
@@ -45,11 +59,18 @@ struct QuantityPowder {
 + storeroom: int
 }
 
-IngredientContainer -- AlchemicIngredient
-AlchemicIngredient -- IngredientType
-AlchemicIngredient -- QuantityLiquid
-AlchemicIngredient -- QuantityPowder
-State - AlchemicIngredient
+IngredientContainer <-- AlchemicIngredient
+AlchemicIngredient --> "1" IngredientType
+AlchemicIngredient -- "1" Quantity
+Quantity -- QuantityLiquid
+Quantity -- QuantityPowder
+Quantity -- IngredientContainer
+State - AlchemicIngredient : use
+
+note left of Quantity: Dit is nog wat vaag. \nIk weet niet hoe \nwe dit het best doen.
+}
+
+package lab {
 
 abstract Device {
 + labo: Laboratory
@@ -59,26 +80,21 @@ abstract Device {
 + execute(): IngredientContainer
 }
 
-Device --|> CoolingBox
-Device --|> Oven
-Device --|> Kettle
-Device --|> Transmogrifier
-
-class CoolingBox {
+class CoolingBox extends Device {
 + ingredient: AlchemicIngredient
 + temperature: int
 }
 
-class Oven {
+class Oven extends Device {
 + ingredient: AlchemicIngredient
 + temperature: int
 }
 
-class Kettle {
+class Kettle extends Device {
 + ingredients: ArrayList<IngredientContainer>
 }
 
-class Transmogrifier {
+class Transmogrifier extends Device {
 + ingredient: AlchemicIngredient
 }
 
@@ -102,10 +118,11 @@ Oven "1" -- "1" Laboratory
 Kettle "1" -- "1" Laboratory
 Transmogrifier "1" -- "1" Laboratory
 
-enum State {
-+ LIQUID
-+ POWDER
 }
+
+IngredientContainer -- Laboratory
+
+package recipe {
 
 enum Operations {
 + ADD
@@ -116,7 +133,7 @@ enum Operations {
 
 class Recipe {
 + instructions: ArrayList<Operations>
-+ ingredients: ArrayList<IngredientContainer>
++ ingredients: ArrayList<AlchemicIngredient>
 }
 
 class RecipeBook {
@@ -127,9 +144,11 @@ class RecipeBook {
 + removeRecipe(Recipe recipe): void
 }
 
-RecipeBook "*" <--  Recipe
+RecipeBook <-- "0..*" Recipe
 Recipe - Operations
+Recipe <-- AlchemicIngredient
 
+}
 }
 
 @enduml
