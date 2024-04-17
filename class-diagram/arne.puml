@@ -8,18 +8,18 @@ class AlchemicIngredient {
  - specialName: String
  - ingredientType: IngredientType
  - state: State
- - quantity: Pair<int, Quantity>
+ - quantity: Quantity
  - {static} maxTemperature: long
  - temperature: long[2]
- + AlchemicIngredient(Pair<int, Quantity> quantity, IngredientType type)
- + AlchemicIngredient(Pair<int, Quantity> quantity)
+ + AlchemicIngredient(Quantity quantity, IngredientType type)
+ + AlchemicIngredient(Quantity quantity)
 'water
  + getSimpleName(): String
  + getCompleteName(): String
  + getSpecialName(): String
  + getIngredientType(): IngredientType
  + getState(): State
- + getQuantity(): Pair<int, Quantity>
+ + getQuantity(): Quantity
  + getWarmth(): long
  + getCoolness(): long
  + getTemperature(): long[2]
@@ -108,6 +108,7 @@ class Kettle extends Device {
 }
 
 class Transmogrifier extends Device {
+
 }
 
 class Laboratory {
@@ -115,7 +116,7 @@ class Laboratory {
  - ingredients: List<AlchemicIngredient>
  - devices: List<Device>
  + addContainer(IngredientContainer container):
- + takeContainer(Pair<int, Quantity> quantity, String name): IngredientContainer
+ + takeContainer(Quantity quantity, String name): IngredientContainer
  + takeAllIngredientsOfType(String name): IngredientContainer
  + getIngredients(): List<AlchemicIngredient>
  + execute(Recipe, int):
@@ -129,10 +130,10 @@ enum Instruction {
 }
 
 class Recipe {
- - usedIngredients: List<Triplet<int, Quantity, String>>
- - instructions: List<Instruction>
- + Recipe(List<Instruction>, List<Triplet<int, Quantity, String>>)
- + AddStep(Instruction, Triplet<int, Quantity, String>):
+ - usedIngredients: LinkedList<Pair<Quantity, String>>
+ - instructions: LinkedList<Instruction>
+ + Recipe(LinkedList<Instruction>, LinkedList<Pair<Quantity, String>>)
+ + AddStep(Instruction, Pair<Quantity, String>):
 }
 
 class RecipeBook {
@@ -152,6 +153,8 @@ Quantity --> State
 IngredientContainer --> Quantity
 IngredientContainer --> IngredientType
 IngredientContainer --> AlchemicIngredient
+
+Device --> IngredientContainer
 
 Laboratory --> "1..4" Device : has
 Laboratory --> "1..*" AlchemicIngredient : has
