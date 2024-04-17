@@ -12,6 +12,7 @@
 
 # Package Files #
 *.jar
+!AnnotationsDoclets.jar
 *.war
 *.nar
 *.ear
