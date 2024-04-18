@@ -20,8 +20,8 @@ public enum PowderUnit implements Unit {
 
 	public double getConversionFor(Unit unit) {
 		if (unit instanceof PowderUnit) {
-			PowderUnit liquidUnit = (PowderUnit) unit;
-			return this.spoonEquivalent / liquidUnit.spoonEquivalent;
+			PowderUnit powderUnit = (PowderUnit) unit;
+			return this.spoonEquivalent / powderUnit.spoonEquivalent;
 		}
 		throw new IllegalArgumentException("Cannot convert LiquidUnit to " + unit.getClass().getSimpleName());
 	}

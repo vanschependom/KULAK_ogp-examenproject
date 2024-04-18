@@ -10,6 +10,11 @@ public class Main {
 		System.out.println(hoeveelheid2);
 		hoeveelheid2.convertTo(PowderUnit.PINCH);
 		System.out.println(hoeveelheid2);
+
+		Quantity hoeveelheid3 = new Quantity(3, PowderUnit.BOX);
+		System.out.println(hoeveelheid3);
+		hoeveelheid3.convertTo(PowderUnit.SACK);
+		System.out.println(hoeveelheid3);
 	}
 
 }
