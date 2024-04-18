@@ -7,7 +7,11 @@ package rpg {
     class AlchemicIngredient {
     - {final} Quantity : Quantity
     - temperature : Temperature
-    - name : Name
+    - allowedNameSymbols : char[0..*]
+    - simpleName : String
+    - specialName : String
+    - prefixes : List<String>
+    - suffixes : List<String>
     - type : IngredientType
     - state : State
 
@@ -17,27 +21,19 @@ package rpg {
     + getTemperature() : int[2]
     + heat() : void
     + cool() : void
-    }
-
-    class Name {
-    - allowedSymbols : char[0..*]
-    - simpleName : String
-    - specialName : String
-    - prefixes : List<String>
-    - suffixes : List<String>
-    - state : State
     + getSimpleName() : String
     + getFullName() : String
     + getSpecialName() : String
     }
 
+
     class IngredientType {
-    - name : Name??
+    - name : String
     - state : State
     - standardTemp : Temperature
 
     + IngredientType()
-    + IngredientType(Name, Temperature)
+    + IngredientType(String, Temperature)
     + getStandardTemp() : Temperature
     }
 
@@ -88,9 +84,6 @@ package rpg {
     + getTemperature() : int[2]
     }
 
-
-    AlchemicIngredient --> "1" Name : has
-    IngredientType --> "1" Name : has
     AlchemicIngredient --> "1" IngredientType : has
     AlchemicIngredient --> "1" State : has
     AlchemicIngredient --> "1" Temperature : has
