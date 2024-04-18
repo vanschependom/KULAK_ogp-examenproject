@@ -38,6 +38,8 @@ public class Temperature {
 					hotness += amount;
 				}
 			}
+		} else {
+			throw new IllegalArgumentException("Temperature cannot be negative");
 		}
 	}
 
@@ -56,6 +58,8 @@ public class Temperature {
 					coldness += amount;
 				}
 			}
+		} else {
+			throw new IllegalArgumentException("Temperature cannot be negative");
 		}
 	}
 
