@@ -17,4 +17,9 @@ public class Quantity {
 		unit = targetUnit;
 	}
 
+	public static Quantity add(Quantity[] quantities) {
+		//
+		return null;
+	}
+
 }
