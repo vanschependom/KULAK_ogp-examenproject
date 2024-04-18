@@ -8,7 +8,7 @@ public class Main {
 
 		Quantity hoeveelheid2 = new Quantity(1, PowderUnit.BOX);
 		System.out.println(hoeveelheid2);
-		hoeveelheid2.convertTo(PowderUnit.DROP);
+		hoeveelheid2.convertTo(PowderUnit.PINCH);
 		System.out.println(hoeveelheid2);
 	}
 

@@ -1,6 +1,6 @@
 public enum PowderUnit implements Unit {
 
-	DROP(1.0/6),
+	PINCH(1.0/6),
 	SPOON(1),
 	SACHET(7),
 	BOX(42),
