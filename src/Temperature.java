@@ -20,7 +20,7 @@ public class Temperature {
 	}
 
 
-	public void heat(long amount) {
+	protected void heat(long amount) {
 		if (amount > 0) {
 			if (hotness == 0) {
 				coldness -= amount;
@@ -40,7 +40,7 @@ public class Temperature {
 		}
 	}
 
-	public void cool(int amount) {
+	protected void cool(int amount) {
 		if (amount > 0) {
 			if (coldness == 0) {
 				hotness -= amount;
