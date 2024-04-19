@@ -1,21 +1,18 @@
 public class Temperature {
 
-	private static int UPPERBOUND = 10000;
+	private static long UPPERBOUND = 10000;
 
-	private int hotness;
-	private int coldness;
+	private long hotness;
+	private long coldness;
 
-	public Temperature(int hotness, int coldness) {
+	public Temperature(long hotness, long coldness) {
 		if (hotness < 0 || coldness < 0) {
 			throw new IllegalArgumentException("Temperature cannot be negative");
 		}
 		if (hotness > UPPERBOUND || coldness > UPPERBOUND) {
 			throw new IllegalArgumentException("Temperature cannot be higher than " + UPPERBOUND);
 		}
-		if (hotness > 0 && coldness != 0) {
-			throw new IllegalArgumentException("Temperature cannot be both hot and cold");
-		}
-		if (coldness > 0 && hotness != 0) {
+		if (hotness != 0 && coldness != 0) {
 			throw new IllegalArgumentException("Temperature cannot be both hot and cold");
 		}
 		this.hotness = hotness;
@@ -23,7 +20,7 @@ public class Temperature {
 	}
 
 
-	public void heat(int amount) {
+	public void heat(long amount) {
 		if (amount > 0) {
 			if (hotness == 0) {
 				coldness -= amount;
@@ -32,7 +29,7 @@ public class Temperature {
 					coldness = 0;
 				}
 			} else {
-				if (amount + hotness > UPPERBOUND) {
+				if (amount > UPPERBOUND - hotness) {
 					hotness = UPPERBOUND;
 				} else {
 					hotness += amount;
@@ -52,7 +49,7 @@ public class Temperature {
 					hotness = 0;
 				}
 			} else {
-				if (amount + coldness > UPPERBOUND) {
+				if (amount > UPPERBOUND - coldness) {
 					coldness = UPPERBOUND;
 				} else {
 					coldness += amount;
@@ -63,21 +60,21 @@ public class Temperature {
 		}
 	}
 
-	public int getHotness() {
+	public long getHotness() {
 		return hotness;
 	}
 
-	public int getColdness() {
+	public long getColdness() {
 		return coldness;
 	}
 
-	public int[] getTemperature() {
-		return new int[] {hotness, coldness};
+	public long[] getTemperature() {
+		return new long[] {hotness, coldness};
 	}
 
-	public int difference(Temperature other) {
-		int currentTemp = -coldness + hotness;
-		int otherTemp = -other.getColdness() + other.getHotness();
+	public long difference(Temperature other) {
+		long currentTemp = -coldness + hotness;
+		long otherTemp = -other.getColdness() + other.getHotness();
 		return currentTemp - otherTemp;
 	}
 
