@@ -4,13 +4,13 @@ top to bottom direction
 skinparam linetype ortho
 
 class AlchemicIngredient {
- - completeName: String
+ - simpleName: String
  - specialName: String
+ - preAndSuffixes: List<String>
  - ingredientType: IngredientType
  - state: State
  - quantity: Quantity
- - {static} maxTemperature: long
- - temperature: long[2]
+ - temperature: Temperature
  + AlchemicIngredient(Quantity quantity, IngredientType type)
  + AlchemicIngredient(Quantity quantity)
 'water
@@ -21,9 +21,9 @@ class AlchemicIngredient {
  + getState(): State
  + getQuantity(): Quantity
  + getWarmth(): long
- + getCoolness(): long
+ + getColdness(): long
  + getTemperature(): long[2]
- + getMaxTemperature(): long
+ + getUpperBound(): long
  - cool(long):
  - heat(long):
 }
@@ -31,7 +31,7 @@ class AlchemicIngredient {
 
 class IngredientType {
  - name: String
- - standardTemperature: long[2]
+ - standardTemperature: Temperature
  + IngredientType(String name, long[2] standardTemperature)
  + getName(): String
  + getStandardTemperature(): long[2]
@@ -77,9 +77,11 @@ enum PowderQuantity implements StateQuantity {
 class IngredientContainer {
  - capacity: Quantity
  - ingredientType: IngredientType
+ - contents: Quantity
  + getIngredientType(): IngredientType
  + addIngredient(AlchemicIngredient ingredient):
-
+ + getQuantity(): Quantity
+ + takeContents(): AlchemicIngredient
 }
 
 abstract class Device {
@@ -105,16 +107,19 @@ class Oven extends Device {
 }
 
 class Kettle extends Device {
+
+ + useDevice():
 }
 
 class Transmogrifier extends Device {
-
+ + useDevice():
 }
 
 class Laboratory {
  - capacity: int
  - ingredients: List<AlchemicIngredient>
  - devices: List<Device>
+ + addDevice(Device device):
  + addContainer(IngredientContainer container):
  + takeContainer(Quantity quantity, String name): IngredientContainer
  + takeAllIngredientsOfType(String name): IngredientContainer
@@ -130,10 +135,12 @@ enum Instruction {
 }
 
 class Recipe {
- - usedIngredients: LinkedList<Pair<Quantity, String>>
+ - usedIngredients: LinkedList<AlchemicIngredient>
  - instructions: LinkedList<Instruction>
- + Recipe(LinkedList<Instruction>, LinkedList<Pair<Quantity, String>>)
- + AddStep(Instruction, Pair<Quantity, String>):
+ + Recipe(LinkedList<AlchemicIngredient>, LinkedList<Instruction>)
+ + AddStep(AlchemicIngredient, Instruction):
+ + AddStep(Quantity, IngredientType, Instruction):
+ + AddStep(Quantity, String name, Instruction):
 }
 
 class RecipeBook {
@@ -141,6 +148,19 @@ class RecipeBook {
  + RecipeBook(List<Recipe>)
  + addRecipe(Recipe):
  + ripOutRecipePage(Recipe):
+}
+
+class Temperature {
+ - hotness: long
+ - coldness: long
+ - {static} UPPER_BOUND: long
+ + getUpperBound(): long
+ + heat(long):
+ + cool(long):
+ + getColdness(): long
+ + getWarmth(): long
+ + getTemperature(): long[2]
+ + difference(Temperature): long
 }
 
 
