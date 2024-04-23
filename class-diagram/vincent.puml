@@ -4,17 +4,15 @@ skinparam linetype ortho
 
 class AlchemicIngredient {
 ..attributes..
-- simpleName : String
-- specialName : String
-- allowedNameSymbols : char[0..*]
 - {final} amount : double
 - {final} unit : Unit
 - temperature : Temperature
 - type : IngredientType
-- isMixed : boolean
 - state : State
+- storageLocation : StorageLocation
 ..constructors..
 + AlchemicIngredient(Quantity, IngredientType)
++ AlchemicIngredient(Quantity)
 ..public methods..
 + getColdness() : int
 + getHotness() : int
@@ -27,45 +25,69 @@ class AlchemicIngredient {
 ..non-public..
 - getTemperatureObject() : Temperature
 ..checkers..
-+ canHaveAsName(String) : boolean
 + isValidAmount(double) : boolean
 + isValidUnit(Unit) : boolean
 + isValidTemperature(Temperature) : boolean
 + isValidType(Type) : boolean
 + isValidState(State) : boolean
 ..class invariants..
-@invar canHaveAsName(getSimpleName())
-@invar canHaveAsName(getSpecialName())
 @invar isValidAmount(getAmount())
 @invar isValidUnit(getUnit())
 @invar isValidTemperature(getTemperatureObject())
 @invar isValidType(getType())
 @invar isValidState(getState())
+@invar hasProperStorageLocation()
 }
 
-AlchemicIngredient::type --> "1" IngredientType
-AlchemicIngredient::state --> "1" State
-AlchemicIngredient::temperature --> "1" Temperature
-AlchemicIngredient::unit --> "1" Unit
+note right of AlchemicIngredient::AlchemicIngredient(Quantity)
+    Bepaalde hoeveelheid standaardingredient, dit is
+    IngredientType.DEFAULT (=water)
+end note
 
+AlchemicIngredient::type ..> IngredientType
+AlchemicIngredient::state ..> State
+AlchemicIngredient::temperature ..> Temperature
+AlchemicIngredient::unit ..> Unit
+AlchemicIngredient "0..*" <--> "1" StorageLocation
+
+note right of AlchemicIngredient::getTemperatureObject
+    De klasse invariant moet het Temperature object
+    kunnen opvragen, in plaats van gewoon een array,
+    zoals de publieke getTemperature() teruggeeft.
+end note
 
 class IngredientType {
 ..attributes..
-- name : String
-- state : State
-- standardTemp : Temperature
+- simpleName : String
+- specialName : String
+- allowedNameSymbols : char[0..*]
+- {final} isMixed : boolean
+- {final} standardState : State
+- {final} standardTemp : Temperature
+- {static} DEFAULT : IngredientType
 ..constructors..
-+ IngredientType()
 + IngredientType(String, Temperature)
 ..public methods..
 + getStandardTemp() : Temperature
+..checkers..
++ canHaveAsName(String) : boolean
++ isValidState() : boolean
++ isValidTemperature() : boolean
+..class invariants..
+@invar canHaveAsName(getSimpleName())
+@invar canHaveAsName(getSpecialName())
+@invar isValidState(getStandardState())
+@invar isValidTemperature(getStandardTemperature())
 }
 
-note "Moeten we een superklasse invoeren voor \nAlchemicIngredient en IngredientType?\nZe delen een aantal eigenschappen..." as overkoepelend
+note right of IngredientType::DEFAULT_INGREDIENT
+    Het default ingredientType is water
+    en hier kunnen we dus al direct een
+    instantie van aanmaken!
+end note
 
-IngredientType ..right overkoepelend
-IngredientType::state --> "1" State
-IngredientType::temperature --> "1" Temperature
+IngredientType::state ..> "1" State
+IngredientType::temperature ..> "1" Temperature
 
 enum State {
 ..enum possibilities..
@@ -82,7 +104,7 @@ spoonEquivalent : double
 allowedStates : State[1..*]
 }
 
-Unit::allowedStates --> State
+Unit::allowedStates ..> State
 
 class Temperature {
 ..attributes..
@@ -98,22 +120,52 @@ class Temperature {
 ..checkers..
 + isValidHotness(int) : boolean
 + isValidColdness(int) : boolean
-+ isValidCombination(int[2]) : boolean
++ isValidTemperature(int[2]) : boolean
 ..class invariants..
-@invar isValidHotness(getHotness())
-@invar isValidColdness(getColdness())
-@invar isValidCombination(getHotness(),getColdness())
+'@invar isValidHotness(getHotness())
+'@invar isValidColdness(getColdness())
+@invar isValidTemperature(getHotness(),getColdness())
 }
 
-note "Volstaat het om enkel de\nisValidTemperature() te houden,\nindien deze zowel hotness als\ncoldness checkt?" as temp
-Temperature::isValidTemperature ..right temp
+note right of Temperature::@
+    Volstaat het om enkel de cheker
+    isValidTemperature() te hebben,
+    indien deze zowel hotness als
+    coldness checkt? Of moeten hotness
+    en coldness een aparte invar hebben?
+end note
 
-
-class IngredientContainer {
+abstract class StorageLocation {
 ..attributes..
-- capacity : Unit
-- ingredients : AlchemicIngredient[]
+- ingredients : ArrayList<AlchemicIngredient>
+..checkers..
++ canHaveAsIngredient(AlchemicIngredient) : boolean
 ..public methods..
++ getNbOfIngredients() : int
++ getIngredientAt(int) : AlchemicIngredient
++ add(AlchemicIngredient) : void
++ remove(AlchemicIngredient) : void
++ moveIngredientTo(AlchemicIngredient, StorageLocation) : void
+..class invariants..
+@invar hasProperIngredients()
+}
+
+note right of StorageLocation::getIngredientAt
+    Probleem: we geven hier een object terug, dat
+    gewijzigd kan worden door de caller... Een mogelijke
+    oplossing is om een string representatie terug te geven?
+end note
+
+note left of StorageLocation
+    Dit is de klasse die de bidirectionele
+    relate onderhoudt.
+end note
+
+class IngredientContainer extends StorageLocation {
+..attributes..
+- {final} capacity : Unit
+- isDestroyed : boolean
+..destructor..
 + destroy()
 ..checkers..
 + isValidCapacity(Unit) : boolean
@@ -121,89 +173,90 @@ class IngredientContainer {
 @invar isValidCapacity(getCapacity())
 }
 
-IngredientContainer --> Unit
-IngredientContainer --> "0..*" AlchemicIngredient : "has"
+IngredientContainer::capacity ..> Unit
 
-note "Voor de kleinste en grootste units\nbestaan er geen containers." as N1
-IngredientContainer .. N1
+note top of IngredientContainer
+    Voor de kleinste en grootste units
+    bestaan er geen containers.
+end note
 
-abstract class Device {
-- ingredients : IngredientContainer
-- result : AlchemicIngredient
-- laboratory : Laboratory
-+ {abstract} addIngredients(IngredientContainer) : void
-+ {static} getResult() : IngredientContainer
-+ {abstract} executeOperation() : void
+abstract class Device extends StorageLocation {
+WIP
+'- ingredients : IngredientContainer
+'- result : AlchemicIngredient
+'- laboratory : Laboratory
+'+ {abstract} addIngredients(IngredientContainer) : void
+'+ {static} getResult() : IngredientContainer
+'+ {abstract} executeOperation() : void
+}
+'
+abstract class TemperatureDevice extends Device {
+WIP
+'- temperature : Temperature
+'+ setTemperature(Temperature) : void
+'+ addIngredients(IngredientContainer) : void
+}
+'
+class CoolingBox extends TemperatureDevice {
+WIP
+'+ executeOperation() : void
+}
+'
+'note "Kunnen maar 1 element bevatten." as N2
+'CoolingBox .. N2
+'Oven .. N2
+'
+class Oven extends TemperatureDevice {
+WIP
+'+ executeOperation() : void
+}
+'
+class Kettle extends Device {
+WIP
+'+ addIngredients(IngredientContainer) : void
+'+ executeOperation() : void
+}
+'
+class Transmogrifier extends Device {
+WIP
+'+ executeOperation() : void
 }
 
-abstract class TemperatureDevice {
-- temperature : Temperature
-+ setTemperature(Temperature) : void
-+ addIngredients(IngredientContainer) : void
-}
-
-class CoolingBox {
-+ executeOperation() : void
-}
-
-note "Kunnen maar 1 element bevatten." as N2
-CoolingBox .. N2
-Oven .. N2
-
-class Oven {
-+ executeOperation() : void
-}
-
-class Kettle {
-+ addIngredients(IngredientContainer) : void
-+ executeOperation() : void
-}
-
-class Transmogrifier {
-+ executeOperation() : void
-}
-
-Device <|-- TemperatureDevice : is
-TemperatureDevice <|-- CoolingBox : is
-TemperatureDevice <|-- Oven : is
-Device <|-- Kettle : is
-Device <|-- Transmogrifier : is
-Device --> "0..*" AlchemicIngredient
-
-class Laboratory {
-- capacity : int
-- ingredients : ArrayList<AlchemicIngredient>
-- devices : ArrayList<Device>
-+ storeIngredient(IngredientContainer) : void
-+ obtainIngredient(String, Quantity) : IngredientContainer
-+ obtainIngredient(String) : IngredientContainer
-+ getOverview() : String
-+ {abstract} execute(Recipe, int) : void
-}
-
-Laboratory --> "0..*" AlchemicIngredient
-Laboratory "1" <--> "0..4" Device
-
-class Recipe {
-- operations : Operation[1..*]
-- ingredients : AlchemicIngredient[1..*]
-}
-
-enum Operation {
-ADD,
-HEAT,
-COOL,
-MIX
-}
-
-class RecipeBook {
-- recipes : ArrayList<Recipe>
-+ addRecipe(Recipe) : void
-+ removeRecipe(Recipe) : void
-}
-
-Recipe --> "1..*" Operation : has
-Recipe --> "1..*" AlchemicIngredient : has
-RecipeBook --> "0..*" Recipe : has
+'
+'class Laboratory {
+'- capacity : int
+'- ingredients : ArrayList<AlchemicIngredient>
+'- devices : ArrayList<Device>
+'+ storeIngredient(IngredientContainer) : void
+'+ obtainIngredient(String, Quantity) : IngredientContainer
+'+ obtainIngredient(String) : IngredientContainer
+'+ getOverview() : String
+'+ {abstract} execute(Recipe, int) : void
+'}
+'
+'Laboratory --> "0..*" AlchemicIngredient
+'Laboratory "1" <--> "0..4" Device
+'
+'class Recipe {
+'- operations : Operation[1..*]
+'- ingredients : AlchemicIngredient[1..*]
+'}
+'
+'enum Operation {
+'ADD,
+'HEAT,
+'COOL,
+'MIX
+'}
+'
+'class RecipeBook {
+'- recipes : ArrayList<Recipe>
+'+ addRecipe(Recipe) : void
+'+ removeRecipe(Recipe) : void
+'}
+'
+'Recipe --> "1..*" Operation : has
+'Recipe --> "1..*" AlchemicIngredient : has
+'RecipeBook --> "0..*" Recipe : has
 
 @enduml
