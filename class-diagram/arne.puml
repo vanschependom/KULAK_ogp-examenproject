@@ -4,13 +4,22 @@ top to bottom direction
 skinparam linetype ortho
 
 class AlchemicIngredient {
+__invars__
+@invar hasProperTemperature() ????????????????
+@invar canHaveAsName(getSimpleName())
+@invar canHaveAsSpecialName(getSpecialName())
+@invar hasProperQuantity()
+@invar getUpperBound() >= 0 && getUpperBound() <= Long.MAX_VALUE
+@invar hasProperState()
+__variables__
  - simpleName: String
  - specialName: String
  - preAndSuffixes: List<String>
  - ingredientType: IngredientType
- - state: State
  - quantity: Quantity
  - temperature: Temperature
+ - isTerminated: boolean
+__methods__
  + AlchemicIngredient(Quantity quantity, IngredientType type)
  + AlchemicIngredient(Quantity quantity)
 'water
@@ -24,17 +33,40 @@ class AlchemicIngredient {
  + getColdness(): long
  + getTemperature(): long[2]
  + getUpperBound(): long
- - cool(long):
- - heat(long):
+ # cool(long):
+ # heat(long):
+ + changeSpecialName(String):
+ + terminate():
+__checkers__
+ + canHaveAsName(String): boolean
+ + canHaveAsSpecialName(String): boolean
+ + hasProperTemperature(): boolean
+ + hasProperQuantity(): boolean
+ + hasProperState(): boolean
+ + isTerminated(): boolean
 }
 
 
 class IngredientType {
+__invars__
+@invar canHaveAsName(getName())
+__variables__
  - name: String
+ - state: State
  - standardTemperature: Temperature
- + IngredientType(String name, long[2] standardTemperature)
+ - isMixed: boolean
+ - isTerminated: boolean
+__methods__
+ + IngredientType(String name, long[2] standardTemperature, State state)
+ + IngredientType()
  + getName(): String
  + getStandardTemperature(): long[2]
+ + terminate():
+__checkers__
+ + getState(): State
+ + canHaveAsName(): boolean
+ + isMixed(): boolean
+ + isTerminated(): boolean
 }
 
 enum State{
@@ -43,54 +75,103 @@ enum State{
 }
 
 class Quantity{
- - state: State
+__invars__
+@invar getAmount() >= 0 && getAmount() <= getMaxAmount()
+@invar hasProperState()
+__variables__
  - amount: int
- - quantity: StateQuantity
- + Quantity(State, int, StateQuantity)
+ - unit: Unit
+ - state: State
+ - {static} maxAmount: int
+ - isTerminated: boolean
+__methods__
+ + Quantity(int, Unit, State)
+ + getUnit(): Unit
+ + getAmount(): int
+ + getState(): State
+ + isBiggerThan(Quantity): boolean
+ + getMaxAmount(): int
+ + getSpoonEquivalent(): double
+ + terminate():
+__checkers__
+ + hasProperState(): boolean
+ + isTerminated(): boolean
 }
 
-
-
-interface StateQuantity {
-}
-
-enum LiquidQuantity implements StateQuantity {
+enum Unit {
  DROP,
- SPOON,
- VIAL,
- BOTTLE,
- JUG,
- BARREL,
- STOREROOM
-}
-
-enum PowderQuantity implements StateQuantity {
  PINCH,
  SPOON,
+ VIAL,
  SACHET,
+ BOTTLE,
  BOX,
+ JUG,
  SACK,
+ BARREL,
  CHEST,
  STOREROOM
+ - state: State
+ + getState(): State
+ + getSpoonEquivalent(): double
 }
 
 class IngredientContainer {
- - capacity: Quantity
+__invars__
+@invar !{Unit.DROP, Unit.PINCH, Unit.STOREROOM}.contains(getCapacity())
+@invar getCapacity().getSpoonEquivalent() >= getContentQuantity().getSpoonEquivalent()
+__variables__
+ - capacity: Unit
  - ingredientType: IngredientType
  - contents: Quantity
+ - isTerminated: boolean
+__methods__
+ + IngredientContainer(Unit capacity, AlchemicIngredient)
+ + IngredientContainer(Unit capacity, IngredientType)
+ + IngredientContainer(Unit capacity)
  + getIngredientType(): IngredientType
  + addIngredient(AlchemicIngredient ingredient):
- + getQuantity(): Quantity
+ + getContentQuantity(): Quantity
+ + getCapacity(): Unit
  + takeContents(): AlchemicIngredient
+ + terminate():
+__checkers__
+ + ingredientCanBeAdded(AlchemicIngredient ingredient): boolean
+ + isTerminated(): boolean
 }
 
 abstract class Device {
+__invars__
+@invar getResult().getContentQuantity().getSpoonEquivalent() <= 1260
+@invar hasProperLaboratory()
+__variables__
  - ingredients: List<IngredientContainer>
- + Device()
- + AddIngredient(IngredientContainer container):
+ - lab: Laboratory
+ - isTerminated: boolean
+__methods__
+ + Device(Laboratory)
+ + addIngredient(IngredientContainer container):
  + getResult(): IngredientContainer
  + useDevice():
+ + getLaboratory(): Laboratory
+ # changeLaboratory(Laboratory):
+ # terminate():
+__checkers__
+ + hasProperLaboratory(): boolean
+ + isTerminated(): boolean
 }
+
+note "Exception bij getResult(), enkel bij Kettle" as result
+Device ..right result
+
+exception DeviceNotYetUsed {
+ - device: Device
+ + DeviceNotYetUsed(Device)
+ + getDevice(): Device
+}
+
+Device --> DeviceNotYetUsed : throws [can]
+Kettle --> DeviceNotYetUsed : throws
 
 class CoolingBox extends Device {
  - coolTemperature: long
@@ -115,16 +196,47 @@ class Transmogrifier extends Device {
  + useDevice():
 }
 
+
+
 class Laboratory {
+__invars__
+@invar hasProperDevices()
+@invar hasProperIngredients()
+@invar getCapacity() >= 0
+__variables__
  - capacity: int
  - ingredients: List<AlchemicIngredient>
  - devices: List<Device>
+ - ingredientVolume: Quantity
+ - isTerminated: boolean
+__methods__
+ + Laboratory(int capacity, List<Device>, List<IngredientContainer>, List<AlchemicIngredient>)
+ + Laboratory(int capacity, List<Device>)
+ + Laboratory(int capacity, List<IngredientContainer>, List<AlchemicIngredient>)
+ + Laboratory(int capacity)
  + addDevice(Device device):
+ + deleteDevice(Device):
  + addContainer(IngredientContainer container):
+ + addIngredient(AlchemicIngredient ingredient):
  + takeContainer(Quantity quantity, String name): IngredientContainer
+ + takeContainer(AlchemicIngredient): IngredientContainer
  + takeAllIngredientsOfType(String name): IngredientContainer
- + getIngredients(): List<AlchemicIngredient>
+ + takeAllIngredientsOfType(IngredientType): IngredientContainer
+ + takeAllAlchemicIngredients(AlchemicIngredient): IngredientContainer
+ + getNbOfDifferentIngredients(): int
+ + getIngredientAt(int): AlchemicIngredient
+ + tallyIngredients(): String
  + execute(Recipe, int):
+ + getDevices(): List<Device>
+ + getCapacity(): int
+ + terminate():
+__checkers__
+ + hasDevice(Device): boolean
+ + hasProperDevices(): boolean
+ + canAddIngredient(AlchemicIngredient): boolean
+ + canAddContainer(IngredientContainer): boolean
+ + hasProperIngredients(): boolean
+ + isTerminated(): boolean
 }
 
 enum Instruction {
@@ -132,28 +244,67 @@ enum Instruction {
  HEAT,
  COOL,
  MIX
+ - requiresIngredient: boolean
+ + requiresIngredient(): boolean
 }
 
 class Recipe {
+__invars__
+@invar hasProperInstructionSet()
+__variables__
  - usedIngredients: LinkedList<AlchemicIngredient>
  - instructions: LinkedList<Instruction>
+ - isTerminated: boolean
+__methods__
  + Recipe(LinkedList<AlchemicIngredient>, LinkedList<Instruction>)
  + AddStep(AlchemicIngredient, Instruction):
  + AddStep(Quantity, IngredientType, Instruction):
  + AddStep(Quantity, String name, Instruction):
+ + getNbOfIngredients(): int
+ + getNbOfInstructions(): int
+ + terminate():
+__checkers__
+ + hasProperInstructionSet(): boolean
+ + canHaveAsStep(AlchemicIngredient, Instruction): boolean
+ + canHaveAsStep(Quantity, IngredientType, Instruction): boolean
+ + canHaveAsStep(Quantity, String name, Instruction): boolean
+ + isTerminated(): boolean
 }
 
 class RecipeBook {
+__invars__
+@invar hasProperRecipes()
+__variables__
  - recipes: List<Recipe>
+ - isTerminated: boolean
+__methods__
  + RecipeBook(List<Recipe>)
  + addRecipe(Recipe):
  + ripOutRecipePage(Recipe):
+ + terminate():
+__checkers__
+ + hasProperRecipes(): boolean
+ + isTerminated(): boolean
 }
 
+Recipe --> "1..*" Instruction : has
+Recipe --> "1..*" AlchemicIngredient : has
+RecipeBook --> "0..*" Recipe : has
+
+
+
 class Temperature {
+__invars__
+@invar getUpperBound() >= 0 && getUpperBound() <= Long.MAX_VALUE
+@invar hasProperTemperature()
+__variables__
  - hotness: long
  - coldness: long
  - {static} UPPER_BOUND: long
+ - isTerminated: boolean
+__methods__
+ + Temperature(long[2] temperature)
+ + Temperature()
  + getUpperBound(): long
  + heat(long):
  + cool(long):
@@ -161,22 +312,43 @@ class Temperature {
  + getWarmth(): long
  + getTemperature(): long[2]
  + difference(Temperature): long
+ + terminate():
+__checkers__
+ + hasProperTemperature(): boolean
+ + isTerminated(): boolean
+}
+
+exception DeviceAlreadyAddedException {
+ - device: Device
+ + DeviceAlreadyAddedException(Device)
+ + getDevice(): Device
+}
+exception CapacityExceededException {
+ - fullObject: Object
+ + CapacityExceededException(Object)
+ + getFullObject(): Object
 }
 
 
-Recipe --> "1..*" Instruction : has
-Recipe --> "1..*" AlchemicIngredient : has
-RecipeBook --> "0..*" Recipe : has
-
-Quantity --> StateQuantity
 Quantity --> State
+Quantity --> Unit
 IngredientContainer --> Quantity
 IngredientContainer --> IngredientType
 IngredientContainer --> AlchemicIngredient
+IngredientContainer --> CapacityExceededException : throws
 
+AlchemicIngredient --> Temperature
+AlchemicIngredient --> IngredientType
+AlchemicIngredient --> Quantity
 Device --> IngredientContainer
 
+Laboratory --> CapacityExceededException : throws
+Laboratory --> DeviceAlreadyAddedException : throws
 Laboratory --> "1..4" Device : has
 Laboratory --> "1..*" AlchemicIngredient : has
+
+}
+
+
 
 @enduml
