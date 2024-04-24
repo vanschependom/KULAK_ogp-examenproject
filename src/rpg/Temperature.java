@@ -38,7 +38,7 @@ public class Temperature {
 				}
 			}
 		} else {
-			throw new IllegalArgumentException("rpg.Temperature cannot be negative");
+			throw new IllegalArgumentException("Temperature cannot be negative");
 		}
 	}
 
@@ -58,7 +58,7 @@ public class Temperature {
 				}
 			}
 		} else {
-			throw new IllegalArgumentException("rpg.Temperature cannot be negative");
+			throw new IllegalArgumentException("Temperature cannot be negative");
 		}
 	}
 
