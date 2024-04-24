@@ -142,19 +142,12 @@ abstract class StorageLocation {
 + canHaveAsIngredient(AlchemicIngredient) : boolean
 ..public methods..
 + getNbOfIngredients() : int
-+ getIngredientAt(int) : AlchemicIngredient
+# getIngredientAt(int) : AlchemicIngredient
 + add(AlchemicIngredient) : void
 + remove(AlchemicIngredient) : void
-+ moveIngredientTo(AlchemicIngredient, StorageLocation) : void
 ..class invariants..
 @invar hasProperIngredients()
 }
-
-note right of StorageLocation::getIngredientAt
-    Probleem: we geven hier een object terug, dat
-    gewijzigd kan worden door de caller... Een mogelijke
-    oplossing is om een string representatie terug te geven?
-end note
 
 note left of StorageLocation
     Dit is de klasse die de bidirectionele
@@ -192,8 +185,8 @@ WIP
 '
 abstract class TemperatureDevice extends Device {
 WIP
-'- temperature : Temperature
-'+ setTemperature(Temperature) : void
+'- temperature : rpg.Temperature
+'+ setTemperature(rpg.Temperature) : void
 '+ addIngredients(IngredientContainer) : void
 }
 '
@@ -223,16 +216,16 @@ WIP
 }
 
 '
-'class Laboratory {
+class Laboratory extends StorageLocation {
 '- capacity : int
 '- ingredients : ArrayList<AlchemicIngredient>
 '- devices : ArrayList<Device>
 '+ storeIngredient(IngredientContainer) : void
-'+ obtainIngredient(String, Quantity) : IngredientContainer
+'+ obtainIngredient(String, rpg.Quantity) : IngredientContainer
 '+ obtainIngredient(String) : IngredientContainer
 '+ getOverview() : String
 '+ {abstract} execute(Recipe, int) : void
-'}
+}
 '
 'Laboratory --> "0..*" AlchemicIngredient
 'Laboratory "1" <--> "0..4" Device

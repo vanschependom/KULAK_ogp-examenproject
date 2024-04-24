@@ -1,3 +1,5 @@
+package rpg;
+
 public class IngredientType {
 
 	private String simpleName;
@@ -8,7 +10,7 @@ public class IngredientType {
 
 	@Override
 	public String toString() {
-		return "IngredientType{" +
+		return "rpg.IngredientType{" +
 				"simpleName='" + this.simpleName + "'" +
 				'}';
 	}

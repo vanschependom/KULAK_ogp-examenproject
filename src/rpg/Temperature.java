@@ -1,3 +1,5 @@
+package rpg;
+
 public class Temperature {
 
 	private static long UPPERBOUND = 10000;
@@ -7,13 +9,13 @@ public class Temperature {
 
 	public Temperature(long hotness, long coldness) {
 		if (hotness < 0 || coldness < 0) {
-			throw new IllegalArgumentException("Temperature cannot be negative");
+			throw new IllegalArgumentException("rpg.Temperature cannot be negative");
 		}
 		if (hotness > UPPERBOUND || coldness > UPPERBOUND) {
-			throw new IllegalArgumentException("Temperature cannot be higher than " + UPPERBOUND);
+			throw new IllegalArgumentException("rpg.Temperature cannot be higher than " + UPPERBOUND);
 		}
 		if (hotness != 0 && coldness != 0) {
-			throw new IllegalArgumentException("Temperature cannot be both hot and cold");
+			throw new IllegalArgumentException("rpg.Temperature cannot be both hot and cold");
 		}
 		this.hotness = hotness;
 		this.coldness = coldness;
@@ -36,7 +38,7 @@ public class Temperature {
 				}
 			}
 		} else {
-			throw new IllegalArgumentException("Temperature cannot be negative");
+			throw new IllegalArgumentException("rpg.Temperature cannot be negative");
 		}
 	}
 
@@ -56,7 +58,7 @@ public class Temperature {
 				}
 			}
 		} else {
-			throw new IllegalArgumentException("Temperature cannot be negative");
+			throw new IllegalArgumentException("rpg.Temperature cannot be negative");
 		}
 	}
 
