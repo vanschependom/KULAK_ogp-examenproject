@@ -9,7 +9,6 @@ class AlchemicIngredient {
 - temperature : Temperature
 - type : IngredientType
 - state : State
-- storageLocation : StorageLocation
 ..constructors..
 + AlchemicIngredient(Quantity, IngredientType)
 + AlchemicIngredient(Quantity)
@@ -30,13 +29,13 @@ class AlchemicIngredient {
 + isValidTemperature(Temperature) : boolean
 + isValidType(Type) : boolean
 + isValidState(State) : boolean
++ moveTo(StorageLocation) : void
 ..class invariants..
 @invar isValidAmount(getAmount())
 @invar isValidUnit(getUnit())
 @invar isValidTemperature(getTemperatureObject())
 @invar isValidType(getType())
 @invar isValidState(getState())
-@invar hasProperStorageLocation()
 }
 
 note right of AlchemicIngredient::AlchemicIngredient(Quantity)
@@ -48,7 +47,7 @@ AlchemicIngredient::type ..> IngredientType
 AlchemicIngredient::state ..> State
 AlchemicIngredient::temperature ..> Temperature
 AlchemicIngredient::unit ..> Unit
-AlchemicIngredient "0..*" <--> "1" StorageLocation
+AlchemicIngredient "0..*" <-- StorageLocation::ingredients
 
 note right of AlchemicIngredient::getTemperatureObject
     De klasse invariant moet het Temperature object
@@ -148,11 +147,6 @@ abstract class StorageLocation {
 ..class invariants..
 @invar hasProperIngredients()
 }
-
-note left of StorageLocation
-    Dit is de klasse die de bidirectionele
-    relate onderhoudt.
-end note
 
 class IngredientContainer extends StorageLocation {
 ..attributes..
