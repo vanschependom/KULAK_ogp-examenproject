@@ -5,7 +5,7 @@ import be.kuleuven.cs.som.annotate.*;
  * A class representing the temperature.
  *
  * @invar 	The temperature must always be valid.
- * 			| isValidTemperature(getHotness(), getColdness())
+ * 			| isValidTemperature(getColdness(), getHotness())
  *
  * @note	We use TOTAL PROGRAMMING for this class.
  *
@@ -23,10 +23,35 @@ public class Temperature {
 	 */
 	private static long UPPERBOUND = 10000;
 
+	/**
+	 * A variable referencing the standard hotness.
+	 */
+	private static long STANDARD_HOTNESS = 20;
+
+	/**
+	 * A variable referencing the standard coldness.
+	 */
+	private static long STANDARD_COLDNESS = 0;
+
 	/**********************************************************
 	 * Constructors
 	 **********************************************************/
 
+	/**
+	 * A constructor for creating a new Temperature object with
+	 * given hotness and coldness.
+	 *
+	 * @param 	hotness
+	 * 			The hotness to be set.
+	 * @param 	coldness
+	 * 			The coldness to be set.
+	 * @effect	If the given temperature is valid, the hotness and coldness
+	 * 			are set to the given hotness and coldness, otherwise, the hotness
+	 * 			and coldness are set to the standard values.
+	 * 			| if (isValidTemperature(hotness, coldness))
+	 * 			| then setHotness(hotness) && setColdness(coldness)
+	 *			| else setHotness(STANDARD_HOTNESS) && setColdness(STANDARD_COLDNESS)
+	 */
 	public Temperature(long hotness, long coldness) {
 		if (isValidTemperature(hotness, coldness)) {
 			// set to the provided temperature
@@ -34,8 +59,8 @@ public class Temperature {
 			setColdness(coldness);
 		} else {
 			// set to the default temperature
-			setHotness(20);
-			setColdness(0);
+			setHotness(STANDARD_HOTNESS);
+			setColdness(STANDARD_COLDNESS);
 		}
 	}
 
@@ -56,12 +81,13 @@ public class Temperature {
 	 * A setter for the hotness of the temperature.
 	 * @param 	hotness
 	 * 			The new hotness to be set
-	 * @post	If the hotness is positive, the hotness is set to the given hotness;
-	 * 			if not, the hotness is set to zero.
+	 * @post	If the hotness is positive, the hotness is set to the given hotness.
+	 * 			| if (hotness >= 0)
+	 * 			| then new.getHotness() == hotness
 	 */
 	@Model
 	private void setHotness(long hotness) {
-		if (hotness > 0) {
+		if (hotness >= 0) {
 			this.hotness = hotness;
 		}
 	}
@@ -79,44 +105,110 @@ public class Temperature {
 		return coldness;
 	}
 
+	/**
+	 * A setter for the coldness of the temperature.
+	 * @param 	coldness
+	 * 			The new coldness to be set
+	 * @post	If the coldness is positive, the coldness is set to the given coldness
+	 * 			| if (coldness >= 0)
+	 * 			| then new.getColdness() == coldness
+	 */
 	@Model
 	private void setColdness(long coldness) {
-		if (coldness > 0) {
+		if (coldness >= 0) {
 			this.coldness = coldness;
 		}
 	}
 
+	/**
+	 * A method for heating the temperature.
+	 *
+	 * @param 	amount
+	 * 			The amount of heat to be added.
+	 * @post	If the amount is positive and doesn't exceed the upperbound,
+	 * 			and the current hotness, increased with the given amount
+	 * 			doesn't succeed the maximum value, the temperature is increased
+	 * 			with the given amount.
+	 * 			| if (0 < amount && amount < UPPERBOUND && getHotness() + amount <= UPPERBOUND)
+	 * 			| then new.getHotness() == getHotness() + amount
+	 * @post	If the amount is positive and doesn't exceed the upperbound, and the
+	 * 			current hotness, increased with the given amount does succeed the
+	 * 			maximum value, the hotness is set to the maximum value.
+	 * 			| if (0 < amount && amount < UPPERBOUND && getHotness() + amount > UPPERBOUND)
+	 * 			| then new.getHotness() == UPPERBOUND
+	 * @post	If the amount is positive and doesn't exceed the upperbound, and the current
+	 * 			coldness is not zero, and the current coldness, decreased with the given amount
+	 * 			isn't negative, the coldness is decreased with the given amount.
+	 * 			| if (0 < amount && amount < UPPERBOUND && getColdness() != 0 && getColdness() - amount >= 0)
+	 * 			| then new.getColdness() == getColdness() - amount
+	 * @post	If the amount is positive and doesn't exceed the upperbound, and the current
+	 * 			coldness is not zero, and the current coldness, decreased with the given amount
+	 * 			is negative, the coldness is set to zero and the hotness is set to the difference.
+	 * 			| if (0 < amount && amount < UPPERBOUND && getColdness() != 0 && getColdness() - amount < 0)
+	 * 			| then new.getColdness() == 0 && new.getHotness() == -getColdness() + amount
+	 */
 	protected void heat(long amount) {
-		if (amount > 0) {
-			if (hotness == 0) {
-				coldness -= amount;
-				if (coldness < 0) {
-					hotness = -coldness;
-					coldness = 0;
+		if (0 < amount && amount < UPPERBOUND) {
+			if (getHotness() == 0) {
+				long difference = getColdness() - amount;
+				if (difference > 0) {
+					setColdness(difference);
+				} else {
+					setColdness(0);
+					setHotness(-difference);
 				}
 			} else {
-				if (amount > UPPERBOUND - hotness) {
-					hotness = UPPERBOUND;
+				if (amount < UPPERBOUND - getHotness()) {
+					setHotness(getHotness() + amount);
 				} else {
-					hotness += amount;
+					setHotness(UPPERBOUND);
 				}
 			}
 		}
 	}
 
+	/**
+	 * A method for cooling the temperature.
+	 *
+	 * @param 	amount
+	 * 			The amount of coolness to be added.
+	 * @post	If the amount is positive and doesn't exceed the upperbound,
+	 * 			and the current coldness, increased with the given amount
+	 * 			doesn't succeed the maximum value, the coldness is increased
+	 * 			with the given amount.
+	 * 			| if (0 < amount && amount < UPPERBOUND && getColdness() + amount <= UPPERBOUND)
+	 * 			| then new.getColdness() == getColdness() + amount
+	 * @post	If the amount is positive and doesn't exceed the upperbound, and the
+	 * 			current coldness, increased with the given amount does succeed the
+	 * 			maximum value, the coldness is set to the maximum value.
+	 * 			| if (0 < amount && amount < UPPERBOUND && getColdness() + amount > UPPERBOUND)
+	 * 			| then new.getColdness() == UPPERBOUND
+	 * @post	If the amount is positive and doesn't exceed the upperbound, and the current
+	 * 			hotness is not zero, and the current hotness, decreased with the given amount
+	 * 			isn't negative, the hotness is decreased with the given amount.
+	 * 			| if (0 < amount && amount < UPPERBOUND && getHotness() != 0 && getHotness() - amount >= 0)
+	 * 			| then new.getHotness() == getHotness() - amount
+	 * @post	If the amount is positive and doesn't exceed the upperbound, and the current
+	 * 			hotness is not zero, and the current hotness, decreased with the given amount
+	 * 			is negative, the hotness is set to zero and the coldness is set to the difference.
+	 * 			| if (0 < amount && amount < UPPERBOUND && getHotness() != 0 && getHotness() - amount < 0)
+	 * 			| then new.getHotness() == 0 && new.getColdness() == -getHotness() + amount
+	 */
 	protected void cool(long amount) {
-		if (amount > 0) {
-			if (coldness == 0) {
-				hotness -= amount;
-				if (hotness < 0) {
-					coldness = -hotness;
-					hotness = 0;
+		if (0 < amount && amount < UPPERBOUND) {
+			if (getColdness() == 0) {
+				long difference = getHotness() - amount;
+				if (difference > 0) {
+					setHotness(difference);
+				} else {
+					setHotness(0);
+					setColdness(-difference);
 				}
 			} else {
-				if (amount > UPPERBOUND - coldness) {
-					coldness = UPPERBOUND;
+				if (amount < UPPERBOUND - getColdness()) {
+					setColdness(getColdness() + amount);
 				} else {
-					coldness += amount;
+					setColdness(UPPERBOUND);
 				}
 			}
 		}
@@ -124,17 +216,35 @@ public class Temperature {
 
 	/**
 	 * A method for getting both the hotness and the coldness of the temperature.
-	 * @return	An array containing the hotness and the coldness of the temperature.
-	 * 			| result == new long[]{getHotness(), getColdness()}
+	 * @return	An array containing the coldness and the hotness of the temperature.
+	 * 			| result == new long[]{getColdness(), getHotness()}
 	 */
 	public long[] getTemperature() {
-		return new long[] {hotness, coldness};
+		return new long[] {coldness, hotness};
 	}
 
-	public long difference(Temperature other) {
-		long currentTemp = -coldness + hotness;
-		long otherTemp = -other.getColdness() + other.getHotness();
-		return currentTemp - otherTemp;
+	/**
+	 * A method for checking whether a given temperature is valid.
+	 * @param 	hotness
+	 * 			The hotness of the temperature
+	 * @param 	coldness
+	 * 			The coldness of the temperature
+	 * @return	False if the hotness or the coldness is negative, if they are both not zero,
+	 * 			or if the upperbound is exceeded; true otherwise.
+	 * 			| result == (hotness >= 0 && hotness <= UPPERBOUND) &&
+	 * 			|			(coldness >= 0 && coldness <= UPPERBOUND) &&
+	 * 			|			!(hotness != 0 && coldness != 0)
+	 */
+	public boolean isValidTemperature(long coldness, long hotness) {
+		return (hotness >= 0 && hotness <= UPPERBOUND) &&
+				(coldness >= 0 && coldness <= UPPERBOUND) &&
+				!(hotness != 0 && coldness != 0);
 	}
+
+//	public long difference(Temperature other) {
+//		long currentTemp = -coldness + hotness;
+//		long otherTemp = -other.getColdness() + other.getHotness();
+//		return currentTemp - otherTemp;
+//	}
 
 }

@@ -7,23 +7,32 @@ public class TemperatureTest {
 
 	@Test
 	public void illegalHotAndCold() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			new Temperature(1, 1);
-		});
+		Temperature t = new Temperature(1, 1);
+		assertEquals(20, t.getHotness());
+		assertEquals(0, t.getColdness());
+		long[] result = t.getTemperature();
+		assertEquals(0, result[0]);
+		assertEquals(20, result[1]);
 	}
 
 	@Test
 	public void illegalTooHot() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			new Temperature(100000, 0);
-		});
+		Temperature t = new Temperature(100000, 0);
+		assertEquals(20, t.getHotness());
+		assertEquals(0, t.getColdness());
+		long[] result = t.getTemperature();
+		assertEquals(0, result[0]);
+		assertEquals(20, result[1]);
 	}
 
 	@Test
 	public void illegalTooCold() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			new Temperature(0, 100000);
-		});
+		Temperature t = new Temperature(0, 100000);
+		assertEquals(20, t.getHotness());
+		assertEquals(0, t.getColdness());
+		long[] result = t.getTemperature();
+		assertEquals(0, result[0]);
+		assertEquals(20, result[1]);
 	}
 
 	@Test
@@ -68,10 +77,10 @@ public class TemperatureTest {
 
 	@Test
 	public void illegalHeat() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			Temperature t = new Temperature(0, 0);
-			t.heat(-10);
-		});
+		Temperature t = new Temperature(0, 0);
+		t.heat(-10);
+		assertEquals(0, t.getHotness());
+		assertEquals(0, t.getColdness());
 	}
 
 	@Test
@@ -109,10 +118,13 @@ public class TemperatureTest {
 
 	@Test
 	public void illegalCool() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			Temperature t = new Temperature(0, 0);
-			t.cool(-10);
-		});
+		Temperature t1 = new Temperature(0, 0);
+		Temperature t2 = new Temperature(20, 0);
+		t1.cool(-10);
+		t2.cool(-10);
+		assertEquals(0, t1.getHotness());
+		assertEquals(0, t1.getColdness());
+		assertEquals(20, t2.getHotness());
 	}
 
 }
