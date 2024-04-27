@@ -9,6 +9,7 @@ class AlchemicIngredient {
 - temperature : Temperature
 - type : IngredientType
 - state : State
+- isContainerized : boolean
 ..constructors..
 + AlchemicIngredient(Quantity, IngredientType)
 + AlchemicIngredient(Quantity)
@@ -21,6 +22,8 @@ class AlchemicIngredient {
 + getSimpleName() : String
 + getFullName() : String
 + getSpecialName() : String
++ isContainerized() : boolean
++ setContainerized(boolean, IngredientContainer) : void
 ..non-public..
 - getTemperatureObject() : Temperature
 ..checkers..
@@ -29,7 +32,6 @@ class AlchemicIngredient {
 + isValidTemperature(Temperature) : boolean
 + isValidType(Type) : boolean
 + isValidState(State) : boolean
-+ moveTo(StorageLocation) : void
 ..class invariants..
 @invar isValidAmount(getAmount())
 @invar isValidUnit(getUnit())
@@ -37,6 +39,12 @@ class AlchemicIngredient {
 @invar isValidType(getType())
 @invar isValidState(getState())
 }
+
+note right of AlchemicIngredient::setContainerized
+    Deze methode krijgt een container mee, zodat bij het oproepen van deze
+    methode eerst het volgende gecheckt wordt: if(container.hasAsIngredient(this))
+    Als dit voldaan is, mag stored effectief op true gezet worden, anders niet!
+end note
 
 note right of AlchemicIngredient::AlchemicIngredient(Quantity)
     Bepaalde hoeveelheid standaardingredient, dit is
@@ -126,99 +134,114 @@ class Temperature {
 @invar isValidTemperature(getHotness(),getColdness())
 }
 
-note right of Temperature::@
-    Volstaat het om enkel de cheker
-    isValidTemperature() te hebben,
-    indien deze zowel hotness als
-    coldness checkt? Of moeten hotness
-    en coldness een aparte invar hebben?
-end note
-
 abstract class StorageLocation {
 ..attributes..
 - ingredients : ArrayList<AlchemicIngredient>
 ..checkers..
 + canHaveAsIngredient(AlchemicIngredient) : boolean
-..public methods..
+..methods..
++ addContainer(IngredientContainer) : void
+- storeIngredientsFromContainer(IngredientContainer) : void
 + getNbOfIngredients() : int
-# getIngredientAt(int) : AlchemicIngredient
-+ add(AlchemicIngredient) : void
-+ remove(AlchemicIngredient) : void
++ getIngredientAt(int) : AlchemicIngredient
++ getIndexOf(AlchemicIngredient) : int
 ..class invariants..
 @invar hasProperIngredients()
 }
 
-class IngredientContainer extends StorageLocation {
+class IngredientContainer {
 ..attributes..
+- ingredients : ArrayList<AlchemicIngredient>
 - {final} capacity : Unit
 - isDestroyed : boolean
+- state : State
+- ingredientType : IngredientType
+..methods..
++ addIngredient(AlchemicIngredient) : void
++ hasAsIngredient(AlchemicIngredient) : void
 ..destructor..
 + destroy()
 ..checkers..
-+ isValidCapacity(Unit) : boolean
+- isValidCapacity(Unit) : boolean
+- canHaveAsIngredient(AlchemicIngredient) : boolean
+- hasProperIngredients() : boolean
 ..class invariants..
+@invar hasProperIngredients()
 @invar isValidCapacity(getCapacity())
+@invar isValidState(getState())
+@invar isValidIngredientType(getIngredientType())
 }
 
 IngredientContainer::capacity ..> Unit
 
 note top of IngredientContainer
     Voor de kleinste en grootste units
-    bestaan er geen containers.
+    bestaan er geen containers. Een container kan
+    bovendien maar 1 type ingredient bevatten.
 end note
 
 abstract class Device extends StorageLocation {
-WIP
-'- ingredients : IngredientContainer
-'- result : AlchemicIngredient
-'- laboratory : Laboratory
-'+ {abstract} addIngredients(IngredientContainer) : void
-'+ {static} getResult() : IngredientContainer
-'+ {abstract} executeOperation() : void
+..attributes..
+- result : AlchemicIngredient
+- laboratory : Laboratory
+..methods..
++ getResult() : IngredientContainer
++ {abstract} executeOperation() : void
+- isValidLaboratory(Laboratory) : boolean
+..class invariants..
+@invar canHaveAsResult(getResult())
+@invar isValidLaboratory(getLaboratory())
 }
 '
 abstract class TemperatureDevice extends Device {
-WIP
-'- temperature : rpg.Temperature
-'+ setTemperature(rpg.Temperature) : void
-'+ addIngredients(IngredientContainer) : void
+..attributes..
+- temperature : Temperature
+..methods..
++ setTemperature(Temperature) : void
+..overrides..
++ hasProperIngredients() : boolean
++ canHaveAsIngredient() : boolean
 }
 '
 class CoolingBox extends TemperatureDevice {
-WIP
-'+ executeOperation() : void
+..methods..
++ executeOperation() : void
 }
 '
-'note "Kunnen maar 1 element bevatten." as N2
-'CoolingBox .. N2
-'Oven .. N2
-'
+note "Kunnen maar 1 element bevatten." as N2
+CoolingBox .. N2
+Oven .. N2
+
 class Oven extends TemperatureDevice {
-WIP
-'+ executeOperation() : void
+..methods..
++ executeOperation() : void
 }
 '
 class Kettle extends Device {
-WIP
-'+ addIngredients(IngredientContainer) : void
-'+ executeOperation() : void
+..methods..
++ executeOperation() : void
 }
 '
 class Transmogrifier extends Device {
-WIP
-'+ executeOperation() : void
++ executeOperation() : void
 }
 
 '
 class Laboratory extends StorageLocation {
-'- capacity : int
+..attributes..
+- capacity : int
 '- ingredients : ArrayList<AlchemicIngredient>
 '- devices : ArrayList<Device>
 '+ storeIngredient(IngredientContainer) : void
-'+ obtainIngredient(String, rpg.Quantity) : IngredientContainer
-'+ obtainIngredient(String) : IngredientContainer
+..methods..
++ getIngredient(String, int, Unit) : IngredientContainer
++ getIngredients() : IngredientContainer
+..checkers..
++ isValidCapacity(int) : boolean
 '+ getOverview() : String
 '+ {abstract} execute(Recipe, int) : void
+..class invariants..
+@invar isValidCapacity(getCapacity())
 }
 '
 'Laboratory --> "0..*" AlchemicIngredient
