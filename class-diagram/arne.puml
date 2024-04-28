@@ -52,7 +52,7 @@ __checkers__
 interface StorageInterface {
  + addIngredient(AlchemicIngredient):
  + addContainer(IngredientContainer):
- + moveIngredient(AlchemicIngredient, Storage):
+ + moveIngredient(AlchemicIngredient, StorageInterface):
  + removeIngredient(AlchemicIngredient):
 }
 
@@ -65,7 +65,8 @@ __methods__
  + Storage(List<AlchemicIngredient>)
  + addIngredient(AlchemicIngredient):
  + addContainer(IngredientContainer):
- + moveIngredient(AlchemicIngredient, Storage):
+ + moveIngredient(AlchemicIngredient, StorageInterface):
+ + moveIngredienAt(int, StorageInterface):
  + removeIngredient(AlchemicIngredient):
  + getNbOfIngredients(): int
  + getIngredientAt(int): AlchemicIngredient
@@ -345,6 +346,9 @@ exception DeviceAlreadyAddedException {
  + DeviceAlreadyAddedException(Device)
  + getDevice(): Device
 }
+
+note top of DeviceAlreadyAddedException : Is niet echt nodig aangezien ook\neen IllegalArgumentException gebruikt kan worden
+
 exception CapacityExceededException {
  - fullObject: Object
  + CapacityExceededException(Object)
