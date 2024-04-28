@@ -193,14 +193,14 @@ __checkers__
 note "Exception bij getResult(), enkel bij Kettle" as result
 Device ..right result
 
-exception DeviceNotYetUsed {
+exception DeviceNotYetUsedException {
  - device: Device
- + DeviceNotYetUsed(Device)
+ + DeviceNotYetUsedException(Device)
  + getDevice(): Device
 }
 
-Device --> DeviceNotYetUsed : throws [can]
-Kettle --> DeviceNotYetUsed : throws
+Device --> DeviceNotYetUsedException : throws [can]
+Kettle --> DeviceNotYetUsedException : throws
 
 abstract class TemperatureDevice extends Device {
  - temperature: long
@@ -217,7 +217,7 @@ class Oven extends TemperatureDevice {
 }
 
 class Kettle extends Device {
-
+ - isUsed: boolean
  + useDevice():
 }
 
