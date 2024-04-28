@@ -1,11 +1,12 @@
 package rpg;
+import be.kuleuven.cs.som.annotate.*;
 import rpg.State;
 
 public enum Unit {
 
 	PINCH(1.0/6, new State[]{State.POWDER}),
-	DROP(1.0/8, new State[]{State.LIQUID, State.POWDER}),
-	SPOON(1, new State[]{State.LIQUID}),
+	DROP(1.0/8, new State[]{State.LIQUID}),
+	SPOON(1, new State[]{State.LIQUID, State.POWDER}),
 	VIAL(5, new State[]{State.LIQUID}),
 	SACHET(7, new State[]{State.POWDER}),
 	BOTTLE(15, new State[]{State.LIQUID}),
@@ -24,18 +25,20 @@ public enum Unit {
 		this.allowedStates = allowedStates;
 	}
 
+	@Basic
 	public double getSpoonEquivalent() {
 		return spoonEquivalent;
 	}
 
+	@Basic
 	public State[] getAllowedStates() {
 		return allowedStates;
 	}
 
 	boolean conversionAllowed(Unit unit) {
-		for(State state : unit.getAllowedStates()) {
+		for (State state : unit.getAllowedStates()) {
 			for (State allowedState : this.allowedStates) {
-				if(state == allowedState) {
+				if (state == allowedState) {
 					return true;
 				}
 			}

@@ -1,47 +1,101 @@
 @startuml
 
+skinparam linetype ortho
+
 package rpg {
 
 package ingredients {
 
-class IngredientType {
-+ standardTemperature: long[2]
-+ simpleName: String
-}
-
-class AlchemicIngredient {
+class AlchemicIngredient extends IngredientType {
+__invariants__
+@invar: hasValidTemperature()
+@invar: hasValidSimpleName()
+@invar: hasValidSpecialName()
+@invar: hasValidCompleteName()
+__attributes__
 + completeName: String
-+ specialName: String
-+ ingredientType: IngredientType
-+ state: State
-+ {static} amount: int
-+ {static} quantity: Quantity
-+ coldness: int
-+ hotness: int
-
++ {final} amount: int
++ {final} quantity: Quantity
++ currentTemperature: Temperature
+__constructors__
+AlchemicIngredient(String name, Temperature standardTemperature, State state, int amount, Quantity quantity)
+AlchemicIngredient(String name, Temperature standardTemperature, int amount, Quantity quantity)
+__methods__
 + getSimpleName(): String
 + getCompleteName(): String
 + getSpecialName(): String
-+ getTemperature(): long[2]
 }
 
+class IngredientType {
+'total programming
+__invariants__
+@invar: hasValidStandardTemperature()
+@invar: hasValidSimpleName()
+@invar: hasValidSpecialName()
+__attributes__
++ state: State
++ {final} standardTemperature: Temperature
++ simpleName: String
++ specialName: String
++ isMixed: boolean
+__constructors__
++ IngredientType(String name, Temperature standardTemperature, State state)
++ IngredientType(String name, Temperature standardTemperature)
+__methods__
++ canHaveSimpleName(String name): boolean
+}
+
+note top of IngredientType: kben nog steeds beetje verwarred over de relatie tussen IngredientType en AlchemicIngredient\n\
+hier erft AlchemicIngredient van IngredientType maar kweenie of da handig is of niet \n\
+want ze hebben mss toch bepaalde verschillen die ik over het hoofd zie
+
 class IngredientContainer {
+__invariants__
+@invar: capacityNotExceeded()
+__attributes__
 + ingredient: AlchemicIngredient
 + quantity: Quantity
 + capacity: int
 }
 
-class Quantity {
+enum Quantity {
+'nominal programming
+..both states..
++ SPOON
++ STOREROOM
+..liquid state..
++ DROP
++ VIAL
++ BOTTLE
++ JUG
++ BARREL
+..powder state..
++ PINCH
++ SACHET
++ BOX
++ SACK
++ CHEST
+__methods__
+getSpoonEquivalent(): int
+getConversionFor(Quantity targetQuantity): int
 }
 
-enum QuantityLiquid {
-+ drop: int
-+ spoon: int
-+ vial: int
-+ bottle: int
-+ jug: int
-+ barrel: int
-+ storeroom: int
+class Temperature {
+__invariants__
+@invar: isValidTemperature()
+__attributes__
+- {static} UPPERBOUND: long
+- hotness: long
+- coldness: long
+__constructors__
++ Temperature(long hotness, long coldness)
+__methods__
+# heat(long amount)
+# cool(long amount)
+- getHotness()
+- getColdness()
++ getTemperature(): long[2]
++ difference(Temperature other)
 }
 
 enum State {
@@ -49,74 +103,73 @@ enum State {
 + POWDER
 }
 
-enum QuantityPowder {
-+ pinch: int
-+ spoon: int
-+ sachet: int
-+ box: int
-+ sack: int
-+ chest: int
-+ storeroom: int
-}
-
 IngredientContainer <-- AlchemicIngredient
-AlchemicIngredient --> "1" IngredientType
 AlchemicIngredient -- "1" Quantity
-Quantity -- QuantityLiquid
-Quantity -- QuantityPowder
 Quantity -- IngredientContainer
-State - AlchemicIngredient : use
+State - IngredientType : use
+Temperature -- AlchemicIngredient: use
 
-note left of Quantity: Dit is nog wat vaag. \nIk weet niet hoe \nwe dit het best doen.
 }
 
 package lab {
 
 abstract Device {
+__invariants__
+@invar: hasLaboratory()
+__attributes__
 + labo: Laboratory
-
+__constructors__
+Device(Laboratory labo)
+__methods__
 + input(IngredientContainer container): void
-+ getBack(IngredientContainer container): IngredientContainer
++ return(IngredientContainer container): IngredientContainer
 + execute(): IngredientContainer
 }
 
-class CoolingBox extends Device {
+abstract TemperatureDevice extends Device {
+__attributes__
 + ingredient: AlchemicIngredient
+}
+
+class CoolingBox extends TemperatureDevice {
+__attributes__
 + temperature: int
 }
 
-class Oven extends Device {
-+ ingredient: AlchemicIngredient
+class Oven extends TemperatureDevice {
+__attributes__
 + temperature: int
 }
 
 class Kettle extends Device {
+__attributes__
 + ingredients: ArrayList<IngredientContainer>
 }
 
 class Transmogrifier extends Device {
+__attributes__
 + ingredient: AlchemicIngredient
 }
 
 class Laboratory {
+'defensive programming
+__invariants__
+@invar hasProperDevices()
+__attributes__
 + capacity: int
-+ ingredients: ArrayList<IngredientContainer>
-+ coolingBox: coolingBox
-+ oven: Oven
-+ kettle: Ketlle
-+ transmogrifier: Transmogrifier
-
-+ input()
-+ getBack()
++ ingredients: ArrayList<AlchemicIngredient>
++ devices: ArrayList<Device>
+__methods__
++ input(IngredientContainer container): void
++ return(String name, amount int, Quantity quantity): IngredientContainer
++ returnAll(String name): IngredientContainer
 + addDevice()
 + removeDevice()
 + execute(Recipe, int)
++ summary(): String
 }
 
-CoolingBox "1" -- "1" Laboratory
-Oven "1" -- "1" Laboratory
-Kettle "1" -- "1" Laboratory
-Transmogrifier "1" -- "1" Laboratory
+Laboratory "0..1" -- "0..4" Device
 
 }
 
