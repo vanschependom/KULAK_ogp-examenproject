@@ -18,6 +18,7 @@ __variables__
  - ingredientType: IngredientType
  - quantity: Quantity
  - temperature: Temperature
+ - isContainerized: boolean
  - isTerminated: boolean
 __methods__
  + AlchemicIngredient(Quantity quantity, IngredientType type)
@@ -36,6 +37,7 @@ __methods__
  # cool(long):
  # heat(long):
  + changeSpecialName(String):
+ # setContainerized(boolean, StorageInterface):
  + terminate():
 __checkers__
  + canHaveAsName(String): boolean
@@ -43,9 +45,32 @@ __checkers__
  + hasProperTemperature(): boolean
  + hasProperQuantity(): boolean
  + hasProperState(): boolean
+ + isContainerized(): boolean
  + isTerminated(): boolean
 }
 
+interface StorageInterface {
+ + addIngredient(AlchemicIngredient):
+ + addContainer(IngredientContainer):
+ + moveIngredient(AlchemicIngredient, Storage):
+ + removeIngredient(AlchemicIngredient):
+}
+
+abstract class Storage implements StorageInterface {
+__invars__
+@invar hasProperIngredients()
+__variables__
+ - ingredients: List<AlchemicIngredient>
+__methods__
+ + Storage(List<AlchemicIngredient>)
+ + addIngredient(AlchemicIngredient):
+ + addContainer(IngredientContainer):
+ + moveIngredient(AlchemicIngredient, Storage):
+ + removeIngredient(AlchemicIngredient):
+ + getNbOfIngredients(): int
+ + getIngredientAt(int): AlchemicIngredient
+ + getIndexOf(AlchemicIngredient): int
+}
 
 class IngredientType {
 __invars__
@@ -111,15 +136,15 @@ enum Unit {
  BARREL,
  CHEST,
  STOREROOM
- - state: State
- + getState(): State
+ - availableStates: List<State>
+ + getAvailableStates(): List<State>
  + getSpoonEquivalent(): double
 }
 
-class IngredientContainer {
+class IngredientContainer implements StorageInterface{
 __invars__
-@invar !{Unit.DROP, Unit.PINCH, Unit.STOREROOM}.contains(getCapacity())
-@invar getCapacity().getSpoonEquivalent() >= getContentQuantity().getSpoonEquivalent()
+@invar isCorrectUnit()
+@invar hasValidContents()
 __variables__
  - capacity: Unit
  - ingredientType: IngredientType
@@ -131,26 +156,29 @@ __methods__
  + IngredientContainer(Unit capacity)
  + getIngredientType(): IngredientType
  + addIngredient(AlchemicIngredient ingredient):
+ + addContainer(IngredientContainer):
+ + moveIngredient(AlchemicIngredient, Storage):
+ + removeIngredient(AlchemicIngredient):
  + getContentQuantity(): Quantity
  + getCapacity(): Unit
  + takeContents(): AlchemicIngredient
  + terminate():
 __checkers__
  + ingredientCanBeAdded(AlchemicIngredient ingredient): boolean
+ + isCorrectUnit(): boolean
+ + hasValidContents(): boolean
  + isTerminated(): boolean
 }
 
-abstract class Device {
+abstract class Device extends Storage{
 __invars__
 @invar getResult().getContentQuantity().getSpoonEquivalent() <= 1260
 @invar hasProperLaboratory()
 __variables__
- - ingredients: List<IngredientContainer>
  - lab: Laboratory
  - isTerminated: boolean
 __methods__
  + Device(Laboratory)
- + addIngredient(IngredientContainer container):
  + getResult(): IngredientContainer
  + useDevice():
  + getLaboratory(): Laboratory
@@ -173,17 +201,17 @@ exception DeviceNotYetUsed {
 Device --> DeviceNotYetUsed : throws [can]
 Kettle --> DeviceNotYetUsed : throws
 
-class CoolingBox extends Device {
- - coolTemperature: long
- + CoolingBox(long coolTemperature)
- + changeCoolTemperature(long coolTemperature):
+abstract class TemperatureDevice extends Device {
+ - temperature: long
+ + TemperatureDevice(long temperature)
+ + changeTemperature(long temperature):
+}
+
+class CoolingBox extends TemperatureDevice {
  + useDevice():
 }
 
-class Oven extends Device {
- - heatTemperature: long
- + Oven(long heatTemperature)
- + changeHeatTemperature(long coolTemperature):
+class Oven extends TemperatureDevice {
  + useDevice():
 }
 
@@ -198,14 +226,12 @@ class Transmogrifier extends Device {
 
 
 
-class Laboratory {
+class Laboratory extends Storage {
 __invars__
 @invar hasProperDevices()
-@invar hasProperIngredients()
-@invar getCapacity() >= 0
+@invar getCapacity() > 0
 __variables__
  - capacity: int
- - ingredients: List<AlchemicIngredient>
  - devices: List<Device>
  - ingredientVolume: Quantity
  - isTerminated: boolean
@@ -216,15 +242,11 @@ __methods__
  + Laboratory(int capacity)
  + addDevice(Device device):
  + deleteDevice(Device):
- + addContainer(IngredientContainer container):
- + addIngredient(AlchemicIngredient ingredient):
  + takeContainer(Quantity quantity, String name): IngredientContainer
  + takeContainer(AlchemicIngredient): IngredientContainer
  + takeAllIngredientsOfType(String name): IngredientContainer
  + takeAllIngredientsOfType(IngredientType): IngredientContainer
  + takeAllAlchemicIngredients(AlchemicIngredient): IngredientContainer
- + getNbOfDifferentIngredients(): int
- + getIngredientAt(int): AlchemicIngredient
  + tallyIngredients(): String
  + execute(Recipe, int):
  + getDevices(): List<Device>
