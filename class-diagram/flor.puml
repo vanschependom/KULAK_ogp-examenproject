@@ -6,7 +6,7 @@ package rpg {
 
 package ingredients {
 
-class AlchemicIngredient extends IngredientType {
+class AlchemicIngredient {
 __invariants__
 @invar: hasValidTemperature()
 @invar: hasValidSimpleName()
@@ -17,6 +17,7 @@ __attributes__
 + {final} amount: int
 + {final} quantity: Quantity
 + currentTemperature: Temperature
++ ingredientType: IngredientType
 __constructors__
 AlchemicIngredient(String name, Temperature standardTemperature, State state, int amount, Quantity quantity)
 AlchemicIngredient(String name, Temperature standardTemperature, int amount, Quantity quantity)
@@ -44,10 +45,6 @@ __constructors__
 __methods__
 + canHaveSimpleName(String name): boolean
 }
-
-note top of IngredientType: kben nog steeds beetje verwarred over de relatie tussen IngredientType en AlchemicIngredient\n\
-hier erft AlchemicIngredient van IngredientType maar kweenie of da handig is of niet \n\
-want ze hebben mss toch bepaalde verschillen die ik over het hoofd zie
 
 class IngredientContainer {
 __invariants__
@@ -108,6 +105,9 @@ AlchemicIngredient -- "1" Quantity
 Quantity -- IngredientContainer
 State - IngredientType : use
 Temperature -- AlchemicIngredient: use
+
+'unidirectioneel
+AlchemicIngredient "*" <-- "1" IngredientType
 
 }
 
@@ -185,14 +185,17 @@ enum Operations {
 }
 
 class Recipe {
+__attributes__
 + instructions: ArrayList<Operations>
 + ingredients: ArrayList<AlchemicIngredient>
 }
 
 class RecipeBook {
+__attributes__
 + recipes: ArrayList<Recipe>
-
+__constructors__
 + Recipebook()
+__methods__
 + addRecipe(Recipe recipe): void
 + removeRecipe(Recipe recipe): void
 }
