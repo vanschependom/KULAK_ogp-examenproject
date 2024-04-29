@@ -1,24 +1,41 @@
 package rpg;
 
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class UnitTest {
 
 	@Test
 	public void testConversionAllowed() {
 		// from powder to liquid
-		Assertions.assertFalse(Unit.PINCH.conversionAllowed(Unit.DROP));
-		Assertions.assertTrue(Unit.PINCH.conversionAllowed(Unit.SPOON));
+		assertFalse(Unit.PINCH.conversionAllowed(Unit.DROP));
+		assertTrue(Unit.PINCH.conversionAllowed(Unit.SPOON));
 		// from liquid to powder
-		Assertions.assertFalse(Unit.SPOON.conversionAllowed(Unit.PINCH)); // van spoon kan je toch naar alles, moet dit niet assertTrue zijn
-		Assertions.assertTrue(Unit.BARREL.conversionAllowed(Unit.SACK)); // moet deze niet false zijn van enkel liquid naar enkel powder
+		assertFalse(Unit.SPOON.conversionAllowed(Unit.PINCH)); // van spoon kan je toch naar alles, moet dit niet assertTrue zijn
+		assertTrue(Unit.BARREL.conversionAllowed(Unit.SACK)); // moet deze niet false zijn van enkel liquid naar enkel powder
 	}
 
 	@Test
 	public void testConversion_NotAllowed(){
-		Assertions.assertFalse(Unit.DROP.conversionAllowed(Unit.BOX));
-		Assertions.assertFalse(Unit.JUG.conversionAllowed(Unit.SACHET));
-		Assertions.assertFalse(Unit.CHEST.conversionAllowed(Unit.DROP));
+		assertFalse(Unit.DROP.conversionAllowed(Unit.BOX));
+		assertFalse(Unit.JUG.conversionAllowed(Unit.SACHET));
+		assertFalse(Unit.CHEST.conversionAllowed(Unit.DROP));
+	}
+
+	@Test
+	public void spoonToBox() {
+		Unit quantity = Unit.SPOON;
+		double conversion = quantity.getConversionFor(Unit.BOX);
+		double expected = (double) 1/42;
+		assertEquals(expected,conversion);
+	}
+
+	@Test
+	public void storeroomToJug() {
+		Unit quantity = Unit.STOREROOM;
+		double conversion = quantity.getConversionFor(Unit.JUG);
+		double expected = (double) 6300/105;
+		assertEquals(expected,conversion);
 	}
 
 }

@@ -35,7 +35,7 @@ public enum Unit {
 		return allowedStates;
 	}
 
-	boolean conversionAllowed(Unit unit) {
+	public boolean conversionAllowed(Unit unit) {
 		for (State state : unit.getAllowedStates()) {
 			for (State allowedState : this.allowedStates) {
 				if (state == allowedState) {
@@ -47,13 +47,12 @@ public enum Unit {
 	}
 
 	public double getConversionFor(Unit unit) {
-
 		if (conversionAllowed(unit)) {
 			return this.spoonEquivalent / unit.spoonEquivalent;
 		} else {
+			// niet nodig want quantity moet nominaal
 			throw new IllegalArgumentException("Cannot convert " + this + " to " + unit);
 		}
-
 	}
 
 }
