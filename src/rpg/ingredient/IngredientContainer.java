@@ -1,4 +1,4 @@
-package rpg;
+package rpg.ingredient;
 
 public class IngredientContainer {
 }
