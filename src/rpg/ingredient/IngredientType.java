@@ -2,7 +2,7 @@ package rpg.ingredient;
 
 import be.kuleuven.cs.som.annotate.*;
 import rpg.exceptions.IllegalNameException;
-import rpg.exceptions.*;
+import rpg.*;
 
 /**
  * A class representing an alchemic ingredient type.
@@ -12,9 +12,9 @@ import rpg.exceptions.*;
  * @invar	The special name of an ingredient type must always be valid.
  * 			| getSpecialName() == null || isValidName(getSpecialName())
  * @invar 	The state of an ingredient type must always be valid.
- * 			| isValidState(getState())
+ * 			| isValidState(getStandardState())
  * @invar	The standard temperature of an ingredient type must always be valid.
- * 			| isValidStandardTemperature(getStandardTemperature())
+ * 			| Temperature.isValidStandardTemperature(getStandardTemperatureObject.getColness(), getStandardTemperatureObject.getHotness())
  *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
@@ -32,7 +32,14 @@ public class IngredientType {
 	 * CONSTRUCTORS
 	 **********************************************************/
 
-	// ...
+	public IngredientType(String simpleName, String specialName, State state, Temperature temperature, boolean isMixed) {
+		// todo condities checken en exception gooien
+		this.simpleName = simpleName;
+		setSpecialName(specialName);
+		this.standardState = state;
+		this.standardTemperature = temperature;
+		this.isMixed = isMixed;
+	}
 
 
 	/**********************************************************
@@ -53,18 +60,6 @@ public class IngredientType {
 	}
 
 	/**
-	 * A setter for the mixed state of the ingredient type.
-	 *
-	 * @param 	isMixed
-	 * 			The mixed state to be set.
-	 * @post	The mixed state of the ingredient type is set to the given mixed state.
-	 * 			| new.isMixed() == isMixed
-	 */
-	private void setMixed(boolean isMixed) {
-		this.isMixed = isMixed;
-	}
-
-	/**
 	 * A list of all the allowed symbols in the name of any ingredient type, which
 	 * will not change during the execution of the program.
 	 */
@@ -73,7 +68,7 @@ public class IngredientType {
 	/**
 	 * A variable referencing the simple name of the ingredient type.
 	 */
-	private String simpleName = null;
+	private final String simpleName;
 
 	/**
 	 * A getter for the simple name of the ingredient type.
@@ -81,24 +76,6 @@ public class IngredientType {
 	@Basic
 	public String getSimpleName() {
 		return simpleName;
-	}
-
-	/**
-	 * A setter for the simple name of the ingredient type.
-	 *
-	 * @param 	simpleName
-	 * 			The simple name to be set.
-	 * @post	The simple name of the ingredient type is set to the given simple name.
-	 * 			| new.getSimpleName() == simpleName
-	 * @throws	IllegalNameException
-	 * 			The given simple name is not a valid name for an ingredient type.
-	 * 			| !canHaveAsName(simpleName)
-	 */
-	private void setSimpleName(String simpleName) throws IllegalNameException {
-		if (!canHaveAsName(simpleName)) {
-			throw new IllegalNameException(simpleName);
-		}
-		this.simpleName = simpleName;
 	}
 
 	/**
@@ -163,6 +140,9 @@ public class IngredientType {
 	 * @return	...
 	 */
 	private boolean canHaveAsNameWord(String word) {
+		if (word.equals("Heated") || word.equals("Cooled")) {
+			return false;
+		}
 		if (isMixed()) {
 			if (word.equals("mixed") || word.equals("with")) {
 				return true;
@@ -200,11 +180,63 @@ public class IngredientType {
 		return ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1;
 	}
 
-	@Override
-	public String toString() {
-		return "rpg.ingredient.IngredientType{" +
-				"simpleName='" + this.simpleName + "'" +
-				'}';
+
+
+	/**********************************************************
+	 * STATE
+	 **********************************************************/
+
+	/**
+	 * A variable referencing the standard state of the ingredient type.
+	 */
+	private final State standardState;
+
+	/**
+	 * A getter for the standard state of the ingredient type.
+	 */
+	@Basic
+	public State getStandardState() {
+		return standardState;
+	}
+
+	/**
+	 * Check whether the given state is a valid state for an ingredient type.
+	 *
+	 * @param 	state
+	 * 			The state to check.
+	 * @return	True if and only if the state is effective.
+	 * 			| result == (state != null)
+	 */
+	public static boolean isValidState(State state) {
+		return state != null;
+	}
+
+
+
+	/**********************************************************
+	 * TEMPERATURE
+	 **********************************************************/
+
+	/**
+	 * A variable referencing the standard temperature of the ingredient type.
+	 */
+
+	private final Temperature standardTemperature;
+
+	/**
+	 * A getter for the standard temperature of the ingredient type.
+	 */
+	@Basic
+	public long[] getStandardTemperature() {
+		return getStandardTemperatureObject().getTemperature();
+	}
+
+	/**
+	 * A getter for the standard temperature object of the ingredient type.
+	 */
+	@Model
+	private Temperature getStandardTemperatureObject() {
+		return standardTemperature;
 	}
 
 }
