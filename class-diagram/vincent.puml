@@ -231,30 +231,28 @@ class Transmogrifier extends Device {
 class Laboratory extends StorageLocation {
 ..attributes..
 - capacity : int
-'- ingredients : ArrayList<AlchemicIngredient>
 - devices : ArrayList<Device>
-'+ storeIngredient(IngredientContainer) : void
-..methods..
+..constructors..
 + Laboratory(int capacity, ArrayList<Device>, ArrayList<IngredientContainer>)
 + Laboratory(int capacity, ArrayList<Device>)
 + Laboratory(int capacity, ArrayList<IngredientContainer>)
 + Laboratory(int capacity)
-+ addDevice(Device device) : void
+..methods..
++ addDevice(Device) : void
 + removeDevice(Device) : void
 + getIngredient(String, int, Unit) : IngredientContainer
-+ takeAllIngredientsOfType(String name) : IngredientContainer
-+ takeAllIngredientsOfType(IngredientType) : IngredientContainer
-+ takeAllAlchemicIngredients(AlchemicIngredient) : IngredientContainer
++ getIngredient(String) : IngredientContainer
 + execute(Recipe, int) : void
-+ getDevices() : ArrayList<Device>
++ getDeviceAt(int) : Device
++ getIndexOfDevice(Device) : int
++ getNbOfDevices() : int
 + getCapacity() : int
 + getOverview() : String
 ..checkers..
 + isValidCapacity(int) : boolean
++ canHaveAsDevice(Device) : boolean
 + hasProperDevices() : boolean
 + canHaveAsDevice(Device) : boolean
-+ hasProperIngredients() : boolean
-'+ {abstract} execute(Recipe, int) : void
 ..class invariants..
 @invar isValidCapacity(getCapacity())
 @invar hasProperDevices()
