@@ -258,29 +258,63 @@ class Laboratory extends StorageLocation {
 @invar hasProperDevices()
 }
 '
-'Laboratory --> "0..*" AlchemicIngredient
-'Laboratory "1" <--> "0..4" Device
-'
-'class Recipe {
-'- operations : Operation[1..*]
-'- ingredients : AlchemicIngredient[1..*]
-'}
-'
-'enum Operation {
-'ADD,
-'HEAT,
-'COOL,
-'MIX
-'}
-'
-'class RecipeBook {
-'- recipes : ArrayList<Recipe>
-'+ addRecipe(Recipe) : void
-'+ removeRecipe(Recipe) : void
-'}
-'
-'Recipe --> "1..*" Operation : has
-'Recipe --> "1..*" AlchemicIngredient : has
-'RecipeBook --> "0..*" Recipe : has
+Laboratory "1" <--> "0..4" Device
+
+class Recipe {
+..properties..
+- operations : LinkedList<Operation>
+- ingredients : LinkedList<AlchemicIngredient>
+..constructors..
++ Recipe(LinkedList<Operation>, LinkedList<AlchemicIngredient>)
+..methods..
++ addOperation(Operation) : void
++ addIngredient(AlchemicIngredient) : void
++ getOperationAt(int) : Operation
++ getIndexOfOperation(Operation) : int
++ getNbOfOperation() : int
++ getIngredientAt(int) : AlchemicIngredient
++ getIndexOfIngredient(AlchemicIngredient) : int
++ getNbOfIngredients() : int
+..checkers..
++ canHaveAsOperation(Operation) : boolean
++ hasProperOperations() : boolean
++ canHaveAsIngredient(AlchemicIngredient) : boolean
++ hasProperIngredients() : boolean
+..class invariants..
+@invar hasProperOperations()
+@invar hasProperIngredients()
+}
+
+enum Operation {
+ADD,
+HEAT,
+COOL,
+MIX
+}
+
+class RecipeBook {
+..properties..
+- recipes : ArrayList<Recipe>
+..methods..
++ addRecipe(Recipe) : void
++ removeRecipe(Recipe) : void
++ getRecipeAt(int) : Recipe
++ getIndexOfRecipe(Recipe) : int
++ getNbOfRecipes() : int
+..checkers..
++ hasProperRecipes() : boolean
++ canHaveAsRecipe(Recipe) : boolean
+..class invariants..
+@invar hasProperRecipes()
+}
+
+note right of RecipeBook::removeRecipe
+    Er staat "de pagina wordt uit het boek gescheurd", wil dat
+    zeggen dat we intern het recept op null moeten zetten?
+end note
+
+Recipe::operations --> "1..*" Operation
+Recipe::ingredients --> "1..*" AlchemicIngredient
+RecipeBook::recipes --> "0..*" Recipe
 
 @enduml
