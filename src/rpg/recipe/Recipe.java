@@ -322,6 +322,7 @@ public class Recipe {
     /**
      * A method for getting the length of ingredients of a recipe
      */
+    @Basic
     public int getNbOfIngredients() {
         return ingredients.size();
     }
@@ -329,6 +330,7 @@ public class Recipe {
     /**
      * A method for getting the length of operations of a recipe
      */
+    @Basic
     public int getNbOfOperations() {
         return operations.size();
     }
