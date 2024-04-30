@@ -53,8 +53,8 @@ public class Temperature {
 	 *			| else setHotness(STANDARD_HOTNESS) && setColdness(STANDARD_COLDNESS)
 	 */
 	@Raw
-	public Temperature(long hotness, long coldness) {
-		if (isValidTemperature(hotness, coldness)) {
+	public Temperature(long coldness, long hotness) {
+		if (isValidTemperature(coldness, hotness)) {
 			// set to the provided temperature
 			setHotness(hotness);
 			setColdness(coldness);
@@ -241,13 +241,5 @@ public class Temperature {
 				(coldness >= 0 && coldness <= UPPERBOUND) &&
 				!(hotness != 0 && coldness != 0);
 	}
-
-	/*
-	public long difference(Temperature other) {
-		long currentTemp = -coldness + hotness;
-		long otherTemp = -other.getColdness() + other.getHotness();
-		return currentTemp - otherTemp;
-	}
-	 */
 
 }
