@@ -236,7 +236,7 @@ public class Temperature {
 	 * 			|			(coldness >= 0 && coldness <= UPPERBOUND) &&
 	 * 			|			!(hotness != 0 && coldness != 0)
 	 */
-	public boolean isValidTemperature(long coldness, long hotness) {
+	public static boolean isValidTemperature(long coldness, long hotness) {
 		return (hotness >= 0 && hotness <= UPPERBOUND) &&
 				(coldness >= 0 && coldness <= UPPERBOUND) &&
 				!(hotness != 0 && coldness != 0);

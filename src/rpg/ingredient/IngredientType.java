@@ -14,7 +14,7 @@ import rpg.*;
  * @invar 	The state of an ingredient type must always be valid.
  * 			| isValidState(getStandardState())
  * @invar	The standard temperature of an ingredient type must always be valid.
- * 			| Temperature.isValidStandardTemperature(getStandardTemperatureObject.getColness(), getStandardTemperatureObject.getHotness())
+ * 			| Temperature.isValidTemperature(getStandardTemperatureObject.getColdness(), getStandardTemperatureObject.getHotness())
  *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
@@ -26,16 +26,73 @@ public class IngredientType {
 	/**
 	 * A variable referencing the default ingredient type, water.
 	 */
-	public static final IngredientType DEFAULT = new IngredientType("water");
+	public static final IngredientType DEFAULT = new IngredientType("water", null, State.LIQUID, new Temperature(0, 20), false);
 
 	/**********************************************************
 	 * CONSTRUCTORS
 	 **********************************************************/
 
-	public IngredientType(String simpleName, String specialName, State state, Temperature temperature, boolean isMixed) {
-		// todo condities checken en exception gooien
+	/**
+	 * A constructor for creating a new ingredient type with given simple name,
+	 * special name, state, temperature and mixed state.
+	 *
+	 * @param 	simpleName
+	 * 			The simple name of the new ingredient type.
+	 * @param 	specialName
+	 * 			The special name of the new ingredient type.
+	 * @param 	state
+	 * 			The state of the new ingredient type.
+	 * @param 	temperature
+	 * 			The temperature of the new ingredient type.
+	 * @param 	isMixed
+	 * 			A boolean indicating whether the new ingredient type is mixed or not.
+	 *
+	 * @post	If the given simple name is a valid simple name, the simple name
+	 * 			is set to the provided simple name.
+	 * 			| if (canHaveAsName(simpleName))
+	 * 			| then new.getSimpleName() == simpleName
+	 * @effect	If the special name is effective, the special name of the new ingredient type
+	 * 			is set to the given special name if the given special name is a valid name for
+	 * 			an ingredient type.
+	 * 			| if (specialName != null)
+	 * 			| then setSpecialName(specialName)
+	 * @post	If the given state is valid, the state of the new ingredient type is set to the
+	 * 			given state.
+	 * 			| if (isValidState(state))
+	 * 			| then new.getStandardState() == state
+	 * @post	If the given temperature is valid, the temperature of the new ingredient type
+	 * 			is set to the given temperature.
+	 * 			| if (Temperature.isValidTemperature(temperature.getColdness(), temperature.getHotness()))
+	 * 			| then new.getStandardTemperature() == [temperature.getColdness(), temperature.getHotness()]
+	 * @post	The mixed state of the new ingredient type is set to the given mixed state.
+	 * 			| new.isMixed() == isMixed
+	 *
+	 * @throws	IllegalNameException
+	 * 			The given simple name is not a valid name for an ingredient type.
+	 * 			| !canHaveAsName(simpleName)
+	 * @throws	IllegalNameException
+	 * 			The given effective special name is not a valid name for an ingredient type.
+	 * 			| specialName != null && !canHaveAsName(specialName)
+	 * @throws	IllegalStateException
+	 * 			The given state is not a valid state for an ingredient type.
+	 * 			| !isValidState(state)
+	 */
+	@Raw
+	public IngredientType(String simpleName, String specialName, State state, Temperature temperature, boolean isMixed) throws IllegalNameException, IllegalStateException{
+		if (!canHaveAsName(simpleName)) {
+			throw new IllegalNameException(simpleName);
+		}
+		if (!isValidState(state)) {
+			throw new IllegalStateException("Invalid state! State must be effective.");
+		}
+		if (!Temperature.isValidTemperature(temperature.getColdness(), temperature.getHotness())) {
+			// todo verander naar andere exception
+			throw new IllegalArgumentException("Invalid temperature!");
+		}
+		if (specialName != null) {
+			setSpecialName(specialName);
+		}
 		this.simpleName = simpleName;
-		setSpecialName(specialName);
 		this.standardState = state;
 		this.standardTemperature = temperature;
 		this.isMixed = isMixed;
@@ -102,7 +159,8 @@ public class IngredientType {
 	 * 			The given special name is not a valid name for an ingredient type.
 	 * 			| !canHaveAsName(specialName)
 	 */
-	private void setSpecialName(String specialName) {
+	@Model
+	private void setSpecialName(String specialName) throws IllegalNameException {
 		if (!canHaveAsName(specialName)) {
 			throw new IllegalNameException(specialName);
 		}
@@ -116,6 +174,7 @@ public class IngredientType {
 	 * 			The name to check.
 	 * @return	...
 	 */
+	@Raw
 	public boolean canHaveAsName(String name) {
 		if (name == null || name.isEmpty()) {
 			return false;
@@ -139,6 +198,7 @@ public class IngredientType {
 	 * 			The word in the name to check.
 	 * @return	...
 	 */
+	@Raw
 	private boolean canHaveAsNameWord(String word) {
 		if (word.equals("Heated") || word.equals("Cooled")) {
 			return false;
@@ -176,6 +236,7 @@ public class IngredientType {
 	 * @return	True if the symbol is a legal symbol for a name; false otherwise.
 	 * 			| result == ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1)
 	 */
+	@Raw
 	private static boolean isLegalSymbol(char symbol) {
 		return ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1;
 	}
