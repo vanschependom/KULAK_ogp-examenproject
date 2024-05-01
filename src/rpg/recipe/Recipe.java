@@ -34,7 +34,7 @@ public class Recipe {
      *          | for each ingredient in ingredients:
      *          | !ingredient.isTerminated()
      */
-    private ArrayList<AlchemicIngredient> ingredients = new ArrayList<>();
+    private ArrayList<AlchemicIngredient> ingredients = new ArrayList<AlchemicIngredient>();
 
     /**
      * A variable for keeping track of all instructions of the recipe.
@@ -48,7 +48,7 @@ public class Recipe {
      *          | for each operation in operations:
      *          | !operation.isTerminated()
      */
-    private ArrayList<Operation> operations = new ArrayList<>();
+    private ArrayList<Operation> operations = new ArrayList<Operation>();
 
     /**********************************************************
      * Constructors
@@ -73,6 +73,17 @@ public class Recipe {
             setIngredients(ingredients);
             setOperations(operations);
         }
+    }
+
+    /**
+     * A constructor for the Recipe class
+     *
+     * @effect  A recipe with no ingredients and no operations is created
+     *          | this(new ArrayList<AlchemicIngredient>(), new ArrayList<Operation>())
+     */
+    @Raw
+    public Recipe() {
+        this(new ArrayList<AlchemicIngredient>(), new ArrayList<Operation>());
     }
 
     /**********************************************************
@@ -133,7 +144,7 @@ public class Recipe {
      *          | TODO
      * @return  True if the amount of operations in operations which are equal to the add operation
      *          is equal to the size of ingredients
-     *          | for each operation in 1..ingredients.size():
+     *          | for each operation in getOperations():
      *          |    if operation == Operation.ADD
      *          |    amountOfAdds++;
      *          | result == (ingredients.size() == amountOfAdds)
@@ -224,8 +235,8 @@ public class Recipe {
      * @post    The number of ingredients of this recipe is
      *          incremented with 1.
      *          | new.getNbOfIngredients() == getNbOfIngredients() + 1
-     * @post    The given ingredient is inserted at the given index.
-     *          | new.getIngredientAt(index) == ingredient
+     * @post    The given ingredient is inserted at the end of the list.
+     *          | new.getIngredientAt(getNbOfIngredients()-1) == ingredient
      */
     @Model @Raw
     private void addIngredient(AlchemicIngredient ingredient) {
@@ -241,8 +252,8 @@ public class Recipe {
      * @post    The number of operations of this recipe is
      *          incremented with 1.
      *          | new.getNbOfOperations() == getNbOfOperations() + 1
-     * @post    The given operation is inserted at the given index.
-     *          | new.getOperationAt(index) == operation
+     * @post    The given operation is inserted at the end of the list.
+     *          | new.getOperationAt(getNbOfOperations()-1) == operation
      */
     @Model @Raw
     private void addOperation(Operation operation) {
@@ -335,5 +346,20 @@ public class Recipe {
         return operations.size();
     }
 
+    /**********************************************************
+     * Copy
+     **********************************************************/
+
+    /**
+     * A method for cloning a recipe
+     *
+     * @return  A copy of the original recipe
+     *          | result ==
+     *          |   new Recipe(getIngredients(), getOperations())
+     */
+    @Model
+    protected Recipe clone() {
+        return new Recipe(getIngredients(), getOperations());
+    }
 
 }
