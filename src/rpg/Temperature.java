@@ -193,6 +193,8 @@ public class Temperature {
 	 * 			is negative, the hotness is set to zero and the coldness is set to the difference.
 	 * 			| if (0 < amount && getHotness() != 0 && getHotness() - amount < 0)
 	 * 			| then new.getHotness() == 0 && new.getColdness() == -getHotness() + amount
+	 *
+	 * @note 	Because of the class invariants at least one, coldness or hotness, is always equal to zero.
 	 */
 	protected void cool(long amount) {
 		if (0 < amount) {

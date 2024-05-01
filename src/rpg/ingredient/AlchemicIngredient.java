@@ -11,5 +11,7 @@ package rpg.ingredient;
 public class AlchemicIngredient {
 
 
-
+    public boolean isTerminated() {
+        return false;   //TODO
+    }
 }
