@@ -6,8 +6,11 @@ import be.kuleuven.cs.som.annotate.*;
  *
  * @invar	The illegal name must be effective
  * 			| isValidName(getName())
- * @author 	Tommy Messelis
- * @version	6.1
+ *
+ * @author	Vincent Van Schependom
+ * @author 	Arne Claerhout
+ * @author	Flor De Meulemeester
+ * @version	1.0
  */
 public class IllegalNameException extends RuntimeException {
 

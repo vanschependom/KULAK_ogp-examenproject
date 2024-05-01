@@ -1,8 +1,6 @@
 package rpg.recipe;
 
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Model;
-import be.kuleuven.cs.som.annotate.Raw;
+import be.kuleuven.cs.som.annotate.*;
 import rpg.ingredient.AlchemicIngredient;
 
 import java.util.ArrayList;
@@ -80,7 +78,7 @@ public class Recipe {
      **********************************************************/
 
     /**
-     * A variable for keeping track of whether or not a recipe is terminated.
+     * A variable for keeping track of whether a recipe is terminated or not.
      */
     private boolean isTerminated = false;
 
@@ -107,7 +105,7 @@ public class Recipe {
      *
      * @post    The recipe is terminated if it can be terminated.
      *          | if canBeTerminated()
-     *          | then new.isTerminated()
+     *          | then new.isTerminated() == true
      */
     public void terminate() {
         if (canBeTerminated()) {isTerminated = true;}
