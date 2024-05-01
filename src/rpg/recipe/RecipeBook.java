@@ -1,7 +1,6 @@
 package rpg.recipe;
 
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Model;
+import be.kuleuven.cs.som.annotate.*;
 
 import java.util.ArrayList;
 

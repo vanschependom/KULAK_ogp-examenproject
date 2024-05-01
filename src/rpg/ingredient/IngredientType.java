@@ -26,6 +26,7 @@ public class IngredientType {
 	/**
 	 * A variable referencing the default ingredient type, water.
 	 */
+	// Dit doet ambetant bij de testen
 	public static final IngredientType DEFAULT = new IngredientType("water", null, State.LIQUID, new Temperature(0, 20), false);
 
 	/**********************************************************
