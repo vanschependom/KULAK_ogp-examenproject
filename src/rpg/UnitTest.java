@@ -11,8 +11,9 @@ public class UnitTest {
 		assertFalse(Unit.PINCH.conversionAllowed(Unit.DROP));
 		assertTrue(Unit.PINCH.conversionAllowed(Unit.SPOON));
 		// from liquid to powder
-		assertFalse(Unit.SPOON.conversionAllowed(Unit.PINCH)); // van spoon kan je toch naar alles, moet dit niet assertTrue zijn
-		assertTrue(Unit.BARREL.conversionAllowed(Unit.SACK)); // moet deze niet false zijn van enkel liquid naar enkel powder
+		assertFalse(Unit.BARREL.conversionAllowed(Unit.SACK));
+		// spoon kan naar alles
+		assertTrue(Unit.SPOON.conversionAllowed(Unit.PINCH));
 	}
 
 	@Test

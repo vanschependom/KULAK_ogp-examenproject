@@ -8,9 +8,9 @@ import rpg.*;
  * A class representing an alchemic ingredient type.
  *
  * @invar	The simple name of an ingredient type must always be valid.
- * 			| isValidName(getSimpleName())
+ * 			| canHaveAsName(getSimpleName())
  * @invar	The special name of an ingredient type must always be valid.
- * 			| getSpecialName() == null || isValidName(getSpecialName())
+ * 			| getSpecialName() == null || canHaveAsName(getSpecialName())
  * @invar 	The state of an ingredient type must always be valid.
  * 			| isValidState(getStandardState())
  * @invar	The standard temperature of an ingredient type must always be valid.
@@ -26,7 +26,6 @@ public class IngredientType {
 	/**
 	 * A variable referencing the default ingredient type, water.
 	 */
-	// Dit doet ambetant bij de testen
 	public static final IngredientType DEFAULT = new IngredientType("Water", null, State.LIQUID, new Temperature(0, 20), false);
 
 	/**********************************************************
@@ -79,7 +78,7 @@ public class IngredientType {
 	 * 			| !isValidState(state)
 	 */
 	@Raw
-	public IngredientType(String simpleName, String specialName, State state, Temperature temperature, boolean isMixed) throws IllegalNameException, IllegalStateException{
+	public IngredientType(String simpleName, String specialName, State state, Temperature temperature, boolean isMixed) throws IllegalNameException, IllegalStateException {
 		if (!canHaveAsName(simpleName)) {
 			throw new IllegalNameException(simpleName);
 		}
@@ -87,15 +86,17 @@ public class IngredientType {
 			throw new IllegalStateException("Invalid state! State must be effective.");
 		}
 		if (!Temperature.isValidTemperature(temperature.getColdness(), temperature.getHotness())) {
-			// todo verander naar andere exception
-			throw new IllegalArgumentException("Invalid temperature!");
+			this.standardTemperature = new Temperature();
+			// temperatuur wordt totaal geimplementeerd dus zet op standaard waarden (indien invalid)
+			// we zullen hier zelfs nooit raken want in constructor van temperatuur gebeurt dit ook (indien invalid)
+		} else {
+			this.standardTemperature = temperature;
 		}
 		if (specialName != null) {
 			setSpecialName(specialName);
 		}
 		this.simpleName = simpleName;
 		this.standardState = state;
-		this.standardTemperature = temperature;
 		this.isMixed = isMixed;
 	}
 
@@ -173,7 +174,19 @@ public class IngredientType {
 	 *
 	 * @param 	name
 	 * 			The name to check.
-	 * @return	...
+	 * @return	If the name is a null pointer or the length of the name is zero then return false
+	 * 			| if (name == null || name.isEmpty())
+	 * 			| result ==  false
+	 * @return	If there is an invalid word in the name then return false
+	 * 			| for every word in the name
+	 * 			| 	if (!canHaveAsNameWord(word))
+	 * 			| 		result == false
+	 * @return 	If there is only one word in the name and that word is shorter than 3 characters
+	 * 			then return false
+	 * 			| if (words.length == 1 && words[0].length() < 3)
+	 * 			| result == false
+	 * @return 	If none of the cases above apply then return true
+	 * 			| result == true
 	 */
 	@Raw
 	public boolean canHaveAsName(String name) {
@@ -197,9 +210,32 @@ public class IngredientType {
 	 *
 	 * @param 	word
 	 * 			The word in the name to check.
-	 * @return	TODO
+	 * @return	If the word is 'Heated' or 'Cooled' or the word is shorter than
+	 * 			2 characters then return false
+	 * 			| if (word.equals("Heated") || word.equals("Cooled") || word.length() < 2)
+	 * 			| then result == false
+	 * @return	If the ingredient type is mixed and the word is 'mixed' or 'with'
+	 * 			then return true
+	 * 			| if (isMixed() && 	word.equals("mixed") || word.equals("with"))
+	 * 			| then result == true
+	 * @return	If the ingredient type isn't mixed and the word is 'mixed' or 'with' while
+	 * 			ignoring higher case then return false
+	 * 			| if (!isMixed() && word.equalsIgnoreCase("mixed") || word.equalsIgnoreCase("with"))
+	 * 			| then result == false
+	 * @return 	If the first letter of the word is illegal or is lowercase then return false
+	 * 			| if (!Character.isUpperCase(word.charAt(0)) &&
+	 * 			|	!isLegalSymbol(word.charAt(0)))
+	 * 			| result == false
+	 * @return	If there is a letter except for the first letter that is also uppercase	or illegal
+	 * 			then return false
+	 * 			| for every letter at index i (starting at index 1) of word
+	 * 			| if (!Character.isLowerCase(word.charAt(i)) &&
+	 * 			|  		!isLegalSymbol(word.charAt(i)))
+	 * 			| result == false
+	 * @return 	If none of the cases above apply then return true
+	 * 			| result == true
 	 */
-	@Raw
+	@Model @Raw
 	private boolean canHaveAsNameWord(String word) {
 		if (word.equals("Heated") || word.equals("Cooled")) {
 			return false;
@@ -236,9 +272,9 @@ public class IngredientType {
 	 * @param 	symbol
 	 * 			The symbol to check
 	 * @return	True if the symbol is a legal symbol for a name; false otherwise.
-	 * 			| result =(ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1)
+	 * 			| result == (ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1)
 	 */
-	@Raw
+	@Model @Raw
 	private static boolean isLegalSymbol(char symbol) {
 		return ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1;
 	}

@@ -67,6 +67,18 @@ public class Temperature {
 	}
 
 	/**
+	 * A basic constructor for creating a new Temperature object without
+	 * given a hotness and a coldness.
+	 *
+	 * @effect	The hotness and coldness are set to the standard values.
+	 *			| setHotness(STANDARD_HOTNESS) && setColdness(STANDARD_COLDNESS)
+	 */
+	public Temperature(){
+		setHotness(STANDARD_HOTNESS);
+		setColdness(STANDARD_COLDNESS);
+	}
+
+	/**
 	 * A variable referencing the hotness of the temperature.
 	 */
 	private long hotness;

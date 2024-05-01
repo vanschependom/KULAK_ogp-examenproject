@@ -35,7 +35,12 @@ public class IngredientTypeTest {
 	@BeforeEach
 	public void setUpForEach(){
 		ingrTypeEverything = new IngredientType("Simple Name", "Special Name", State.LIQUID, standardTemperature, false);
+		ingrTypeMixed = new IngredientType("Simple Name", "Special Name", State.LIQUID, standardTemperature, true);
 	}
+
+	/**
+	 * CONSTRUCTOR
+	 */
 
 	@Test
 	public void testConstructor_mostExtended_legal() {
@@ -62,6 +67,10 @@ public class IngredientTypeTest {
 
 	}
 
+	/**
+	 * NAME
+	 */
+
 	@Test
 	public void name_LegalCase1(){
 		String name = "Cola";
@@ -76,7 +85,7 @@ public class IngredientTypeTest {
 
 	@Test
 	public void name_LegalCase3(){
-		String name = "Rat's Eye Fluid";
+		String name = "Rat's Eye Fluid";	// dit special teken werkt nog niet ...
 		assertTrue(ingrTypeEverything.canHaveAsName(name));
 	}
 
@@ -89,6 +98,12 @@ public class IngredientTypeTest {
 	@Test
 	public void name_LegalCase5(){
 		String name = "Water Qi";
+		assertTrue(ingrTypeEverything.canHaveAsName(name));
+	}
+
+	@Test
+	public void name_LegalCase6(){
+		String name = "Qi Water";
 		assertTrue(ingrTypeEverything.canHaveAsName(name));
 	}
 
@@ -122,4 +137,15 @@ public class IngredientTypeTest {
 		assertFalse(ingrTypeEverything.canHaveAsName(name));
 	}
 
+	@Test
+	public void name_IllegalCase6(){
+		String name = "5%6*%87";
+		assertFalse(ingrTypeEverything.canHaveAsName(name));
+	}
+
+	@Test
+	public void name_mixed_LegalCase(){
+		String name = "Beer mixed with Coke";
+		assertTrue(ingrTypeMixed.canHaveAsName(name));
+	}
 }
