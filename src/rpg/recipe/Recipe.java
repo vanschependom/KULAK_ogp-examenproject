@@ -25,10 +25,10 @@ public class Recipe {
      *
      * @invar   ingredients references an effective list
      *          | ingredients != null
-     * @invar   Each element in the list references an effective item.
+     * @invar   Each element in the list references an effective ingredient.
      *          | for each ingredient in ingredients:
      *          |   ingredient != null
-     * @invar   Each element in the list references a non-terminated item.
+     * @invar   Each element in the list references a non-terminated ingredient.
      *          | for each ingredient in ingredients:
      *          | !ingredient.isTerminated()
      */
@@ -39,12 +39,9 @@ public class Recipe {
      *
      * @invar   operations references an effective list
      *          | operations != null
-     * @invar   Each element in the list references an effective item.
+     * @invar   Each element in the list references an effective operation.
      *          | for each operation in operations:
      *          |   operation != null
-     * @invar   Each element in the list references a non-terminated item.
-     *          | for each operation in operations:
-     *          | !operation.isTerminated()
      */
     private ArrayList<Operation> operations = new ArrayList<Operation>();
 
