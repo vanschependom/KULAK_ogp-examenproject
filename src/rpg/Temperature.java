@@ -1,5 +1,6 @@
 package rpg;
 import be.kuleuven.cs.som.annotate.*;
+import static java.lang.Math.min;
 
 /**
  * A class representing the temperature.
@@ -145,6 +146,11 @@ public class Temperature {
 	 * 			is set to the difference.
 	 * 			| if (0 < amount && getColdness() != 0 && getColdness() - amount < 0)
 	 * 			| then new.getColdness() == 0 && new.getHotness() == -getColdness() + amount
+	 * @post	If the amount is positive and the current coldness is not zero and the current coldness,
+	 * 			decreased with the given amount is negative and the difference is bigger than the upperbound
+	 * 			then the coldness is set to zero and the hotness to the upperbound.
+	 * 			| if (0 < amount && getColdness() != 0 && getColdness() - amount < 0 && getColdness() - amount > UPPERBOUND)
+	 * 	 		| then new.getColdness() == 0 && new.getHotness() == UPPERBOUND
 	 *
 	 * @note 	Because of the class invariants at least one, coldness or hotness, is always equal to zero.
 	 */
@@ -156,7 +162,7 @@ public class Temperature {
 					setColdness(difference);
 				} else {
 					setColdness(0);
-					setHotness(-difference);
+					setHotness(min(-difference,UPPERBOUND));
 				}
 			} else {
 				if (amount < UPPERBOUND - getHotness()) {
@@ -193,6 +199,11 @@ public class Temperature {
 	 * 			is negative, the hotness is set to zero and the coldness is set to the difference.
 	 * 			| if (0 < amount && getHotness() != 0 && getHotness() - amount < 0)
 	 * 			| then new.getHotness() == 0 && new.getColdness() == -getHotness() + amount
+	 * @post	If the amount is positive and the current hotness is not zero and the current hotness,
+	 * 			decreased with the given amount is negative and the difference is bigger then the upperbound
+	 * 			then the hotness is set to zero and the coldness is set to the upperbound.
+	 * 			| if (0 < amount && getHotness() != 0 && getHotness() - amount < 0 && getHotness() - amount > 10000)
+	 * 	 		| then new.getHotness() == 0 && new.getColdness() == UPPERBOUND
 	 *
 	 * @note 	Because of the class invariants at least one, coldness or hotness, is always equal to zero.
 	 */
@@ -204,7 +215,7 @@ public class Temperature {
 					setHotness(difference);
 				} else {
 					setHotness(0);
-					setColdness(-difference);
+					setColdness(min(-difference,UPPERBOUND));
 				}
 			} else {
 				if (amount < UPPERBOUND - getColdness()) {

@@ -171,6 +171,70 @@ public class TemperatureTest {
 	}
 
 	@Test
+	public void heatEdgeCase1() {
+		Temperature t = new Temperature(1,0);
+		t.heat(10001);
+		assertEquals(0,t.getColdness());
+		assertEquals(10000,t.getHotness());
+	}
+
+	@Test
+	public void heatEdgeCase2() {
+		Temperature t = new Temperature(9999,0);
+		t.heat(10000);
+		assertEquals(0,t.getColdness());
+		assertEquals(1,t.getHotness());
+	}
+
+	@Test
+	public void heatEdgeCase3() {
+		Temperature t = new Temperature(9999,0);
+		t.heat(19999);
+		assertEquals(0,t.getColdness());
+		assertEquals(10000,t.getHotness());
+	}
+
+	@Test
+	public void heatEdgeCase4() {
+		Temperature t = new Temperature(9999,0);
+		t.heat(1000000000);
+		assertEquals(0,t.getColdness());
+		assertEquals(10000,t.getHotness());
+	}
+
+	@Test
+	public void coolEdgeCase1() {
+		Temperature t = new Temperature(0,1);
+		t.cool(10001);
+		assertEquals(10000,t.getColdness());
+		assertEquals(0,t.getHotness());
+	}
+
+	@Test
+	public void coolEdgeCase2() {
+		Temperature t = new Temperature(0,9999);
+		t.cool(10000);
+		assertEquals(1,t.getColdness());
+		assertEquals(0,t.getHotness());
+	}
+
+	@Test
+	public void coolEdgeCase3() {
+		Temperature t = new Temperature(0,9999);
+		t.cool(19999);
+		assertEquals(10000,t.getColdness());
+		assertEquals(0,t.getHotness());
+	}
+
+	@Test
+	public void coolEdgeCase4() {
+		Temperature t = new Temperature(0,9999);
+		t.cool(500000000);
+		assertEquals(10000,t.getColdness());
+		assertEquals(0,t.getHotness());
+	}
+
+	@Test
 	public void illegalCool() {
 		Temperature t1 = new Temperature(0, 0);
 		Temperature t2 = new Temperature(0, 20);
