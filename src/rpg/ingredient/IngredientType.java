@@ -179,7 +179,7 @@ public class IngredientType {
 		if (name == null || name.isEmpty()) {
 			return false;
 		}
-		String words[] = name.split(" ");
+		String[] words = name.split(" ");
 		for (String word : words) {
 			if (!canHaveAsNameWord(word)) {
 				return false;
@@ -196,7 +196,7 @@ public class IngredientType {
 	 *
 	 * @param 	word
 	 * 			The word in the name to check.
-	 * @return	...
+	 * @return	TODO
 	 */
 	@Raw
 	private boolean canHaveAsNameWord(String word) {
@@ -275,13 +275,12 @@ public class IngredientType {
 
 
 	/**********************************************************
-	 * TEMPERATURE
+	 * TEMPERATURE - TOTAL
 	 **********************************************************/
 
 	/**
 	 * A variable referencing the standard temperature of the ingredient type.
 	 */
-
 	private final Temperature standardTemperature;
 
 	/**
