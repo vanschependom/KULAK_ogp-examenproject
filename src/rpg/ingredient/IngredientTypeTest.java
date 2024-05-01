@@ -40,7 +40,6 @@ public class IngredientTypeTest {
 	@Test
 	public void testConstructor_mostExtended_legal() {
 
-		ingrTypeEverything = new IngredientType("Simple Name", "Special Name", State.LIQUID, standardTemperature, false);
 		ingrTypeNullSpecialName = new IngredientType("Simple Name", null, State.LIQUID, standardTemperature, false);
 		ingrTypeDiffTemp = new IngredientType("Simple Name", "Special Name", State.LIQUID, coldTemperature, false);
 		ingrTypeMixed = new IngredientType("Simple Name", "Special Name", State.LIQUID, standardTemperature, true);

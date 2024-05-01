@@ -27,7 +27,7 @@ public class IngredientType {
 	 * A variable referencing the default ingredient type, water.
 	 */
 	// Dit doet ambetant bij de testen
-	public static final IngredientType DEFAULT = new IngredientType("water", null, State.LIQUID, new Temperature(0, 20), false);
+	public static final IngredientType DEFAULT = new IngredientType("Water", null, State.LIQUID, new Temperature(0, 20), false);
 
 	/**********************************************************
 	 * CONSTRUCTORS
@@ -223,7 +223,8 @@ public class IngredientType {
 		}
 		// check other characters
 		for (int i = 1; i < word.length(); i++) {
-			if (!Character.isLowerCase(word.charAt(i))) {
+			if (!Character.isLowerCase(word.charAt(i)) &&
+					!isLegalSymbol(word.charAt(i))) {
 				return false;
 			}
 		}
@@ -235,7 +236,7 @@ public class IngredientType {
 	 * @param 	symbol
 	 * 			The symbol to check
 	 * @return	True if the symbol is a legal symbol for a name; false otherwise.
-	 * 			| result == ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1)
+	 * 			| result =(ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1)
 	 */
 	@Raw
 	private static boolean isLegalSymbol(char symbol) {
