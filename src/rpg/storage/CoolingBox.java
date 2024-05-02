@@ -1,4 +1,4 @@
-package rpg;
+package rpg.storage;
 
 public class CoolingBox extends TemperatureDevice{
 }

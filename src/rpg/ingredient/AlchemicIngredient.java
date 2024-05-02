@@ -350,5 +350,8 @@ public class AlchemicIngredient {
     }
 
 
+    // TODO methode die checkt of ingredients gelijk zijn
+    //  alleen op vlak van type, state en temperature
+
 
 }

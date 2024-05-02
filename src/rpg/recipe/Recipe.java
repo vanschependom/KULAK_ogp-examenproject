@@ -25,10 +25,10 @@ public class Recipe {
      *
      * @invar   ingredients references an effective list
      *          | ingredients != null
-     * @invar   Each element in the list references an effective ingredient.
+     * @invar   Each ingredient in the list references an effective ingredient.
      *          | for each ingredient in ingredients:
      *          |   ingredient != null
-     * @invar   Each element in the list references a non-terminated ingredient.
+     * @invar   Each ingredient in the list references a non-terminated ingredient.
      *          | for each ingredient in ingredients:
      *          | !ingredient.isTerminated()
      */
@@ -39,7 +39,7 @@ public class Recipe {
      *
      * @invar   operations references an effective list
      *          | operations != null
-     * @invar   Each element in the list references an effective operation.
+     * @invar   Each operation in the list references an effective operation.
      *          | for each operation in operations:
      *          |   operation != null
      */
@@ -137,12 +137,13 @@ public class Recipe {
      *          | then result == false
      * @return  False if one of the instructions is not valid.
      *          | TODO
-     * @return  True if the amount of operations in operations which are equal to the add operation
+     * @return  True if the amount of operations in operations
+     *          which are equal to the add operation,
      *          is equal to the size of ingredients
      *          | for each operation in getOperations():
      *          |    if operation == Operation.ADD
-     *          |    amountOfAdds++;
-     *          | result == (ingredients.size() == amountOfAdds)
+     *          |    then amountOfAdds++;
+     *          | result == (ingredients.size() == amountOfAdds) TODO dit klopt niet denk ik
      */
     public boolean isValidInstructionSet(ArrayList<AlchemicIngredient> ingredients, ArrayList<Operation> operations) {
         if (ingredients == null || operations == null) {return false;}
