@@ -42,7 +42,7 @@ public class IngredientType {
 	 * 			The special name of the new ingredient type.
 	 * @param 	standardState
 	 * 			The state of the new ingredient type.
-	 * @param 	temperature
+	 * @param 	standardTemperature
 	 * 			The temperature of the new ingredient type.
 	 * @param 	isMixed
 	 * 			A boolean indicating whether the new ingredient type is mixed or not.
@@ -83,24 +83,48 @@ public class IngredientType {
 	 * 			| !isValidState(state)
 	 */
 	@Raw
-	public IngredientType(String simpleName, String specialName, State standardState, Temperature temperature, boolean isMixed) throws IllegalNameException, IllegalStateException {
+	public IngredientType(String simpleName, String specialName, State standardState, Temperature standardTemperature, boolean isMixed)
+			throws IllegalNameException, IllegalStateException {
+		this.isMixed = isMixed;
 		if (!canHaveAsName(simpleName)) {
 			throw new IllegalNameException(simpleName);
 		}
 		if (!isValidState(standardState)) {
 			throw new IllegalStateException("Invalid state! State must be effective.");
 		}
-		if (!isValidStandardTemperature(temperature)) {
+		if (!isValidStandardTemperature(standardTemperature)) {
 			this.standardTemperature = new Temperature();
 		} else {
-			this.standardTemperature = temperature;
+			this.standardTemperature = standardTemperature;
 		}
 		if (specialName != null) {
 			setSpecialName(specialName);
 		}
 		this.simpleName = simpleName;
 		this.standardState = standardState;
-		this.isMixed = isMixed;
+	}
+
+	/**
+	 * A constructor for creating a new ingredient type with given simple name,
+	 * state, temperature and mixed state.
+	 *
+	 * @param 	simpleName
+	 * 			The simple name of the new ingredient type.
+	 * @param 	standardState
+	 * 			The state of the new ingredient type.
+	 * @param 	standardTemperature
+	 * 			The temperature of the new ingredient type.
+	 * @param 	isMixed
+	 * 			A boolean indicating whether the new ingredient type is mixed or not.
+	 *
+	 * @effect	An ingredient type with the given parameters
+	 * 			and a special name of null is created
+	 * 			| this(simpleName, null, standardState, temperature, isMixed)
+	 */
+	@Raw
+	public IngredientType(String simpleName, State standardState, Temperature standardTemperature, boolean isMixed)
+			throws IllegalNameException, IllegalStateException {
+		this(simpleName, null, standardState, standardTemperature, isMixed);
 	}
 
 
