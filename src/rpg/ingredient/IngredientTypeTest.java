@@ -144,6 +144,12 @@ public class IngredientTypeTest {
 	}
 
 	@Test
+	public void name_IllegalCase7(){
+		String name = "mixed with Cola Coke with Beer mixed mixed";
+		assertFalse(ingrTypeMixed.canHaveAsName(name));
+	}
+
+	@Test
 	public void name_mixed_LegalCase(){
 		String name = "Beer mixed with Coke";
 		assertTrue(ingrTypeMixed.canHaveAsName(name));
