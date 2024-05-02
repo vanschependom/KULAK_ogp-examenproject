@@ -14,7 +14,7 @@ import rpg.*;
  * @invar 	The state of an ingredient type must always be valid.
  * 			| isValidState(getStandardState())
  * @invar	The standard temperature of an ingredient type must always be valid.
- * 			| Temperature.isValidTemperature(getStandardTemperatureObject.getColdness(), getStandardTemperatureObject.getHotness())
+ * 			| isValidTemperature(getStandardTemperatureObject())
  *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
@@ -60,10 +60,15 @@ public class IngredientType {
 	 * 			given state.
 	 * 			| if (isValidState(state))
 	 * 			| then new.getStandardState() == state
-	 * @post	If the given temperature is valid, the temperature of the new ingredient type
-	 * 			is set to the given temperature.
-	 * 			| if (Temperature.isValidTemperature(temperature.getColdness(), temperature.getHotness()))
-	 * 			| then new.getStandardTemperature() == [temperature.getColdness(), temperature.getHotness()]
+	 * @post    If the given temperature is not a valid standard temperature, the temperature is set to the
+	 * 			standard temperature.
+	 *          | if (!isValidStandardTemperature(temperature))
+	 *          | then new.getStandardTemperature()[0] == 0
+	 *          |      && new.getStandardTemperature()[1] == 20
+	 * @post    If the given temperature is a valid standard temperature, the temperature
+	 * 			standard temperature is set to  the given temperature.
+	 *          | if (isValidStandardTemperature(temperature))
+	 *          | then new.getStandardTemperatureObject() == temperature
 	 * @post	The mixed state of the new ingredient type is set to the given mixed state.
 	 * 			| new.isMixed() == isMixed
 	 *
@@ -85,11 +90,8 @@ public class IngredientType {
 		if (!isValidState(state)) {
 			throw new IllegalStateException("Invalid state! State must be effective.");
 		}
-		if (!Temperature.isValidTemperature(temperature.getColdness(), temperature.getHotness())) {
+		if (!isValidStandardTemperature(temperature)) {
 			this.standardTemperature = new Temperature();
-			// temperatuur wordt totaal geimplementeerd dus zet op standaard waarden (indien invalid)
-			// we zullen hier zelfs nooit raken want in constructor van temperatuur gebeurt dit ook (indien invalid)
-			// TODO: navragen of de klasse-invariant dan wel nodig is, aangezien de klasse-invariant van temperatuur dit ook al doet
 		} else {
 			this.standardTemperature = temperature;
 		}
@@ -338,6 +340,16 @@ public class IngredientType {
 	@Model
 	private Temperature getStandardTemperatureObject() {
 		return standardTemperature;
+	}
+
+	/**
+	 * A method for checking whether the given temperature is a valid standard temperature.
+	 *
+	 * @return 	True if and only if the temperature is effective.
+	 * 			| result == (temperature != null)
+	 */
+	public static boolean isStandardValidTemperature(Temperature temperature) {
+		return temperature != null;
 	}
 
 

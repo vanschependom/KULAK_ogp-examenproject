@@ -12,7 +12,7 @@ import rpg.*;
  * @invar   The unit of an ingredient must always be valid.
  *          | isValidUnit(getUnit())
  * @invar	The temperature of an ingredient must always be valid.
- * 			| Temperature.isValidTemperature(getTemperatureObject.getColdness(), getTemperatureObject.getHotness())
+ * 			| isValidTemperature(getTemperatureObject())
  * @invar   The type of an ingredient must always be valid.
  *          | isValidType(getType())
  * @invar   The state of an ingredient must always be valid.
@@ -52,11 +52,22 @@ public class AlchemicIngredient {
      *          | new.getAmount() == amount
      * @post    The unit of this new alchemic ingredient is equal to the given unit.
      *          | new.getUnit() == unit
-     * @effect  If the given temperature is not a valid temperature, the temperature is set to the standard temperature of the ingredient type.
-     *          | ...
+     * @post    If the given temperature is not a valid temperature, the temperature is set to the standard temperature of the ingredient type.
+     *          | if (!isValidTemperature(temperature))
+     *          | then new.getTemperature()[0] == 0
+     *          |      && new.getTemperature()[1] == 20
+     * @post    If the given temperature is a valid temperature, the temperature is set to
+     *          the given temperature.
+     *          | if (isValidTemperature(temperature))
+     *          | then new.getTemperatureObject() == temperature
      */
     public AlchemicIngredient(double amount, Unit unit, Temperature temperature, IngredientType type, State state) {
-        // ...
+        if (!isValidTemperature(temperature)) {
+            // default temperature
+            this.temperature = new Temperature();
+        } else {
+            this.temperature = temperature;
+        }
         this.amount = amount;
         this.unit = unit;
     }
@@ -127,6 +138,16 @@ public class AlchemicIngredient {
     @Model
     private Temperature getTemperatureObject() {
         return temperature;
+    }
+
+    /**
+     * A method for checking whether the given temperature is a valid temperature for an ingredient.
+     *
+     * @return 	True if and only if the temperature is effective.
+     * 			| result == (temperature != null)
+     */
+    public boolean isValidTemperature(Temperature temperature) {
+        return temperature != null;
     }
 
     /**
