@@ -150,8 +150,20 @@ public class IngredientTypeTest {
 	}
 
 	@Test
-	public void name_mixed_LegalCase(){
+	public void name_mixed_LegalCase1(){
 		String name = "Beer mixed with Coke";
+		assertTrue(ingrTypeMixed.canHaveAsName(name));
+	}
+
+	@Test
+	public void name_mixed_LegalCase2(){
+		String name = "Beer mixed with Coke, Water and Sprite";
+		assertTrue(ingrTypeMixed.canHaveAsName(name));
+	}
+
+	@Test
+	public void name_mixed_LegalCase3(){
+		String name = "Beer mixed with Coke and Sprite";
 		assertTrue(ingrTypeMixed.canHaveAsName(name));
 	}
 }
