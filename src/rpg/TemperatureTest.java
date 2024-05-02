@@ -1,6 +1,8 @@
 package rpg;
 
 import org.junit.jupiter.api.*;
+import rpg.ingredient.Temperature;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TemperatureTest {

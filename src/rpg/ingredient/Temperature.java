@@ -1,4 +1,4 @@
-package rpg;
+package rpg.ingredient;
 import be.kuleuven.cs.som.annotate.*;
 import static java.lang.Math.min;
 
@@ -265,6 +265,36 @@ public class Temperature {
 		return (hotness >= 0 && hotness <= UPPERBOUND) &&
 				(coldness >= 0 && coldness <= UPPERBOUND) &&
 				!(hotness != 0 && coldness != 0);
+	}
+
+
+
+	/**********************************************************
+	 * DESTRUCTOR
+	 *
+	 * @note only the AlchemicIngredient can destroy a temperature
+	 **********************************************************/
+
+	/**
+	 * A variable for keeping track of whether the temperature is terminated.
+	 */
+	private boolean isTerminated = false;
+
+	/**
+	 * A method to check whether the temperature is terminated.
+	 */
+	public boolean isTerminated() {
+		return isTerminated;
+	}
+
+	/**
+	 * A method to terminate the temperature.
+	 *
+	 * @post    The temperature is terminated.
+	 *          | new.isTerminated()
+	 */
+	protected void terminate() {
+		isTerminated = true;
 	}
 
 }

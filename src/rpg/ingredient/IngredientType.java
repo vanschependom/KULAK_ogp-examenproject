@@ -89,6 +89,7 @@ public class IngredientType {
 			this.standardTemperature = new Temperature();
 			// temperatuur wordt totaal geimplementeerd dus zet op standaard waarden (indien invalid)
 			// we zullen hier zelfs nooit raken want in constructor van temperatuur gebeurt dit ook (indien invalid)
+			// TODO: navragen of de klasse-invariant dan wel nodig is, aangezien de klasse-invariant van temperatuur dit ook al doet
 		} else {
 			this.standardTemperature = temperature;
 		}
@@ -119,7 +120,7 @@ public class IngredientType {
 	}
 
 	/**
-	 * A list of all the allowed symbols in the name of any ingredient type, which
+	 * A variable containing all the allowed symbols in the name of any ingredient type, which
 	 * will not change during the execution of the program.
 	 */
 	private final static String ALLOWED_NAME_SYMBOLS = "'()";
@@ -176,17 +177,18 @@ public class IngredientType {
 	 * 			The name to check.
 	 * @return	If the name is a null pointer or the length of the name is zero then return false
 	 * 			| if (name == null || name.isEmpty())
-	 * 			| result ==  false
+	 * 			| then result == false
 	 * @return	If there is an invalid word in the name then return false
-	 * 			| for every word in the name
+	 * 			| for every word in name
 	 * 			| 	if (!canHaveAsNameWord(word))
-	 * 			| 		result == false
+	 * 			| 		then result == false
 	 * @return 	If there is only one word in the name and that word is shorter than 3 characters
 	 * 			then return false
 	 * 			| if (words.length == 1 && words[0].length() < 3)
-	 * 			| result == false
+	 * 			| then result == false
 	 * @return 	If none of the cases above apply then return true
 	 * 			| result == true
+	 * 			TODO: navragen of dit mag van specificatie
 	 */
 	@Raw
 	public boolean canHaveAsName(String name) {
@@ -219,21 +221,22 @@ public class IngredientType {
 	 * 			| if (isMixed() && 	word.equals("mixed") || word.equals("with"))
 	 * 			| then result == true
 	 * @return	If the ingredient type isn't mixed and the word is 'mixed' or 'with' while
-	 * 			ignoring higher case then return false
+	 * 			ignoring case then return false
 	 * 			| if (!isMixed() && word.equalsIgnoreCase("mixed") || word.equalsIgnoreCase("with"))
 	 * 			| then result == false
 	 * @return 	If the first letter of the word is illegal or is lowercase then return false
 	 * 			| if (!Character.isUpperCase(word.charAt(0)) &&
 	 * 			|	!isLegalSymbol(word.charAt(0)))
 	 * 			| result == false
-	 * @return	If there is a letter except for the first letter that is also uppercase	or illegal
-	 * 			then return false
+	 * @return	If there is a letter except for the first letter that is also uppercase	or
+	 * 			an illegal symbol, then return false
 	 * 			| for every letter at index i (starting at index 1) of word
-	 * 			| if (!Character.isLowerCase(word.charAt(i)) &&
+	 * 			| 	if (!Character.isLowerCase(word.charAt(i)) &&
 	 * 			|  		!isLegalSymbol(word.charAt(i)))
-	 * 			| result == false
+	 * 			| 		then result == false
 	 * @return 	If none of the cases above apply then return true
 	 * 			| result == true
+	 * 			TODO navragen of dit mag van specificatie
 	 */
 	@Model @Raw
 	private boolean canHaveAsNameWord(String word) {
@@ -333,8 +336,9 @@ public class IngredientType {
 	 * A getter for the standard temperature object of the ingredient type.
 	 */
 	@Model
-	protected Temperature getStandardTemperatureObject() {
+	private Temperature getStandardTemperatureObject() {
 		return standardTemperature;
 	}
+
 
 }
