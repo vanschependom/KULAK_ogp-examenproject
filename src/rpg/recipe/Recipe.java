@@ -149,9 +149,11 @@ public class Recipe {
         if (ingredients == null || operations == null) {return false;}
         int nbOfAdds = 0;
         for (Operation operation : operations) {
-            if (!isValidInstruction(ingredients.get(nbOfAdds), operation)) return false;
             if (operation == Operation.ADD) {
+                if (!isValidInstruction(ingredients.get(nbOfAdds), operation)) return false;
                 nbOfAdds++;
+            } else {
+                if (!isValidInstruction(null, operation)) return false;
             }
         }
         return ingredients.size() == nbOfAdds;

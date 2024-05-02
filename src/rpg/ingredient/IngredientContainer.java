@@ -156,13 +156,15 @@ public class IngredientContainer {
     }
 
     public boolean hasAsIngredient(AlchemicIngredient ingredient) {
+        return false; //TODO
     }
 
     private boolean canHaveAsIngredient(AlchemicIngredient ingredient) {
-        // TODO check of de ingredient van juiste type is
+        return false;// TODO check of de ingredient van juiste type is
     }
 
     private boolean hasProperIngredients() {
+        return false; //TODO
     }
 
     /*****************************
@@ -217,7 +219,7 @@ public class IngredientContainer {
     }
 
     private boolean isValidIngredientType(IngredientType ingredientType) {
-        // TODO
+        return false; // TODO
     }
 
     /*****************************
