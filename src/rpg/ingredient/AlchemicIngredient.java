@@ -29,7 +29,37 @@ public class AlchemicIngredient {
      * CONSTRUCTORS
      **********************************************************/
 
-    // ...
+    /**
+     * Initialize a new non-containerized alchemic ingredient with given amount, unit, temperature, type and state.
+     *
+     * @param   amount
+     *          The amount of the new alchemic ingredient.
+     * @param   unit
+     *          The unit of the new alchemic ingredient.
+     * @param   temperature
+     *          The temperature of the new alchemic ingredient.
+     * @param   type
+     *          The type of the new alchemic ingredient.
+     * @param   state
+     *          The state of the new alchemic ingredient.
+     *
+     * @pre     The given amount must be a valid amount for an alchemic ingredient.
+     *          | isValidAmount(amount)
+     * @pre     The given unit must be a valid unit for an alchemic ingredient.
+     *          | isValidUnit(unit)
+     *
+     * @post    The amount of this new alchemic ingredient is equal to the given amount.
+     *          | new.getAmount() == amount
+     * @post    The unit of this new alchemic ingredient is equal to the given unit.
+     *          | new.getUnit() == unit
+     * @effect  If the given temperature is not a valid temperature, the temperature is set to the standard temperature of the ingredient type.
+     *          | ...
+     */
+    public AlchemicIngredient(double amount, Unit unit, Temperature temperature, IngredientType type, State state) {
+        // ...
+        this.amount = amount;
+        this.unit = unit;
+    }
 
 
 
@@ -194,41 +224,13 @@ public class AlchemicIngredient {
      * STATE
      **********************************************************/
 
-    private State state = null;
+    private final State state;
 
     /**
      * A method to get the state of this alchemic ingredient.
      */
     public State getState() {
         return state;
-    }
-
-    /**
-     * A method for changing the state of an ingredient.
-     *
-     * @param 	state
-     *          The new state for the ingredient.
-     * @post    If the given state is a legal state and the ingredient is not terminated,
-     *          the state of the ingredient is set to the given state.
-     *          | if (isValidState(state) && !isTerminated()
-     *          |   then new.getState() == state
-     * @throws  IllegalStateException
-     *          The ingredient is terminated.
-     *          | isTerminated()
-     * @throws  IllegalStateException
-     *          The given state is not a legal state.
-     *          | !isValidState(state)
-     *
-     * TODO: zorg ervoor dat enkel de Transmogrifier de state kan veranderen
-     */
-    private void setState(State state) throws IllegalStateException {
-        if (isTerminated()) {
-            throw new IllegalStateException("The ingredient is terminated!");
-        }
-        if (!isValidState(state)) {
-            throw new IllegalStateException("The given state is not valid!");
-        }
-        this.state = state;
     }
 
     /**
@@ -308,5 +310,7 @@ public class AlchemicIngredient {
         getTemperatureObject().terminate();
         isTerminated = true;
     }
+
+
 
 }
