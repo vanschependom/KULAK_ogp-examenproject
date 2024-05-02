@@ -200,28 +200,32 @@ public class AlchemicIngredient {
     /**
      * A method to heat the ingredient.
      *
+     * @param 	amount
+     * 			The amount of heat to be added.
      * @effect  The ingredient is heated if it is not terminated.
      *          | if (!isTerminated())
-     *          | then getTemperatureObject().heat()
+     *          | then getTemperatureObject().heat(amount)
      * @note    Temperatures are implemented totally, so we don't throw an exception.
      */
-    public void heat() {
+    public void heat(long amount) {
         if (!isTerminated()) {
-            getTemperatureObject().heat();
+            getTemperatureObject().heat(amount);
         }
     }
 
     /**
      * A method to cool the ingredient.
      *
+     * @param 	amount
+     * 			The amount of cold to be added.
      * @effect  The ingredient is cooled if it is not terminated.
      *          | if (!isTerminated())
-     *          | then getTemperatureObject().cool()
+     *          | then getTemperatureObject().cool(amount)
      * @note    Temperatures are implemented totally, so we don't throw an exception.
      */
-    public void cool() {
+    public void cool(long amount) {
         if (!isTerminated()) {
-            getTemperatureObject().cool();
+            getTemperatureObject().cool(amount);
         }
     }
 
