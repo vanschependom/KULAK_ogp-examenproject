@@ -40,7 +40,7 @@ public class IngredientType {
 	 * 			The simple name of the new ingredient type.
 	 * @param 	specialName
 	 * 			The special name of the new ingredient type.
-	 * @param 	state
+	 * @param 	standardState
 	 * 			The state of the new ingredient type.
 	 * @param 	temperature
 	 * 			The temperature of the new ingredient type.
@@ -83,11 +83,11 @@ public class IngredientType {
 	 * 			| !isValidState(state)
 	 */
 	@Raw
-	public IngredientType(String simpleName, String specialName, State state, Temperature temperature, boolean isMixed) throws IllegalNameException, IllegalStateException {
+	public IngredientType(String simpleName, String specialName, State standardState, Temperature temperature, boolean isMixed) throws IllegalNameException, IllegalStateException {
 		if (!canHaveAsName(simpleName)) {
 			throw new IllegalNameException(simpleName);
 		}
-		if (!isValidState(state)) {
+		if (!isValidState(standardState)) {
 			throw new IllegalStateException("Invalid state! State must be effective.");
 		}
 		if (!isValidStandardTemperature(temperature)) {
@@ -99,7 +99,7 @@ public class IngredientType {
 			setSpecialName(specialName);
 		}
 		this.simpleName = simpleName;
-		this.standardState = state;
+		this.standardState = standardState;
 		this.isMixed = isMixed;
 	}
 
