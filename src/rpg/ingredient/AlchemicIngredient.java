@@ -60,16 +60,33 @@ public class AlchemicIngredient {
      *          the given temperature.
      *          | if (isValidTemperature(temperature))
      *          | then new.getTemperatureObject() == temperature
+     * @post    If the given state is a valid state, the state is set to the given state.
+     *          | if (isValidState(state))
+     *          | then new.getState() == state
+     *
+     * @throws  IllegalStateException
+     *          The given state is not valid.
+     *          | !isValidState(state)
      */
-    public AlchemicIngredient(double amount, Unit unit, Temperature temperature, IngredientType type, State state) {
+    public AlchemicIngredient(double amount, Unit unit, Temperature temperature, IngredientType type, State state) throws IllegalStateException {
+        if (!isValidState(state)) {
+            throw new IllegalStateException("The given state is not valid!");
+        }
+        if (!isValidType(type)) {
+            // default type (because this is implemented totally)
+            this.type = IngredientType.DEFAULT;
+        } else {
+            this.type = type;
+        }
         if (!isValidTemperature(temperature)) {
-            // default temperature
+            // default temperature (because this is implemented totally)
             this.temperature = new Temperature();
         } else {
             this.temperature = temperature;
         }
-        this.amount = amount;
-        this.unit = unit;
+        this.amount = amount;   // must be valid (@pre of nominal implementation)
+        this.unit = unit;       // must be valid (@pre of nominal implementation)
+        this.state = state;     // must be valid (because no exception was thrown)
     }
 
 

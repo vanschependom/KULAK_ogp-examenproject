@@ -51,17 +51,12 @@ public class IngredientType {
 	 * 			is set to the provided simple name.
 	 * 			| if (canHaveAsName(simpleName))
 	 * 			| then new.getSimpleName() == simpleName
-	 * @effect	If the special name is effective, the special name of the new ingredient type
-	 * 			is set to the given special name if the given special name is a valid name for
-	 * 			an ingredient type.
-	 * 			| if (specialName != null)
-	 * 			| then setSpecialName(specialName)
 	 * @post	If the given state is valid, the state of the new ingredient type is set to the
 	 * 			given state.
 	 * 			| if (isValidState(state))
 	 * 			| then new.getStandardState() == state
-	 * @post    If the given temperature is not a valid standard temperature, the temperature is set to the
-	 * 			standard temperature.
+	 * @post    If the given temperature is not a valid standard temperature, the temperature is
+	 * 			set to the standard temperature.
 	 *          | if (!isValidStandardTemperature(temperature))
 	 *          | then new.getStandardTemperature()[0] == 0
 	 *          |      && new.getStandardTemperature()[1] == 20
@@ -71,6 +66,11 @@ public class IngredientType {
 	 *          | then new.getStandardTemperatureObject() == temperature
 	 * @post	The mixed state of the new ingredient type is set to the given mixed state.
 	 * 			| new.isMixed() == isMixed
+	 * @effect	If the special name is effective, the special name of the new ingredient type
+	 * 			is set to the given special name if the given special name is a valid name for
+	 * 			an ingredient type.
+	 * 			| if (specialName != null)
+	 * 			| then setSpecialName(specialName)
 	 *
 	 * @throws	IllegalNameException
 	 * 			The given simple name is not a valid name for an ingredient type.
@@ -102,6 +102,7 @@ public class IngredientType {
 		this.standardState = state;
 		this.isMixed = isMixed;
 	}
+
 
 
 	/**********************************************************
@@ -348,7 +349,7 @@ public class IngredientType {
 	 * @return 	True if and only if the temperature is effective.
 	 * 			| result == (temperature != null)
 	 */
-	public static boolean isStandardValidTemperature(Temperature temperature) {
+	public static boolean isValidStandardTemperature(Temperature temperature) {
 		return temperature != null;
 	}
 
