@@ -1,12 +1,9 @@
 package rpg.storage;
 
-
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Model;
+import be.kuleuven.cs.som.annotate.*;
 import rpg.ingredient.AlchemicIngredient;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A class representing a location for a storage
@@ -33,7 +30,7 @@ abstract public class StorageLocation {
      *          |   ingredient != null
      * @invar   Each ingredient in the list references a non-terminated ingredient.
      *          | for each ingredient in ingredients:
-     *          | !ingredient.isTerminated()
+     *          |   !ingredient.isTerminated()
      * @invar   Each element in the list is unique
      *          | for each index in 1..getNbOfIngredients():
      *          |   for each otherIndex in 1..getNbOfIngredients():
@@ -138,7 +135,7 @@ abstract public class StorageLocation {
     @Basic
     public AlchemicIngredient getIngredientAt(int index) throws IllegalArgumentException {
         if (index < 0 || index >= ingredients.size()) throw new IllegalArgumentException();
-        return getIngredients().get(index); //TODO een kopie
+        return getIngredients().get(index); // TODO een kopie
     }
 
     /**
