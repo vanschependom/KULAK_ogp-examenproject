@@ -4,19 +4,19 @@ import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
 import rpg.*;
 
+import java.util.List;
+
 /**
  * A class representing an alchemic ingredient.
  *
  * @invar   The amount of an ingredient must always be valid.
  *          | isValidAmount(getAmount())
  * @invar   The unit of an ingredient must always be valid.
- *          | isValidUnit(getUnit())
+ *          | canHaveAsUnit(getUnit())
  * @invar	The temperature of an ingredient must always be valid.
  * 			| isValidTemperature(getTemperatureObject())
  * @invar   The type of an ingredient must always be valid.
  *          | isValidType(getType())
- * @invar   The state of an ingredient must always be valid.
- *          | isValidState(getState())
  *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
@@ -131,11 +131,14 @@ public class AlchemicIngredient {
      * A method to check whether the given unit is a valid unit for an alchemic ingredient.
      * @param 	unit
      * 			The unit to check
-     * @return	True if and only if the unit is effective.
-     * 			| result == (unit != null)
+     * @return	True if and only if the unit is effective, and the unit
+     *          is a legal unit for the state of the ingredient.
+     * 			| result == ( (unit != null)
+     * 		    |   && List.of(unit.getAllowedStates()).contains(getState()) )
      */
-    public boolean isValidUnit(Unit unit) {
-        return unit != null;
+    public boolean canHaveAsUnit(Unit unit) {
+        return (unit != null) &&
+                List.of(unit.getAllowedStates()).contains(getState()); // ! test voor schrijven
     }
 
 
@@ -205,7 +208,8 @@ public class AlchemicIngredient {
      * @effect  The ingredient is heated if it is not terminated.
      *          | if (!isTerminated())
      *          | then getTemperatureObject().heat(amount)
-     * @note    Temperatures are implemented totally, so we don't throw an exception.
+     * @note    Temperatures are implemented totally, so we don't throw an exception
+     *          if any illegal cases come up (e.g. terminated ingredient, negative amounts, etc.)
      */
     public void heat(long amount) {
         if (!isTerminated()) {
@@ -221,7 +225,7 @@ public class AlchemicIngredient {
      * @effect  The ingredient is cooled if it is not terminated.
      *          | if (!isTerminated())
      *          | then getTemperatureObject().cool(amount)
-     * @note    Temperatures are implemented totally, so we don't throw an exception.
+     * @note    Same as for heating.
      */
     public void cool(long amount) {
         if (!isTerminated()) {
@@ -234,9 +238,6 @@ public class AlchemicIngredient {
 
     /**********************************************************
      * TYPE - TOTAL PROGRAMMING
-     *
-     * @note    in de constructor moet het type geinitialiseerd
-     *          worden op water als het illegal is
      **********************************************************/
 
     private final IngredientType type;
@@ -244,6 +245,7 @@ public class AlchemicIngredient {
     /**
      * A method to get the type of this alchemic ingredient.
      */
+    @Basic
     public IngredientType getType() {
         return type;
     }
@@ -271,6 +273,7 @@ public class AlchemicIngredient {
     /**
      * A method to get the state of this alchemic ingredient.
      */
+    @Basic
     public State getState() {
         return state;
     }
@@ -298,6 +301,7 @@ public class AlchemicIngredient {
     /**
      * A method to check whether the ingredient is containerized.
      */
+    @Basic
     public boolean isContainerized() {
         return isContainerized;
     }
@@ -323,7 +327,6 @@ public class AlchemicIngredient {
 
 
 
-
     /**********************************************************
      * DESTRUCTOR
      **********************************************************/
@@ -336,6 +339,7 @@ public class AlchemicIngredient {
     /**
      * A method to check whether the ingredient is terminated.
      */
+    @Basic
     public boolean isTerminated() {
         return isTerminated;
     }
