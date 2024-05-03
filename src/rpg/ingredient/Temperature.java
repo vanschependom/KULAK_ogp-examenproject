@@ -18,6 +18,10 @@ import static java.lang.Math.min;
  */
 public class Temperature {
 
+	/**********************************************************
+	 * CONSTANTS
+	 **********************************************************/
+
 	/**
 	 * A variable referencing the upperbound for both the hotness
 	 * and the coldness; this will not change during the program.
@@ -34,8 +38,10 @@ public class Temperature {
 	 */
 	private static final long STANDARD_COLDNESS = 0;
 
+
+
 	/**********************************************************
-	 * Constructors
+	 * CONSTRUCTORS
 	 **********************************************************/
 
 	/**
@@ -47,11 +53,13 @@ public class Temperature {
 	 * @param 	coldness
 	 * 			The coldness to be set.
 	 * @effect	If the given temperature is valid, the hotness and coldness
-	 * 			are set to the given hotness and coldness, otherwise, the hotness
-	 * 			and coldness are set to the standard values.
+	 * 			are set to the given hotness and coldness
 	 * 			| if (isValidTemperature(hotness, coldness))
 	 * 			| then setHotness(hotness) && setColdness(coldness)
-	 *			| else setHotness(STANDARD_HOTNESS) && setColdness(STANDARD_COLDNESS)
+	 * @effect	If the given temperature is not valid, the hotness and coldness
+	 * 			are set to the standard values.
+	 * 			| if (!isValidTemperature(hotness, coldness))
+	 * 			| then setHotness(STANDARD_HOTNESS) && setColdness(STANDARD_COLDNESS)
 	 */
 	@Raw
 	public Temperature(long coldness, long hotness) {

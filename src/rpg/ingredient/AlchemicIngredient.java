@@ -2,6 +2,7 @@ package rpg.ingredient;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Model;
+import be.kuleuven.cs.som.annotate.Raw;
 import rpg.*;
 
 import java.util.List;
@@ -68,6 +69,7 @@ public class AlchemicIngredient {
      *          The given state is not valid.
      *          | !isValidState(state)
      */
+    @Raw
     public AlchemicIngredient(double amount, Unit unit, Temperature temperature, IngredientType type, State state) throws IllegalStateException {
         if (!isValidState(state)) {
             throw new IllegalStateException("The given state is not valid!");
@@ -166,6 +168,7 @@ public class AlchemicIngredient {
      * @return 	True if and only if the temperature is effective.
      * 			| result == (temperature != null)
      */
+    @Raw
     public boolean isValidTemperature(Temperature temperature) {
         return temperature != null;
     }
@@ -258,6 +261,7 @@ public class AlchemicIngredient {
      * @return	True if and only if the type is effective.
      * 			| result == (type != null)
      */
+    @Raw
     public boolean isValidType(IngredientType type) {
         return type != null;
     }
@@ -286,6 +290,7 @@ public class AlchemicIngredient {
      * @return	True if and only if the state is effective.
      * 			| result == (state != null)
      */
+    @Raw
     public boolean isValidState(State state) {
         return state != null;
     }

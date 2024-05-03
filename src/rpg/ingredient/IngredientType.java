@@ -189,7 +189,7 @@ public class IngredientType {
 	 * 			The given special name is not a valid name for an ingredient type.
 	 * 			| !canHaveAsName(specialName)
 	 */
-	@Model
+	@Model @Raw
 	private void setSpecialName(String specialName) throws IllegalNameException {
 		if (!canHaveAsName(specialName)) {
 			throw new IllegalNameException(specialName);
@@ -336,6 +336,7 @@ public class IngredientType {
 	 * @return	True if and only if the state is effective.
 	 * 			| result == (state != null)
 	 */
+	@Raw
 	public static boolean isValidState(State state) {
 		return state != null;
 	}
@@ -373,6 +374,7 @@ public class IngredientType {
 	 * @return 	True if and only if the temperature is effective.
 	 * 			| result == (temperature != null)
 	 */
+	@Raw
 	public static boolean isValidStandardTemperature(Temperature temperature) {
 		return temperature != null;
 	}
