@@ -183,7 +183,7 @@ public class Recipe {
     /**
      * A method for getting the ingredients
      */
-    @Basic @Model
+    @Model
     private ArrayList<AlchemicIngredient> getIngredients() {
         return new ArrayList<>(ingredients);
     }
@@ -191,7 +191,7 @@ public class Recipe {
     /**
      * A method for getting the operations
      */
-    @Basic @Model
+    @Model
     private ArrayList<Operation> getOperations() {
         return new ArrayList<>(operations);
     }

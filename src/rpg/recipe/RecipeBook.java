@@ -195,7 +195,7 @@ public class RecipeBook {
     /**
      * Return the recipe list
      */
-    @Basic @Model
+    @Model
     private ArrayList<Recipe> getRecipes() {
         return recipes;
     }
