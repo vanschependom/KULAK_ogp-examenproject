@@ -213,7 +213,7 @@ public class IngredientType {
 			return false;
 		}
 		// ...
-		return false;
+		return true;
 	}
 
 	/**
