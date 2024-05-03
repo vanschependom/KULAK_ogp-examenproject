@@ -163,12 +163,30 @@ public class IngredientContainer {
         return ingredients.contains(ingredient);
     }
 
+    /**
+     * A method for checking if the container can have a given ingredient.
+     *
+     * @param   ingredient
+     *          The ingredient to check.
+     * @return  TODO
+     */
     private boolean canHaveAsIngredient(AlchemicIngredient ingredient) {
-        return false;// TODO check of de ingredient van juiste type is
+        return (!ingredient.isTerminated() &&
+                ingredient.getType().equals(getIngredientType()));
     }
 
+    /**
+     * A method for checking if the container has proper ingredients.
+     *
+     * @return  ...
+     */
     private boolean hasProperIngredients() {
-        return false; //TODO
+        for (AlchemicIngredient ingredient : ingredients) {
+            if (!canHaveAsIngredient(ingredient) || !ingredient.isContainerized()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
