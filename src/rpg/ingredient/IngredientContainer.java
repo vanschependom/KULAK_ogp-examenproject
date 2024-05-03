@@ -42,29 +42,27 @@ public class IngredientContainer {
      * @throws  IllegalArgumentException
      *          The given capacity is not valid.
      *          | !isValidCapacity(capacity)
-     * @throws  IllegalArgumentException
+     * @throws  IllegalStateException
      *          The given state is not valid.
      *          | !isValidState(state)
      */
     @Raw
-    public IngredientContainer(Unit capacity, IngredientType ingredientType, State state) throws IllegalArgumentException {
+    public IngredientContainer(Unit capacity, IngredientType ingredientType, State state) throws IllegalArgumentException, IllegalStateException {
         // check invariants
         if (!isValidCapacity(capacity)) {
-            throw new IllegalArgumentException("Invalid capacity unit!");
+            throw new IllegalArgumentException("The given unit is not a valid capacity!");
         }
-        if (!isValidState()) {
-            throw new IllegalArgumentException("Invalid state!");
+        if (!isValidState(state)) {
+            throw new IllegalStateException("Invalid state!");
         }
         if (!isValidIngredientType(ingredientType)){
-            setIngredientType(IngredientType.DEFAULT);
+            this.ingredientType = IngredientType.DEFAULT;   // static variable
         } else {
-            setIngredientType(ingredientType);
+            this.ingredientType = ingredientType;           // static variable
         }
         // set values if valid
-        this.capacity = capacity;
-        this.ingredientType = ingredientType;
-        this.state = state;
-        setTerminated(false);
+        this.capacity = capacity;               // exceptional cases already checked & static
+        this.state = state;                     // exceptional cases already checked & static
     }
 
 
@@ -76,7 +74,7 @@ public class IngredientContainer {
     /**
      * A variable for keeping track of the ingredients in a capacity.
      *
-     * @invar   ingredients references an effective list
+     * @invar   This ArrayList of ingredients is an effective list
      *          | ingredients != null
      * @invar   Each ingredient in the list references an effective ingredient.
      *          | for each ingredient in ingredients:
@@ -90,15 +88,17 @@ public class IngredientContainer {
     private final ArrayList<AlchemicIngredient> ingredients = new ArrayList<>();
 
     /**
-     * Gets the list of ingredients.
+     * A private method for getting the internal List of ingredients in the container.
      */
-    @Basic
     private ArrayList<AlchemicIngredient> getIngredients() {
         return ingredients;
     }
 
     /**
      * Return the number of ingredients in container.
+     *
+     * @return  The number of ingredients in the container.
+     *          | result == ingredients.size()
      */
     @Basic
     public int getNbOfIngredients() {
@@ -110,6 +110,8 @@ public class IngredientContainer {
      *
      * @param   index
      *          The index of the ingredient
+     * @return  The ingredient at the given index.
+     *          | result == TODO (kijk naar directory)
      */
     public AlchemicIngredient getIngredientAtIndex(int index) {
         return ingredients.get(index);
@@ -122,7 +124,7 @@ public class IngredientContainer {
      *          The ingredient to be added.
      * @post    If the ingredient is valid then the number of ingredients in the
      *          container increases.
-     *          |
+     *          | TODO
      * @throws  IllegalArgumentException
      *          If the ingredient is not of the same type.
      *          If the ingredient is  already in the container.
@@ -132,7 +134,7 @@ public class IngredientContainer {
             throw new IllegalArgumentException("Ingredient is not from the correct type.");
         }
         if (hasAsIngredient(ingredient)) {
-            throw new IllegalArgumentException("Ingredient is already in container");
+            throw new IllegalArgumentException("Ingredient is already in container!");
         }
         ingredients.add(ingredient);
     }
@@ -156,12 +158,12 @@ public class IngredientContainer {
      **********************************************************/
 
     /**
-     * A variable with the unit of the container.
+     * A variable containing the unit that expresses the capacity of the container.
      */
     private final Unit capacity;
 
     /**
-     * Get the capacity of the container
+     * A method for getting the capacity of the container.
      */
     @Basic @Immutable
     public Unit getCapacity() {
@@ -171,14 +173,12 @@ public class IngredientContainer {
     /**
      * A method to check if the container has a valid capacity.
      *
-     * @return  False if the capacity is a drop, a pinch or a storeroom, else true
-     *          | result == !capacity.equals(Unit.DROP) && !capacity.equals(Unit.PINCH)
-     *          |            && !capacity.equals(Unit.STOREROOM)
+     * @return  True if and only if the capacity is not null and is allowed for a container.
+     *          | result == (capacity != null && capacity.isAllowedForContainer())
      */
     @Model
-    private boolean isValidCapacity(Unit capacity) {
-        return !capacity.equals(Unit.DROP) && !capacity.equals(Unit.PINCH)
-                && !capacity.equals(Unit.STOREROOM);
+    private static boolean isValidCapacity(Unit capacity) {
+        return capacity != null && capacity.isAllowedForContainer();
     }
 
 
@@ -190,19 +190,14 @@ public class IngredientContainer {
     /**
      * A variable that holds the ingredient type that can be in the container.
      */
-    private IngredientType ingredientType;
+    private final IngredientType ingredientType;
 
     /**
      * Get the ingredient type that can be in the container.
      */
-    @Basic
+    @Basic @Immutable
     public IngredientType getIngredientType() {
         return ingredientType;  // TODO maak kopie
-    }
-
-    @Basic
-    private void setIngredientType(IngredientType ingredientType) {
-        this.ingredientType = ingredientType;
     }
 
     private boolean isValidIngredientType(IngredientType ingredientType) {
@@ -215,17 +210,28 @@ public class IngredientContainer {
      * STATE
      ****************************/
 
+    /**
+     * A variable that holds the state of the container.
+     */
     private final State state;
 
     /**
      * Get the state of a container.
      */
-    @Basic
+    @Basic @Immutable
     public State getState() {
         return state;
     }
 
-    private boolean isValidState(){
+    /**
+     * A method to check if the state of the container is valid.
+     *
+     * @param   state
+     *          The state to check.
+     * @return  True if and only if the state is not null.
+     *          | result == (state != null)
+     */
+    public static boolean isValidState(State state){
         return state != null;
     }
 
@@ -248,13 +254,8 @@ public class IngredientContainer {
         return isTerminated;
     }
 
-    @Basic
-    public void setTerminated(boolean terminated) {
-        isTerminated = terminated;
-    }
-
     public void terminate() {
-        // TODO
+        // TODO (setTerminated() niet nodig!)
         // elk ingredient uit de lijst verwijderen
     }
 

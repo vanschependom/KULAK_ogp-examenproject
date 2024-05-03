@@ -1,6 +1,7 @@
 package rpg.ingredient;
 
 import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Model;
 import be.kuleuven.cs.som.annotate.Raw;
 import rpg.*;
@@ -105,6 +106,7 @@ public class AlchemicIngredient {
     /**
      * A method to get the amount of this alchemic ingredient.
      */
+    @Basic @Immutable
     public double getAmount() {
         return amount;
     }
@@ -125,6 +127,7 @@ public class AlchemicIngredient {
     /**
      * A method to get the unit of this alchemic ingredient.
      */
+    @Basic @Immutable
     public Unit getUnit() {
         return unit;
     }
@@ -248,7 +251,7 @@ public class AlchemicIngredient {
     /**
      * A method to get the type of this alchemic ingredient.
      */
-    @Basic
+    @Basic @Immutable
     public IngredientType getType() {
         return type;
     }
@@ -277,7 +280,7 @@ public class AlchemicIngredient {
     /**
      * A method to get the state of this alchemic ingredient.
      */
-    @Basic
+    @Basic @Immutable
     public State getState() {
         return state;
     }
@@ -344,7 +347,7 @@ public class AlchemicIngredient {
     /**
      * A method to check whether the ingredient is terminated.
      */
-    @Basic
+    @Basic @Immutable
     public boolean isTerminated() {
         return isTerminated;
     }

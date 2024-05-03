@@ -141,7 +141,7 @@ public class IngredientType {
 	/**
 	 * A getter for the mixed state of the ingredient type.
 	 */
-	@Basic
+	@Basic @Immutable
 	public boolean isMixed() {
 		return isMixed;
 	}
@@ -160,7 +160,7 @@ public class IngredientType {
 	/**
 	 * A getter for the simple name of the ingredient type.
 	 */
-	@Basic
+	@Basic @Immutable
 	public String getSimpleName() {
 		return simpleName;
 	}
@@ -323,7 +323,7 @@ public class IngredientType {
 	/**
 	 * A getter for the standard state of the ingredient type.
 	 */
-	@Basic
+	@Basic @Immutable
 	public State getStandardState() {
 		return standardState;
 	}
@@ -355,7 +355,7 @@ public class IngredientType {
 	/**
 	 * A getter for the standard temperature of the ingredient type.
 	 */
-	@Basic
+	@Basic @Immutable
 	public long[] getStandardTemperature() {
 		return getStandardTemperatureObject().getTemperature();
 	}
