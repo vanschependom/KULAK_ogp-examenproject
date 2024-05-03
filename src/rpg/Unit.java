@@ -13,18 +13,28 @@ import be.kuleuven.cs.som.annotate.*;
  */
 public enum Unit {
 
-	PINCH(1.0/6, new State[]{State.POWDER}),
-	DROP(1.0/8, new State[]{State.LIQUID}),
-	SPOON(1, new State[]{State.LIQUID, State.POWDER}),
-	VIAL(5, new State[]{State.LIQUID}),
-	SACHET(7, new State[]{State.POWDER}),
-	BOTTLE(15, new State[]{State.LIQUID}),
-	BOX(42, new State[]{State.POWDER}),
-	JUG(105, new State[]{State.LIQUID}),
-	SACK(126, new State[]{State.POWDER}),
-	BARREL(1260, new State[]{State.LIQUID}),
-	CHEST(1260, new State[]{State.POWDER}),
-	STOREROOM(6300, new State[]{State.LIQUID, State.POWDER});
+	/**********************************************************
+	 * POSSIBLE UNITS
+	 **********************************************************/
+
+	PINCH(1.0/6, new State[]{State.POWDER}, false),
+	DROP(1.0/8, new State[]{State.LIQUID}, false),
+	SPOON(1, new State[]{State.LIQUID, State.POWDER}, true),
+	VIAL(5, new State[]{State.LIQUID}, true),
+	SACHET(7, new State[]{State.POWDER}, true),
+	BOTTLE(15, new State[]{State.LIQUID}, true),
+	BOX(42, new State[]{State.POWDER}, true),
+	JUG(105, new State[]{State.LIQUID}, true),
+	SACK(126, new State[]{State.POWDER}, true),
+	BARREL(1260, new State[]{State.LIQUID}, true),
+	CHEST(1260, new State[]{State.POWDER}, true),
+	STOREROOM(6300, new State[]{State.LIQUID, State.POWDER}, false);
+
+
+
+	/**********************************************************
+	 * PROPERTIES
+	 **********************************************************/
 
 	/**
 	 * Variable with the spoon equivalent value of that unit.
@@ -37,22 +47,44 @@ public enum Unit {
 	private final State[] allowedStates;
 
 	/**
+	 * A boolean to check if the unit is allowed to be the unit for a container.
+	 */
+	private final boolean allowedForContainer;
+
+
+
+	/**********************************************************
+	 * CONSTRUCTOR
+	 **********************************************************/
+
+	/**
 	 * Initialize a new unit with a given spoon equivalent and a list of allowed states.
 	 *
 	 * @param 	spoonEquivalent
 	 *			The spoon equivalent value of the new unit.
 	 * @param 	allowedStates
 	 *			The list of allowed states which the new unit can be used for.
+	 *
 	 * @post	The spoon equivalent of the new unit is set to the given spoon equivalent.
 	 * 			| new.getSpoonEquivalent().equals(spoonEquivalent)
 	 * @post	The list of allowed states of the new unit is set to the given list of allowed states.
 	 * 			| new.getAllowedStates().equals(allowedStates)
+	 * @post	The new unit is allowed to be the unit for a container if
+	 * 			and only if the boolean allowedForContainer is true.
+	 * 			| new.isAllowedForContainer() == allowedForContainer
 	 */
 	@Model
-	private Unit(double spoonEquivalent, State[] allowedStates) {
+	private Unit(double spoonEquivalent, State[] allowedStates, boolean allowedForContainer) {
 		this.spoonEquivalent = spoonEquivalent;
 		this.allowedStates = allowedStates;
+		this.allowedForContainer = allowedForContainer;
 	}
+
+
+
+	/**********************************************************
+	 * METHODS
+	 **********************************************************/
 
 	/**
 	 * Return the spoon equivalent of this unit.
@@ -95,6 +127,14 @@ public enum Unit {
 			// niet nodig want quantity moet nominaal
 			throw new IllegalArgumentException("Cannot convert " + this + " to " + unit);
 		}
+	}
+
+	/**
+	 * Return whether this unit is allowed to be the unit for a container.
+	 */
+	@Basic
+	public boolean isAllowedForContainer() {
+		return allowedForContainer;
 	}
 
 }
