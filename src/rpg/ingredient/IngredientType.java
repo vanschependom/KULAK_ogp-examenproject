@@ -61,7 +61,7 @@ public class IngredientType {
 	 *          | then new.getStandardTemperature()[0] == 0
 	 *          |      && new.getStandardTemperature()[1] == 20
 	 * @post    If the given temperature is a valid standard temperature, the temperature
-	 * 			standard temperature is set to  the given temperature.
+	 * 			standard temperature is set to the given temperature.
 	 *          | if (isValidStandardTemperature(temperature))
 	 *          | then new.getStandardTemperatureObject() == temperature
 	 * @post	The mixed state of the new ingredient type is set to the given mixed state.
@@ -85,7 +85,6 @@ public class IngredientType {
 	@Raw
 	public IngredientType(String simpleName, String specialName, State standardState, Temperature standardTemperature, boolean isMixed)
 			throws IllegalNameException, IllegalStateException {
-		this.isMixed = isMixed;
 		if (!canHaveAsName(simpleName)) {
 			throw new IllegalNameException(simpleName);
 		}
@@ -100,8 +99,9 @@ public class IngredientType {
 		if (specialName != null) {
 			setSpecialName(specialName);
 		}
-		this.simpleName = simpleName;
-		this.standardState = standardState;
+		this.simpleName = simpleName;			// legal, exception is thrown if not
+		this.standardState = standardState;		// legal, exception is thrown if not
+		this.isMixed = isMixed;					// always valid (boolean)
 	}
 
 	/**
@@ -111,9 +111,9 @@ public class IngredientType {
 	 * @param 	simpleName
 	 * 			The simple name of the new ingredient type.
 	 * @param 	standardState
-	 * 			The state of the new ingredient type.
+	 * 			The standard state of the new ingredient type.
 	 * @param 	standardTemperature
-	 * 			The temperature of the new ingredient type.
+	 * 			The standard temperature of the new ingredient type.
 	 * @param 	isMixed
 	 * 			A boolean indicating whether the new ingredient type is mixed or not.
 	 *
