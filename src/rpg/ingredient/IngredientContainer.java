@@ -5,18 +5,15 @@ import rpg.State;
 import rpg.Unit;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class representing an ingredient containers.
  *
- * @invar   A container must always contain proper ingredients.
- *          | hasProperIngredients()
+ * @invar   A container must always have a valid content.
+ *          | canHaveAsContent(getContent())
  * @invar   A container must always have a valid capacity.
  *          | isValidCapacity(getCapacity())
- * @invar   A container must always have a valid state.
- *          | isValidState(getState())
- * @invar   A container must always have a valid ingredient type.
- *          | isValidIngredientType(getIngredientType())
  *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
@@ -34,160 +31,56 @@ public class IngredientContainer {
      *
      * @param   capacity
      *          The capacity of the new container.
-     * @param   ingredientType
-     *          The ingredient type that will be used for the new container.
-     * @param   state
-     *          The state of the container
+     * @param   content
+     *          The contents of the new container (an ingredient).
      *
      * @throws  IllegalArgumentException
      *          The given capacity is not valid.
      *          | !isValidCapacity(capacity)
-     * @throws  IllegalStateException
-     *          The given state is not valid.
-     *          | !isValidState(state)
+     * @throws  IllegalArgumentException
+     *          The given content is not valid.
+     *          | !canHaveAsContent(content)
      */
     @Raw
-    public IngredientContainer(Unit capacity, IngredientType ingredientType, State state) throws IllegalArgumentException, IllegalStateException {
+    public IngredientContainer(Unit capacity, AlchemicIngredient content) throws IllegalArgumentException {
         // check invariants
         if (!isValidCapacity(capacity)) {
             throw new IllegalArgumentException("The given unit is not a valid capacity!");
-        }
-        if (!isValidState(state)) {
-            throw new IllegalStateException("Invalid state!");
-        }
-        if (!isValidIngredientType(ingredientType)){
-            this.ingredientType = IngredientType.DEFAULT;   // static variable
         } else {
-            this.ingredientType = ingredientType;           // static variable
+            this.capacity = capacity;           // static variable
         }
-        // set values if valid
-        this.capacity = capacity;               // exceptional cases already checked & static
-        this.state = state;                     // exceptional cases already checked & static
+        if (!canHaveAsContent(content)){
+            throw new IllegalArgumentException("The given content is not legal!");
+        } else {
+            this.content = content;           // static variable
+        }
     }
 
 
 
     /**********************************************************
-     * INGREDIENTS
+     * INGREDIENT
      **********************************************************/
 
     /**
-     * A variable for keeping track of the ingredients in a capacity, with
-     * the index starting at 0.
-     *
-     * @invar   This ArrayList of ingredients is an effective list
-     *          | ingredients != null
-     * @invar   Each ingredient in the list references an effective ingredient.
-     *          | for each ingredient in ingredients:
-     *          |   ingredient != null
-     * @invar   Each ingredient in the list references a non-terminated ingredient.
-     *          | for each ingredient in ingredients:
-     *          |   !ingredient.isTerminated()
-     *
-     * @note    Deze relatie is unidirectioneel
+     * A variable containing the content (ingredient) that is stored in the container.
      */
-    private final ArrayList<AlchemicIngredient> ingredients = new ArrayList<>();
+    private final AlchemicIngredient content;
 
     /**
-     * A private method for getting the internal List of ingredients in the container.
+     * A method for getting the content of the container.
      */
-    private ArrayList<AlchemicIngredient> getIngredients() {
-        return ingredients;
+    @Basic @Immutable
+    protected AlchemicIngredient getContent() {
+        return content;
     }
 
-    /**
-     * Return the number of ingredients in container.
-     */
-    @Basic
-    public int getNbOfIngredients() {
-        return ingredients.size();
+    public boolean canHaveAsContent(AlchemicIngredient content) {
+        return ( content == null
+                || (content.getSpoonAmount() <= getCapacity().getSpoonEquivalent()) )
+                && ( List.of(getCapacity().getAllowedStates()).contains(content.getState()) );
     }
 
-    /**
-     * Get the ingredient at the given index.
-     *
-     * @param   index
-     *          The index of the ingredient to be returned.
-     * @throws  IndexOutOfBoundsException
-     *         	The given index is not positive or exceeds the number
-     *         	of items registered in this directory - 1.
-     *          | (index < 0) || (index > getNbItems() - 1)
-     * @note    No return statement is needed.
-     */
-    public AlchemicIngredient getIngredientAt(int index) throws IndexOutOfBoundsException {
-        try {
-            return ingredients.get(index);
-        } catch (IndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
-        }
-    }
-
-    /**
-     * A method for adding an ingredient to the container.
-     *
-     * @param   ingredient
-     *          The ingredient to be added.
-     * @post    The number of ingredients registered in this directory is
-     *          incremented with 1.
-     *          | new.getNbOfIngredients() == getNbOfIngredients() + 1
-     * @post    The given ingredient is inserted at the last index.
-     *          | new.getIngredientAt(new.getNbOfIngredients()-1) == ingredient
-     * @throws  IllegalArgumentException
-     *          The ingredient is not a valid ingredient.
-     *          | !canHaveAsIngredient(ingredient)
-     * @throws  IllegalArgumentException
-     *          The ingredient is already in the container.
-     *          | hasAsIngredient(ingredient)
-     */
-    public void addAsIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
-        if (!canHaveAsIngredient(ingredient)) {
-            throw new IllegalArgumentException("Ingredient is not from the correct type.");
-        }
-        if (hasAsIngredient(ingredient)) {
-            throw new IllegalArgumentException("Ingredient is already in container!");
-        }
-        ingredients.add(ingredient);
-    }
-
-    /**
-     * A method for checking if the container has a given ingredient.
-     *
-     * @param   ingredient
-     * @return 	True if an ingredient equal to the given ingredient is registered at some
-     *         	position in this container; false otherwise.
-     *         	| result ==
-     *         	|    for some I in 0..getNbOfIngredients()-1 :
-     *         	| 	      (getIngredientsAt(I) == ingredient)
-     */
-    public boolean hasAsIngredient(AlchemicIngredient ingredient) {
-        return ingredients.contains(ingredient);
-    }
-
-    /**
-     * A method for checking if the container can have a given ingredient.
-     *
-     * @param   ingredient
-     *          The ingredient to check.
-     * @return  TODO
-     */
-    private boolean canHaveAsIngredient(AlchemicIngredient ingredient) {
-        return (!ingredient.isTerminated() &&
-                ingredient.getType().equals(getIngredientType()));
-    }
-
-    /**
-     * A method for checking if the container has proper ingredients.
-     *
-     * @return  ...
-     */
-    private boolean hasProperIngredients() {
-        for (AlchemicIngredient ingredient : ingredients) {
-            if (!canHaveAsIngredient(ingredient) || !ingredient.isContainerized()) {
-                return false;
-            }
-        }
-        return true;
-    }
 
 
 
@@ -221,58 +114,6 @@ public class IngredientContainer {
 
 
 
-    /**********************************************************
-     * INGREDIENT TYPE
-     **********************************************************/
-
-    /**
-     * A variable that holds the ingredient type that can be in the container.
-     */
-    private final IngredientType ingredientType;
-
-    /**
-     * Get the ingredient type that can be in the container.
-     */
-    @Basic @Immutable
-    public IngredientType getIngredientType() {
-        return ingredientType;  // TODO maak kopie
-    }
-
-    private boolean isValidIngredientType(IngredientType ingredientType) {
-        return false; // TODO
-    }
-
-
-
-    /*****************************
-     * STATE
-     ****************************/
-
-    /**
-     * A variable that holds the state of the container.
-     */
-    private final State state;
-
-    /**
-     * Get the state of a container.
-     */
-    @Basic @Immutable
-    public State getState() {
-        return state;
-    }
-
-    /**
-     * A method to check if the state of the container is valid.
-     *
-     * @param   state
-     *          The state to check.
-     * @return  True if and only if the state is not null.
-     *          | result == (state != null)
-     */
-    public static boolean isValidState(State state){
-        return state != null;
-    }
-
 
 
     /*****************************
@@ -292,9 +133,11 @@ public class IngredientContainer {
         return isTerminated;
     }
 
+    /**
+     * Terminates the container.
+     */
     public void terminate() {
-        // TODO (setTerminated() niet nodig!)
-        // elk ingredient uit de lijst verwijderen
+        isTerminated = true;
     }
 
 

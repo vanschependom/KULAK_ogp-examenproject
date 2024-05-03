@@ -112,6 +112,15 @@ public class AlchemicIngredient {
     }
 
     /**
+     * A method to get the amount of this alchemic ingredient in spoons.
+     * @return  The amount of this alchemic ingredient in spoons.
+     *          | result == amount * getUnit().getSpoonEquivalent()
+     */
+    public double getSpoonAmount() {
+    	return amount * getUnit().getSpoonEquivalent();
+    }
+
+    /**
      * A method to check whether the given amount is a valid amount for an alchemic ingredient.
      * @param 	amount
      * 			The amount to check
