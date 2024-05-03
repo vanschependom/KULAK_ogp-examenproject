@@ -75,7 +75,7 @@ abstract public class StorageLocation {
     /**
      * Returns the ingredient list
      */
-    @Model @Basic
+    @Model
     private ArrayList<AlchemicIngredient> getIngredients() {
         return ingredients;
     }
