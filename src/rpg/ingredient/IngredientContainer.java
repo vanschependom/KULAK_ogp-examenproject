@@ -72,7 +72,8 @@ public class IngredientContainer {
      **********************************************************/
 
     /**
-     * A variable for keeping track of the ingredients in a capacity.
+     * A variable for keeping track of the ingredients in a capacity, with
+     * the index starting at 0.
      *
      * @invar   This ArrayList of ingredients is an effective list
      *          | ingredients != null
@@ -96,9 +97,6 @@ public class IngredientContainer {
 
     /**
      * Return the number of ingredients in container.
-     *
-     * @return  The number of ingredients in the container.
-     *          | result == ingredients.size()
      */
     @Basic
     public int getNbOfIngredients() {
@@ -109,12 +107,19 @@ public class IngredientContainer {
      * Get the ingredient at the given index.
      *
      * @param   index
-     *          The index of the ingredient
-     * @return  The ingredient at the given index.
-     *          | result == TODO (kijk naar directory)
+     *          The index of the ingredient to be returned.
+     * @throws  IndexOutOfBoundsException
+     *         	The given index is not positive or exceeds the number
+     *         	of items registered in this directory - 1.
+     *          | (index < 0) || (index > getNbItems() - 1)
+     * @note    No return statement is needed.
      */
-    public AlchemicIngredient getIngredientAtIndex(int index) {
-        return ingredients.get(index);
+    public AlchemicIngredient getIngredientAt(int index) throws IndexOutOfBoundsException {
+        try {
+            return ingredients.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        }
     }
 
     /**
@@ -122,14 +127,19 @@ public class IngredientContainer {
      *
      * @param   ingredient
      *          The ingredient to be added.
-     * @post    If the ingredient is valid then the number of ingredients in the
-     *          container increases.
-     *          | TODO
+     * @post    The number of ingredients registered in this directory is
+     *          incremented with 1.
+     *          | new.getNbOfIngredients() == getNbOfIngredients() + 1
+     * @post    The given ingredient is inserted at the last index.
+     *          | new.getIngredientAt(new.getNbOfIngredients()-1) == ingredient
      * @throws  IllegalArgumentException
-     *          If the ingredient is not of the same type.
-     *          If the ingredient is  already in the container.
+     *          The ingredient is not a valid ingredient.
+     *          | !canHaveAsIngredient(ingredient)
+     * @throws  IllegalArgumentException
+     *          The ingredient is already in the container.
+     *          | hasAsIngredient(ingredient)
      */
-    public void addIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
+    public void addAsIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
         if (!canHaveAsIngredient(ingredient)) {
             throw new IllegalArgumentException("Ingredient is not from the correct type.");
         }
@@ -139,8 +149,18 @@ public class IngredientContainer {
         ingredients.add(ingredient);
     }
 
+    /**
+     * A method for checking if the container has a given ingredient.
+     *
+     * @param   ingredient
+     * @return 	True if an ingredient equal to the given ingredient is registered at some
+     *         	position in this container; false otherwise.
+     *         	| result ==
+     *         	|    for some I in 0..getNbOfIngredients()-1 :
+     *         	| 	      (getIngredientsAt(I) == ingredient)
+     */
     public boolean hasAsIngredient(AlchemicIngredient ingredient) {
-        return false; //TODO
+        return ingredients.contains(ingredient);
     }
 
     private boolean canHaveAsIngredient(AlchemicIngredient ingredient) {
