@@ -9,13 +9,13 @@ import java.util.ArrayList;
 /**
  * A class representing an ingredient containers.
  *
- * @invar   A container contains proper ingredients.
+ * @invar   A container must always contain proper ingredients.
  *          | hasProperIngredients()
- * @invar   A container has a valid capacity.
+ * @invar   A container must always have a valid capacity.
  *          | isValidCapacity(getCapacity())
- * @invar   A container has a valid state.
+ * @invar   A container must always have a valid state.
  *          | isValidState(getState())
- * @invar   A container has valid ingredient type.
+ * @invar   A container must always have a valid ingredient type.
  *          | isValidIngredientType(getIngredientType())
  *
  * @author	Vincent Van Schependom
@@ -25,12 +25,12 @@ import java.util.ArrayList;
  */
 public class IngredientContainer {
 
-    /*****************************
-     * Constructor
-     ****************************/
+    /**********************************************************
+     * CONSTRUCTORS
+     **********************************************************/
 
     /**
-     * A constructor for a new container.
+     * A constructor for creating a new container with a given capacity, ingredient type and state.
      *
      * @param   capacity
      *          The capacity of the new container.
@@ -38,20 +38,27 @@ public class IngredientContainer {
      *          The ingredient type that will be used for the new container.
      * @param   state
      *          The state of the container
+     *
      * @throws  IllegalArgumentException
-     *          If one of the invariants is broken.
+     *          The given capacity is not valid.
+     *          | !isValidCapacity(capacity)
+     * @throws  IllegalArgumentException
+     *          The given state is not valid.
+     *          | !isValidState(state)
      */
     @Raw
     public IngredientContainer(Unit capacity, IngredientType ingredientType, State state) throws IllegalArgumentException {
         // check invariants
-        if (!isValidCapacity(capacity)){
-            throw new IllegalArgumentException("Invalid capacity or unit");
+        if (!isValidCapacity(capacity)) {
+            throw new IllegalArgumentException("Invalid capacity unit!");
+        }
+        if (!isValidState()) {
+            throw new IllegalArgumentException("Invalid state!");
         }
         if (!isValidIngredientType(ingredientType)){
-            throw new IllegalArgumentException("Invalid ingredient type");
-        }
-        if (!isValidState()){
-            throw new IllegalArgumentException("Invalid state");
+            setIngredientType(IngredientType.DEFAULT);
+        } else {
+            setIngredientType(ingredientType);
         }
         // set values if valid
         this.capacity = capacity;
@@ -60,36 +67,11 @@ public class IngredientContainer {
         setTerminated(false);
     }
 
-    /*****************************
-     * Destructor
-     ****************************/
 
-    /**
-     * A variable for keeping track of whether the container is terminated.
-     */
-    private boolean isTerminated = false;
 
-    /**
-     * Gets the value of isTerminated
-     */
-    @Basic
-    public boolean isTerminated() {
-        return isTerminated;
-    }
-
-    @Basic
-    public void setTerminated(boolean terminated) {
-        isTerminated = terminated;
-    }
-
-    public void terminate() {
-        // TODO
-        // elk ingredient uit de lijst verwijderen
-    }
-
-    /*****************************
-     * (Alchemic) Ingredients
-     ****************************/
+    /**********************************************************
+     * INGREDIENTS
+     **********************************************************/
 
     /**
      * A variable for keeping track of the ingredients in a capacity.
@@ -167,9 +149,11 @@ public class IngredientContainer {
         return false; //TODO
     }
 
-    /*****************************
-     * Capacity (Unit)
-     ****************************/
+
+
+    /**********************************************************
+     * CAPACITY
+     **********************************************************/
 
     /**
      * A variable with the unit of the container.
@@ -185,10 +169,11 @@ public class IngredientContainer {
     }
 
     /**
-     * A method to check if the container has a valid unit
+     * A method to check if the container has a valid capacity.
+     *
      * @return  False if the capacity is a drop, a pinch or a storeroom, else true
      *          | result == !capacity.equals(Unit.DROP) && !capacity.equals(Unit.PINCH)
-     *                      && !capacity.equals(Unit.STOREROOM)
+     *          |            && !capacity.equals(Unit.STOREROOM)
      */
     @Model
     private boolean isValidCapacity(Unit capacity) {
@@ -196,9 +181,11 @@ public class IngredientContainer {
                 && !capacity.equals(Unit.STOREROOM);
     }
 
-    /*****************************
-     * Ingredient Type
-     ****************************/
+
+
+    /**********************************************************
+     * INGREDIENT TYPE
+     **********************************************************/
 
     /**
      * A variable that holds the ingredient type that can be in the container.
@@ -222,11 +209,13 @@ public class IngredientContainer {
         return false; // TODO
     }
 
+
+
     /*****************************
-     * State ??
+     * STATE
      ****************************/
 
-    private State state;
+    private final State state;
 
     /**
      * Get the state of a container.
@@ -236,13 +225,39 @@ public class IngredientContainer {
         return state;
     }
 
-    @Basic
-    private void setState(State state) {
-        this.state = state;
-    }
-
     private boolean isValidState(){
         return state != null;
     }
+
+
+
+    /*****************************
+     * DESTRUCTORS
+     ****************************/
+
+    /**
+     * A variable for keeping track of whether the container is terminated.
+     */
+    private boolean isTerminated = false;
+
+    /**
+     * Gets the value of isTerminated
+     */
+    @Basic
+    public boolean isTerminated() {
+        return isTerminated;
+    }
+
+    @Basic
+    public void setTerminated(boolean terminated) {
+        isTerminated = terminated;
+    }
+
+    public void terminate() {
+        // TODO
+        // elk ingredient uit de lijst verwijderen
+    }
+
+
 
 }
