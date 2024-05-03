@@ -75,16 +75,22 @@ public class Temperature {
 	}
 
 	/**
-	 * A basic constructor for creating a new Temperature object without
-	 * given a hotness and a coldness.
+	 * A basic constructor for creating a new Temperature object with
+	 * the standard hotness and coldness.
 	 *
-	 * @effect	The hotness and coldness are set to the standard values.
-	 *			| setHotness(STANDARD_HOTNESS) && setColdness(STANDARD_COLDNESS)
+	 * @effect	A new temperature is created with the standard hotness and coldness.
+	 * 			| this(STANDARD_COLDNESS, STANDARD_HOTNESS)
 	 */
+	@Raw
 	public Temperature(){
-		setHotness(STANDARD_HOTNESS);
-		setColdness(STANDARD_COLDNESS);
+		this(STANDARD_COLDNESS, STANDARD_HOTNESS);
 	}
+
+
+
+	/**********************************************************
+	 * HOTNESS AND COLDNESS - total programming
+	 **********************************************************/
 
 	/**
 	 * A variable referencing the hotness of the temperature.
@@ -107,7 +113,7 @@ public class Temperature {
 	 * 			| if (hotness >= 0)
 	 * 			| then new.getHotness() == hotness
 	 */
-	@Model
+	@Model @Raw
 	private void setHotness(long hotness) {
 		if (hotness >= 0) {
 			this.hotness = hotness;
@@ -135,7 +141,7 @@ public class Temperature {
 	 * 			| if (coldness >= 0)
 	 * 			| then new.getColdness() == coldness
 	 */
-	@Model
+	@Model @Raw
 	private void setColdness(long coldness) {
 		if (coldness >= 0) {
 			this.coldness = coldness;
@@ -250,8 +256,9 @@ public class Temperature {
 
 	/**
 	 * A method for getting both the hotness and the coldness of the temperature.
+	 *
 	 * @return	An array containing the coldness and the hotness of the temperature.
-	 * 			| result == new long[]{getColdness(), getHotness()}
+	 * 			| ( result[0] == getColdness() ) && ( result[1] == getHotness() )
 	 */
 	public long[] getTemperature() {
 		return new long[] {coldness, hotness};
@@ -259,6 +266,7 @@ public class Temperature {
 
 	/**
 	 * A method for checking whether a given temperature is valid.
+	 *
 	 * @param 	hotness
 	 * 			The hotness of the temperature
 	 * @param 	coldness
@@ -269,6 +277,7 @@ public class Temperature {
 	 * 			|			(coldness >= 0 && coldness <= UPPERBOUND) &&
 	 * 			|			!(hotness != 0 && coldness != 0)
 	 */
+	@Raw
 	public static boolean isValidTemperature(long coldness, long hotness) {
 		return (hotness >= 0 && hotness <= UPPERBOUND) &&
 				(coldness >= 0 && coldness <= UPPERBOUND) &&
@@ -280,7 +289,7 @@ public class Temperature {
 	/**********************************************************
 	 * DESTRUCTOR
 	 *
-	 * @note only the AlchemicIngredient can destroy a temperature
+	 * @note only AlchemicIngredient can destroy a Temperature object
 	 **********************************************************/
 
 	/**
@@ -291,6 +300,7 @@ public class Temperature {
 	/**
 	 * A method to check whether the temperature is terminated.
 	 */
+	@Basic
 	public boolean isTerminated() {
 		return isTerminated;
 	}
