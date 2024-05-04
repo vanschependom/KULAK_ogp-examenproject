@@ -9,6 +9,7 @@ import rpg.exceptions.TerminatedObjectException;
 import rpg.ingredient.AlchemicIngredient;
 import rpg.ingredient.IngredientContainer;
 import rpg.ingredient.IngredientType;
+import rpg.ingredient.Temperature;
 
 /**
  * A class representing a device inside a laboratory.
@@ -23,11 +24,6 @@ import rpg.ingredient.IngredientType;
  * @version	1.0
  */
 public abstract class Device extends StorageLocation{
-
-    /**
-     * A variable containing the result of a used device.
-     */
-    private AlchemicIngredient result;
 
     /**
      * A variable containing the laboratory in which this device is stored.
@@ -58,20 +54,36 @@ public abstract class Device extends StorageLocation{
     }
 
     /**
-     * Return the result of the device in an ingredient container.
+     * Return the result of the device in an ingredient container
+     * with a maximum of one barrel or chest
+     * Return null if there are no ingredients in the device
      *
      * @throws  DeviceNotYetUsedException
      *          The device has not been used yet so there is no result to be given
-     *          | result == null
+     *          | getNbOfIngredients() > 1
      * @throws  TerminatedObjectException
      *          The device is terminated.
      *          | isTerminated()
      */
     public IngredientContainer getResult() throws DeviceNotYetUsedException, TerminatedObjectException {
         if(isTerminated) throw new TerminatedObjectException(this);
-        if (result == null) {throw new DeviceNotYetUsedException();}
-        if (result.getState() == State.LIQUID) return new IngredientContainer(Unit.BARREL, result);
-        else return new IngredientContainer(Unit.CHEST, result);
+        if (getNbOfIngredients() > 1) throw new DeviceNotYetUsedException();
+        if (getNbOfIngredients() == 0) return null;
+        AlchemicIngredient result = getIngredientAt(0);
+        if (result.getState() == State.LIQUID) {
+            if (result.getSpoonAmount() > 1260)
+                result = new AlchemicIngredient(1, Unit.BARREL,
+                        new Temperature(result.getColdness(), result.getHotness()),
+                        result.getType(), result.getState());
+            return new IngredientContainer(Unit.BARREL, result);
+
+        } else {
+            if (result.getSpoonAmount() > 1260)
+                result = new AlchemicIngredient(1, Unit.CHEST,
+                        new Temperature(result.getColdness(), result.getHotness()),
+                        result.getType(), result.getState());
+            return new IngredientContainer(Unit.CHEST, result);
+        }
     }
 
     /**
