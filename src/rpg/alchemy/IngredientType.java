@@ -127,14 +127,14 @@ public class IngredientType {
 	 * 			is set to the given name.
 	 * 			| if (canHaveAsName(name))
 	 * 			| then new.getName() == name
-	 * @throws	IllegalNameException
+	 * @throws	IllegalArgumentException
 	 * 			The given name is not a valid name for an ingredient type.
 	 * 			| !canHaveAsName(name)
 	 */
 	@Model @Raw
-	private void setName(Name name) throws IllegalNameException {
+	private void setName(Name name) throws IllegalArgumentException {
 		if (!canHaveAsName(name)) {
-			throw new IllegalNameException(null);
+			throw new IllegalArgumentException("Illegal name!");
 		}
 		this.name = name;
 	}
@@ -150,7 +150,7 @@ public class IngredientType {
 	 */
 	@Raw
 	public boolean canHaveAsName(Name name) {
-		return (name == null && name.isMixed() == isMixed());
+		return (name != null && name.isMixed() == isMixed());
 	}
 
 

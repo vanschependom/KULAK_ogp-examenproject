@@ -15,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class AlchemicIngredientTest {
 
+	private static Name water;
+	private static Name mixed;
+
 	private IngredientType mixedIngrTypePowder;
 	private AlchemicIngredient ingredient;
 	private AlchemicIngredient legalIngredient;
@@ -26,6 +29,8 @@ public class AlchemicIngredientTest {
 
 	@BeforeAll
 	public static void setUp() {
+		water = Name.getWater();
+		mixed = new Name(null, "Beer", "Coke");
 		// set up the standard temperature
 		standardTemperature = new Temperature(0, 20);
 		// set up the cold temperature
@@ -34,7 +39,7 @@ public class AlchemicIngredientTest {
 
 	@BeforeEach
 	public void setUpForEach(){
-		mixedIngrTypePowder = new IngredientType(null, State.POWDER, coldTemperature, true);
+		mixedIngrTypePowder = new IngredientType(mixed, State.POWDER, coldTemperature, true);
 		legalIngredient = new AlchemicIngredient(20, Unit.BOX, standardTemperature, mixedIngrTypePowder, State.POWDER);
 	}
 

@@ -24,8 +24,11 @@ public class IngredientTypeTest {
 	private static Temperature standardTemperature;
 	private static Temperature coldTemperature;
 
+	private static Name mixed;
+
 	@BeforeAll
 	public static void setUp() {
+		mixed = new Name(null, "Beer", "Coke");
 		// set up the standard temperature
 		standardTemperature = new Temperature(0, 20);
 		// set up the cold temperature
@@ -34,8 +37,8 @@ public class IngredientTypeTest {
 
 	@BeforeEach
 	public void setUpForEach(){
-		ingrTypeEverything = new IngredientType(null, State.LIQUID, standardTemperature, false);
-		ingrTypeMixed = new IngredientType(null, State.LIQUID, standardTemperature, true);
+		ingrTypeEverything = new IngredientType(Name.getWater(), State.LIQUID, standardTemperature, false);
+		ingrTypeMixed = new IngredientType(mixed, State.LIQUID, standardTemperature, true);
 	}
 
 	/**
@@ -45,20 +48,18 @@ public class IngredientTypeTest {
 	@Test
 	public void testConstructor_mostExtended_legal() {
 
-		ingrTypeNullSpecialName = new IngredientType(null, State.LIQUID, standardTemperature, false);
-		ingrTypeDiffTemp = new IngredientType(null, State.LIQUID, coldTemperature, false);
-		ingrTypeMixed = new IngredientType(null, State.LIQUID, standardTemperature, true);
-		ingrTypeDiffState = new IngredientType(null, State.POWDER, standardTemperature, false);
+		ingrTypeNullSpecialName = new IngredientType(Name.getWater(), State.LIQUID, standardTemperature, false);
+		ingrTypeDiffTemp = new IngredientType(Name.getWater(), State.LIQUID, coldTemperature, false);
+		ingrTypeMixed = new IngredientType(mixed, State.LIQUID, standardTemperature, true);
+		ingrTypeDiffState = new IngredientType(Name.getWater(), State.POWDER, standardTemperature, false);
 
 		// ingrTypeEverything
-		assertEquals(null, ingrTypeEverything.getName());
 		assertEquals(State.LIQUID, ingrTypeEverything.getStandardState());
 		assertEquals(0, ingrTypeEverything.getStandardTemperature()[0]);
 		assertEquals(20, ingrTypeEverything.getStandardTemperature()[1]);
 		assertFalse(ingrTypeEverything.isMixed());
 
 		// different objects
-		assertNull(ingrTypeNullSpecialName.getName());
 		assertEquals(30, ingrTypeDiffTemp.getStandardTemperature()[0]);
 		assertEquals(0, ingrTypeDiffTemp.getStandardTemperature()[1]);
 		assertTrue(ingrTypeMixed.isMixed());
