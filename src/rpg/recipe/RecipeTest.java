@@ -1,13 +1,12 @@
 package rpg.recipe;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import rpg.State;
 import rpg.Unit;
-import rpg.ingredient.AlchemicIngredient;
-import rpg.ingredient.IngredientType;
-import rpg.ingredient.Temperature;
+import rpg.alchemy.AlchemicIngredient;
+import rpg.alchemy.IngredientType;
+import rpg.alchemy.Temperature;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;

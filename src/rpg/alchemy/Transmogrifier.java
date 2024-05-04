@@ -1,4 +1,4 @@
-package rpg.storage;
+package rpg.alchemy;
 
 public class Transmogrifier extends Device{
 }

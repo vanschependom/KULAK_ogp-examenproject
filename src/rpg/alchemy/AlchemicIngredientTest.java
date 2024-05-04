@@ -1,4 +1,4 @@
-package rpg.ingredient;
+package rpg.alchemy;
 import org.junit.jupiter.api.*;
 import rpg.*;
 

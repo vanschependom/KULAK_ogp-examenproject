@@ -1,15 +1,10 @@
-package rpg.storage;
+package rpg.alchemy;
 
 import be.kuleuven.cs.som.annotate.Basic;
 import be.kuleuven.cs.som.annotate.Raw;
 import rpg.State;
 import rpg.Unit;
 import rpg.exceptions.DeviceNotYetUsedException;
-import rpg.exceptions.TerminatedObjectException;
-import rpg.ingredient.AlchemicIngredient;
-import rpg.ingredient.IngredientContainer;
-import rpg.ingredient.IngredientType;
-import rpg.ingredient.Temperature;
 
 /**
  * A class representing a device inside a laboratory.
@@ -49,7 +44,8 @@ public abstract class Device extends StorageLocation{
      *          TODO
      */
     @Raw
-    public Device(Laboratory laboratory) {
+    public Device(Laboratory laboratory) throws IllegalArgumentException{
+        if (!isValidLaboratory(laboratory)) throw new IllegalArgumentException();
         //TODO
     }
 
@@ -61,12 +57,12 @@ public abstract class Device extends StorageLocation{
      * @throws  DeviceNotYetUsedException
      *          The device has not been used yet so there is no result to be given
      *          | getNbOfIngredients() > 1
-     * @throws  TerminatedObjectException
+     * @throws  IllegalStateException
      *          The device is terminated.
      *          | isTerminated()
      */
-    public IngredientContainer getResult() throws DeviceNotYetUsedException, TerminatedObjectException {
-        if(isTerminated) throw new TerminatedObjectException(this);
+    public IngredientContainer getResult() throws DeviceNotYetUsedException, IllegalStateException {
+        if(isTerminated) throw new IllegalStateException("Device is terminated");
         if (getNbOfIngredients() > 1) throw new DeviceNotYetUsedException();
         if (getNbOfIngredients() == 0) return null;
         AlchemicIngredient result = getIngredientAt(0);
@@ -89,13 +85,13 @@ public abstract class Device extends StorageLocation{
     /**
      * Return the laboratory in which this device is in.
      *
-     * @throws  TerminatedObjectException
+     * @throws  IllegalStateException
      *          The device is terminated.
      *          | isTerminated()
      */
     @Basic
-    public Laboratory getLaboratory() throws TerminatedObjectException {
-        if (isTerminated) throw new TerminatedObjectException(this);
+    public Laboratory getLaboratory() throws IllegalStateException {
+        if (isTerminated) throw new IllegalStateException("Device is terminated");
         return laboratory;
     }
 
@@ -115,7 +111,8 @@ public abstract class Device extends StorageLocation{
      */
     @Raw
     public boolean isValidLaboratory(Laboratory laboratory) {
-        return laboratory != null && laboratory.isValidDevice(this);
+        // return laboratory != null && laboratory.isValidDevice(this); TODO
+        return false;
     }
 
     /**
@@ -133,12 +130,12 @@ public abstract class Device extends StorageLocation{
      *          | if !isTerminated()
      *          | then new.isTerminated() == true
      *
-     * @throws  TerminatedObjectException
+     * @throws  IllegalStateException
      *          The device is already terminated
      *          | isTerminated()
      */
-    protected void terminate() throws TerminatedObjectException {
+    protected void terminate() throws IllegalStateException {
         if (!isTerminated()) {isTerminated = true;}
-        else throw new TerminatedObjectException(this);
+        else throw new IllegalStateException("Device is terminated");
     }
 }

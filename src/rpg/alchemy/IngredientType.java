@@ -1,4 +1,4 @@
-package rpg.ingredient;
+package rpg.alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
 import rpg.exceptions.IllegalNameException;

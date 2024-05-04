@@ -1,7 +1,7 @@
 package rpg.recipe;
 
 import be.kuleuven.cs.som.annotate.*;
-import rpg.ingredient.AlchemicIngredient;
+import rpg.alchemy.AlchemicIngredient;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package rpg.ingredient;
+package rpg.alchemy;
 import be.kuleuven.cs.som.annotate.*;
 import static java.lang.Math.min;
 
