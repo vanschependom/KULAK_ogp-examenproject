@@ -1,10 +1,8 @@
-package rpg.ingredient;
+package rpg.alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
-import rpg.State;
 import rpg.Unit;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -65,12 +63,12 @@ public class IngredientContainer {
     /**
      * A variable containing the content (ingredient) that is stored in the container.
      */
-    private final AlchemicIngredient content;
+    private AlchemicIngredient content;
 
     /**
      * A method for getting the content of the container.
      */
-    @Basic @Immutable
+    @Model
     protected AlchemicIngredient getContent() {
         return content;
     }
@@ -78,7 +76,8 @@ public class IngredientContainer {
     public boolean canHaveAsContent(AlchemicIngredient content) {
         return ( content == null
                 || (content.getSpoonAmount() <= getCapacity().getSpoonEquivalent()) )
-                && ( List.of(getCapacity().getAllowedStates()).contains(content.getState()) );
+                && ( List.of(getCapacity().getAllowedStates()).contains(content.getState())
+                && ( !content.isTerminated()));
     }
 
 
@@ -114,8 +113,6 @@ public class IngredientContainer {
 
 
 
-
-
     /*****************************
      * DESTRUCTORS
      ****************************/
@@ -138,6 +135,7 @@ public class IngredientContainer {
      */
     public void terminate() {
         isTerminated = true;
+        content = null;
     }
 
 

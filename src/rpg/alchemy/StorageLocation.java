@@ -1,7 +1,7 @@
-package rpg.storage;
+package rpg.alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
-import rpg.ingredient.AlchemicIngredient;
+import rpg.Unit;
 
 import java.util.ArrayList;
 
@@ -76,7 +76,7 @@ abstract public class StorageLocation {
      * Returns the ingredient list
      */
     @Model
-    private ArrayList<AlchemicIngredient> getIngredients() {
+    protected ArrayList<AlchemicIngredient> getIngredients() {
         return ingredients;
     }
 
@@ -193,5 +193,39 @@ abstract public class StorageLocation {
         throw new IllegalArgumentException();
     }
 
+    /**
+     * A method for adding an ingredient that is inside a container
+     * to a storage location
+     *
+     * @param   container
+     *          The container containing the ingredient to add
+     * @post    The number of ingredients is incremented by one
+     *          if there is no ingredient that is equal to the ingredient
+     *          | if for each ingredient in getIngredients():
+     *          |   !ingredient.equals(container.getContent())
+     *          | then new.getNbOfIngredients() == getNbOfIngredients()+1
+     *          TODO
+     * @throws  IllegalArgumentException
+     *          The container is a null reference
+     *          or the ingredient inside the container is not valid for this storage
+     *          | container == null || !canHaveAsIngredient(container.getContent())
+     */
+    public void addIngredient(IngredientContainer container) throws IllegalArgumentException{
+        if (container == null || !canHaveAsIngredient(container.getContent())) throw new IllegalArgumentException();
+        for (int i = 0; i < getNbOfIngredients(); i++) {
+            if (getIngredientAt(i).equals(container.getContent())) {
+                AlchemicIngredient ing = getIngredientAt(i);
+                AlchemicIngredient addedIngredient = new AlchemicIngredient(ing.getSpoonAmount() + container.getContent().getSpoonAmount(),
+                        Unit.SPOON, new Temperature(ing.getColdness(), ing.getHotness()), ing.getType(), ing.getState());
+                getIngredients().set(i, addedIngredient);
+                container.getContent().setContainerized(false);
+                container.terminate();
+                return;
+            }
+        }
+        getIngredients().add(container.getContent());
+        container.getContent().setContainerized(false);
+        container.terminate();
+    }
 
 }
