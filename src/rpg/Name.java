@@ -17,15 +17,21 @@ public class Name {
 	private static final String ALLOWED_NAME_SYMBOLS = " '()";
 
 	public Name(String specialName, String... simpleNameParts) {
+		if (simpleNameParts == null || simpleNameParts.length == 0) {
+			throw new IllegalArgumentException("Illegal simple name!");
+		}
+		if (simpleNameParts.length == 1 && specialName != null) {
+			throw new IllegalArgumentException("No special name allowed!");
+		}
 		for (String simpleNamePart : simpleNameParts) {
 			if (!isValidName(simpleNamePart)) {
 				throw new IllegalArgumentException("Illegal Name");
 			}
 		}
-		setSpecialName(specialName);
 		// order the simple name parts and store them
 		Arrays.sort(simpleNameParts);
 		this.simpleNameParts = simpleNameParts;
+		setSpecialName(specialName);
 	}
 
 	public static boolean isValidName(String[] names) {
@@ -38,6 +44,9 @@ public class Name {
 	}
 
 	protected void setSpecialName(String specialName) {
+		if (simpleNameParts.length == 1 && specialName != null) {
+			throw new IllegalStateException("No special name allowed!");
+		}
 		if (specialName != null && !isValidName(specialName)) {
 			throw new IllegalArgumentException("Illegal Name");
 		}

@@ -34,8 +34,8 @@ public class IngredientTypeTest {
 
 	@BeforeEach
 	public void setUpForEach(){
-		ingrTypeEverything = new IngredientType(null, null, State.LIQUID, standardTemperature, false);
-		ingrTypeMixed = new IngredientType(null, null, State.LIQUID, standardTemperature, true);
+		ingrTypeEverything = new IngredientType(null, State.LIQUID, standardTemperature, false);
+		ingrTypeMixed = new IngredientType(null, State.LIQUID, standardTemperature, true);
 	}
 
 	/**
@@ -45,125 +45,24 @@ public class IngredientTypeTest {
 	@Test
 	public void testConstructor_mostExtended_legal() {
 
-		ingrTypeNullSpecialName = new IngredientType(null, null, State.LIQUID, standardTemperature, false);
-		ingrTypeDiffTemp = new IngredientType(null, null, State.LIQUID, coldTemperature, false);
-		ingrTypeMixed = new IngredientType(null, null, State.LIQUID, standardTemperature, true);
-		ingrTypeDiffState = new IngredientType(null, null, State.POWDER, standardTemperature, false);
+		ingrTypeNullSpecialName = new IngredientType(null, State.LIQUID, standardTemperature, false);
+		ingrTypeDiffTemp = new IngredientType(null, State.LIQUID, coldTemperature, false);
+		ingrTypeMixed = new IngredientType(null, State.LIQUID, standardTemperature, true);
+		ingrTypeDiffState = new IngredientType(null, State.POWDER, standardTemperature, false);
 
 		// ingrTypeEverything
-		assertEquals(null, ingrTypeEverything.getSimpleName());
-		assertEquals(null, ingrTypeEverything.getSpecialName());
+		assertEquals(null, ingrTypeEverything.getName());
 		assertEquals(State.LIQUID, ingrTypeEverything.getStandardState());
 		assertEquals(0, ingrTypeEverything.getStandardTemperature()[0]);
 		assertEquals(20, ingrTypeEverything.getStandardTemperature()[1]);
 		assertFalse(ingrTypeEverything.isMixed());
 
 		// different objects
-		assertNull(ingrTypeNullSpecialName.getSpecialName());
+		assertNull(ingrTypeNullSpecialName.getName());
 		assertEquals(30, ingrTypeDiffTemp.getStandardTemperature()[0]);
 		assertEquals(0, ingrTypeDiffTemp.getStandardTemperature()[1]);
 		assertTrue(ingrTypeMixed.isMixed());
 		assertEquals(State.POWDER, ingrTypeDiffState.getStandardState());
 
-	}
-
-	/**
-	 * NAME
-	 */
-
-	@Test
-	public void name_LegalCase1(){
-		String name = "Cola";
-		assertTrue(ingrTypeEverything.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_LegalCase2(){
-		String name = "Red Mushroom Gas";
-		assertTrue(ingrTypeEverything.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_LegalCase3(){
-		String name = "Rat's Eye Fluid";	// dit special teken werkt nog niet ...
-		assertTrue(ingrTypeEverything.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_LegalCase4(){
-		String name = "Sap";
-		assertTrue(ingrTypeEverything.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_LegalCase5(){
-		String name = "Water Qi";
-		assertTrue(ingrTypeEverything.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_LegalCase6(){
-		String name = "Qi Water";
-		assertTrue(ingrTypeEverything.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_IllegalCase1(){
-		String name = "Heated Water";
-		assertFalse(ingrTypeEverything.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_IllegalCase2(){
-		String name = "Cooled Water mixed with Cola";
-		assertFalse(ingrTypeEverything.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_IllegalCase3(){
-		String name = "Water mixed with Cola";
-		assertFalse(ingrTypeEverything.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_IllegalCase4(){
-		String name = "Qi";
-		assertFalse(ingrTypeEverything.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_IllegalCase5(){
-		String name = "";
-		assertFalse(ingrTypeEverything.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_IllegalCase6(){
-		String name = "5%6*%87";
-		assertFalse(ingrTypeEverything.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_IllegalCase7(){
-		String name = "mixed with Cola Coke with Beer mixed mixed";
-		assertFalse(ingrTypeMixed.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_mixed_LegalCase1(){
-		String name = "Beer mixed with Coke";
-		assertTrue(ingrTypeMixed.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_mixed_LegalCase2(){
-		String name = "Beer mixed with Coke, Water and Sprite";
-		assertTrue(ingrTypeMixed.canHaveAsName(name));
-	}
-
-	@Test
-	public void name_mixed_LegalCase3(){
-		String name = "Beer mixed with Coke and Sprite";
-		assertTrue(ingrTypeMixed.canHaveAsName(name));
 	}
 }

@@ -29,8 +29,8 @@ public class RecipeTest {
         ingredientsSetUp = new ArrayList<>();
         operations = new ArrayList<>();
         operationsSetUp = new ArrayList<>();
-        type = new IngredientType("Beer", State.LIQUID, new Temperature(0, 20), false);
-        type2 = new IngredientType("Cola", State.LIQUID, new Temperature(0, 20), false);
+        type = new IngredientType(null, State.LIQUID, new Temperature(0, 20), false);
+        type2 = new IngredientType(null, State.LIQUID, new Temperature(0, 20), false);
         ingredientsSetUp.add(new AlchemicIngredient(2, Unit.BOTTLE,
                 new Temperature(0, 20), type, State.LIQUID));
         ingredientsSetUp.add(new AlchemicIngredient(3, Unit.SACHET,

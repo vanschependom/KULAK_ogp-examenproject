@@ -27,7 +27,7 @@ public class ContainerTest {
 
 	@BeforeEach
 	public void setUpForEach(){
-		mixedIngrTypePowder = new IngredientType(null, null, State.POWDER, coldTemperature, true);
+		mixedIngrTypePowder = new IngredientType(null, State.POWDER, coldTemperature, true);
 		ingredient = new AlchemicIngredient(20, Unit.BOX, standardTemperature, mixedIngrTypePowder, State.POWDER);
 	}
 
