@@ -4,8 +4,15 @@ import java.util.Arrays;
 
 public class Name {
 
+	// TODO SPECIFICATION
+
 	private final String[] simpleNameParts;
 	private String specialName;
+	private final static Name WATER = new Name(null, "Water");
+
+	public static Name getWater() {
+		return WATER;
+	}
 
 	private static final String ALLOWED_NAME_SYMBOLS = " '()";
 

@@ -7,10 +7,8 @@ import rpg.*;
 /**
  * A class representing an alchemic ingredient type.
  *
- * @invar	The simple name of an ingredient type must always be valid.
- * 			| canHaveAsName(getSimpleName())
- * @invar	The special name of an ingredient type must always be valid.
- * 			| getSpecialName() == null || canHaveAsName(getSpecialName())
+ * @invar	The name of an ingredient type must always be valid.
+ * 			| isValidName(getNameObject())
  * @invar 	The state of an ingredient type must always be valid.
  * 			| isValidState(getStandardState())
  * @invar	The standard temperature of an ingredient type must always be valid.
@@ -26,20 +24,18 @@ public class IngredientType {
 	/**
 	 * A variable referencing the default ingredient type, water.
 	 */
-	public static final IngredientType DEFAULT = new IngredientType(new Name(null, "Water"), null, State.LIQUID, new Temperature(0, 20), false);
+	public static final IngredientType DEFAULT = new IngredientType(Name.getWater(), null, State.LIQUID, new Temperature(0, 20), false);
 
 	/**********************************************************
 	 * CONSTRUCTORS
 	 **********************************************************/
 
 	/**
-	 * A constructor for creating a new ingredient type with given simple name,
-	 * special name, state, temperature and mixed state.
+	 * A constructor for creating a new ingredient type with given name,
+	 * state, temperature and mixed state.
 	 *
-	 * @param 	simpleName
-	 * 			The simple name of the new ingredient type.
-	 * @param 	specialName
-	 * 			The special name of the new ingredient type.
+	 * @param 	name
+	 * 			The name of the new ingredient type.
 	 * @param 	standardState
 	 * 			The state of the new ingredient type.
 	 * @param 	standardTemperature
@@ -47,10 +43,6 @@ public class IngredientType {
 	 * @param 	isMixed
 	 * 			A boolean indicating whether the new ingredient type is mixed or not.
 	 *
-	 * @post	If the given simple name is a valid simple name, the simple name
-	 * 			is set to the provided simple name.
-	 * 			| if (canHaveAsName(simpleName))
-	 * 			| then new.getSimpleName() == simpleName
 	 * @post	If the given state is valid, the state of the new ingredient type is set to the
 	 * 			given state.
 	 * 			| if (isValidState(state))
@@ -66,28 +58,17 @@ public class IngredientType {
 	 *          | then new.getStandardTemperatureObject() == temperature
 	 * @post	The mixed state of the new ingredient type is set to the given mixed state.
 	 * 			| new.isMixed() == isMixed
-	 * @effect	If the special name is effective, the special name of the new ingredient type
-	 * 			is set to the given special name if the given special name is a valid name for
-	 * 			an ingredient type.
-	 * 			| if (specialName != null)
-	 * 			| then setSpecialName(specialName)
 	 *
-	 * @throws	IllegalNameException
-	 * 			The given simple name is not a valid name for an ingredient type.
-	 * 			| !canHaveAsName(simpleName)
-	 * @throws	IllegalNameException
-	 * 			The given effective special name is not a valid name for an ingredient type.
-	 * 			| specialName != null && !canHaveAsName(specialName)
+	 * @effect 	The name of the new ingredient type is set to the given name.
+	 * 			| setName(name)
+	 *
 	 * @throws	IllegalStateException
 	 * 			The given state is not a valid state for an ingredient type.
 	 * 			| !isValidState(state)
 	 */
 	@Raw
-	public IngredientType(Name simpleName, Name specialName, State standardState, Temperature standardTemperature, boolean isMixed)
+	public IngredientType(Name name, State standardState, Temperature standardTemperature, boolean isMixed)
 			throws IllegalNameException, IllegalStateException {
-		if (!canHaveAsName(null)) {
-			throw new IllegalNameException(null);
-		}
 		if (!isValidState(standardState)) {
 			throw new IllegalStateException("Invalid state! State must be effective.");
 		}
@@ -96,41 +77,15 @@ public class IngredientType {
 		} else {
 			this.standardTemperature = standardTemperature;
 		}
-		if (specialName != null) {
-			setSpecialName(null);
-		}
-		this.simpleName = null;			// legal, exception is thrown if not
-		this.standardState = standardState;		// legal, exception is thrown if not
 		this.isMixed = isMixed;					// always valid (boolean)
-	}
-
-	/**
-	 * A constructor for creating a new ingredient type with given simple name,
-	 * state, temperature and mixed state.
-	 *
-	 * @param 	simpleName
-	 * 			The simple name of the new ingredient type.
-	 * @param 	standardState
-	 * 			The standard state of the new ingredient type.
-	 * @param 	standardTemperature
-	 * 			The standard temperature of the new ingredient type.
-	 * @param 	isMixed
-	 * 			A boolean indicating whether the new ingredient type is mixed or not.
-	 *
-	 * @effect	An ingredient type with the given parameters
-	 * 			and a special name of null is created
-	 * 			| this(simpleName, null, standardState, temperature, isMixed)
-	 */
-	@Raw
-	public IngredientType(String simpleName, State standardState, Temperature standardTemperature, boolean isMixed)
-			throws IllegalNameException, IllegalStateException {
-		this(null, null, standardState, standardTemperature, isMixed);
+		setName(name);
+		this.standardState = standardState;		// legal, exception is thrown if not
 	}
 
 
 
 	/**********************************************************
-	 * NAME - DEFENSIVE
+	 * MIXED
 	 **********************************************************/
 
 	/**
@@ -146,55 +101,42 @@ public class IngredientType {
 		return isMixed;
 	}
 
-	/**
-	 * A variable containing all the allowed symbols in the name of any ingredient type, which
-	 * will not change during the execution of the program.
-	 */
-	private final static String ALLOWED_NAME_SYMBOLS = "'()";
+	/**********************************************************
+	 * NAME - DEFENSIVE
+	 **********************************************************/
 
 	/**
-	 * A variable referencing the simple name of the ingredient type.
+	 * A variable referencing the name of the ingredient type.
 	 */
-	private final String simpleName;
+	private Name name;
 
 	/**
-	 * A getter for the simple name of the ingredient type.
-	 */
-	@Basic @Immutable
-	public String getSimpleName() {
-		return simpleName;
-	}
-
-	/**
-	 * A variable referencing the special name of the ingredient type.
-	 */
-	private String specialName = null;
-
-	/**
-	 * A getter for the special name of the ingredient type.
+	 * A getter for the name of the ingredient type.
 	 */
 	@Basic
-	public String getSpecialName() {
-		return specialName;
+	public Name getName() {
+		return name;
 	}
 
 	/**
-	 * A setter for the special name of the ingredient type.
+	 * A setter for the name of the ingredient type.
 	 *
-	 * @param 	specialName
-	 * 			The special name to be set.
-	 * @post	The special name of the ingredient type is set to the given special name.
-	 * 			| new.getSpecialName() == specialName
+	 * @param 	name
+	 * 			The name to set.
+	 * @post	If the given name is a valid name for an ingredient type, the name of the ingredient type
+	 * 			is set to the given name.
+	 * 			| if (canHaveAsName(name))
+	 * 			| then new.getName() == name
 	 * @throws	IllegalNameException
-	 * 			The given special name is not a valid name for an ingredient type.
-	 * 			| !canHaveAsName(specialName)
+	 * 			The given name is not a valid name for an ingredient type.
+	 * 			| !canHaveAsName(name)
 	 */
 	@Model @Raw
-	private void setSpecialName(String specialName) throws IllegalNameException {
-		if (!canHaveAsName(specialName)) {
-			throw new IllegalNameException(specialName);
+	private void setName(Name name) throws IllegalNameException {
+		if (!canHaveAsName(name)) {
+			throw new IllegalNameException(null);
 		}
-		this.specialName = specialName;
+		this.name = name;
 	}
 
 	/**
@@ -202,30 +144,13 @@ public class IngredientType {
 	 *
 	 * @param 	name
 	 * 			The name to check.
-
-	 * @return 	If none of the cases above apply then return true
-	 * 			| result == true
-	 * 			TODO: navragen of dit mag van specificatie
+	 * @return	True if and only if the name is effective and if the
+	 * 			mixed state of the name is equal to the mixed state of the ingredient type.
+	 * 			| result == (name != null && name.isMixed() == isMixed())
 	 */
 	@Raw
-	public boolean canHaveAsName(String name) {
-		if (name == null || name.isEmpty()) {
-			return false;
-		}
-		// ...
-		return true;
-	}
-
-	/**
-	 * A method for checking whether a given symbol is a legal symbol for a name.
-	 * @param 	symbol
-	 * 			The symbol to check
-	 * @return	True if the symbol is a legal symbol for a name; false otherwise.
-	 * 			| result == (ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1)
-	 */
-	@Model @Raw
-	private static boolean isLegalSymbol(char symbol) {
-		return ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1;
+	public boolean canHaveAsName(Name name) {
+		return (name == null && name.isMixed() == isMixed());
 	}
 
 
