@@ -119,6 +119,9 @@ public class Name {
 	}
 
 	public String getSpecialName() {
+		if (!isMixed()) {
+			throw new IllegalStateException("No special name available since this is not a mixture!");
+		}
 		return specialName;
 	}
 

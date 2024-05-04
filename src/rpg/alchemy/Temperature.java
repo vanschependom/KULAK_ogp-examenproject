@@ -106,6 +106,14 @@ public class Temperature {
 	}
 
 	/**
+	 * A method for getting the standard hotness.
+	 */
+	@Basic @Immutable
+	public static long getStandardHotness() {
+		return STANDARD_HOTNESS;
+	}
+
+	/**
 	 * A setter for the hotness of the temperature.
 	 * @param 	hotness
 	 * 			The new hotness to be set
@@ -131,6 +139,14 @@ public class Temperature {
 	@Basic
 	public long getColdness() {
 		return coldness;
+	}
+
+	/**
+	 * A method for getting the standard coldness.
+	 */
+	@Basic @Immutable
+	public static long getStandardColdness() {
+		return STANDARD_COLDNESS;
 	}
 
 	/**

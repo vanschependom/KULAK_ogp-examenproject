@@ -345,6 +345,33 @@ public class AlchemicIngredient {
 
 
     /**********************************************************
+     * NAME
+     **********************************************************/
+
+    // TODO specification
+    public String getSimpleName() {
+        return getType().getName().getSimpleName();
+    }
+
+    // TODO specification
+    public String getSpecialName() {
+        return getType().getName().getSpecialName();
+    }
+
+    // TODO specification
+    public String getFullName() {
+        if ( temperature.getHotness() > Temperature.getStandardHotness() ) {
+            return "Heated" + getSimpleName();
+        } else if ( temperature.getColdness() < Temperature.getStandardColdness() ) {
+            return "Cooled" + getSimpleName();
+        } else {
+            return getSimpleName();
+        }
+    }
+
+
+
+    /**********************************************************
      * DESTRUCTOR
      **********************************************************/
 
