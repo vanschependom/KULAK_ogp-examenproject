@@ -26,7 +26,7 @@ public class IngredientType {
 	/**
 	 * A variable referencing the default ingredient type, water.
 	 */
-	public static final IngredientType DEFAULT = new IngredientType("Water", null, State.LIQUID, new Temperature(0, 20), false);
+	public static final IngredientType DEFAULT = new IngredientType(new Name(null, "Water"), null, State.LIQUID, new Temperature(0, 20), false);
 
 	/**********************************************************
 	 * CONSTRUCTORS
@@ -83,10 +83,10 @@ public class IngredientType {
 	 * 			| !isValidState(state)
 	 */
 	@Raw
-	public IngredientType(String simpleName, String specialName, State standardState, Temperature standardTemperature, boolean isMixed)
+	public IngredientType(Name simpleName, Name specialName, State standardState, Temperature standardTemperature, boolean isMixed)
 			throws IllegalNameException, IllegalStateException {
-		if (!canHaveAsName(simpleName)) {
-			throw new IllegalNameException(simpleName);
+		if (!canHaveAsName(null)) {
+			throw new IllegalNameException(null);
 		}
 		if (!isValidState(standardState)) {
 			throw new IllegalStateException("Invalid state! State must be effective.");
@@ -97,9 +97,9 @@ public class IngredientType {
 			this.standardTemperature = standardTemperature;
 		}
 		if (specialName != null) {
-			setSpecialName(specialName);
+			setSpecialName(null);
 		}
-		this.simpleName = simpleName;			// legal, exception is thrown if not
+		this.simpleName = null;			// legal, exception is thrown if not
 		this.standardState = standardState;		// legal, exception is thrown if not
 		this.isMixed = isMixed;					// always valid (boolean)
 	}
@@ -124,7 +124,7 @@ public class IngredientType {
 	@Raw
 	public IngredientType(String simpleName, State standardState, Temperature standardTemperature, boolean isMixed)
 			throws IllegalNameException, IllegalStateException {
-		this(simpleName, null, standardState, standardTemperature, isMixed);
+		this(null, null, standardState, standardTemperature, isMixed);
 	}
 
 

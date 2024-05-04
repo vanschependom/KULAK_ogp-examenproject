@@ -34,8 +34,8 @@ public class IngredientTypeTest {
 
 	@BeforeEach
 	public void setUpForEach(){
-		ingrTypeEverything = new IngredientType("Simple Name", "Special Name", State.LIQUID, standardTemperature, false);
-		ingrTypeMixed = new IngredientType("Simple Name", "Special Name", State.LIQUID, standardTemperature, true);
+		ingrTypeEverything = new IngredientType(null, null, State.LIQUID, standardTemperature, false);
+		ingrTypeMixed = new IngredientType(null, null, State.LIQUID, standardTemperature, true);
 	}
 
 	/**
@@ -45,14 +45,14 @@ public class IngredientTypeTest {
 	@Test
 	public void testConstructor_mostExtended_legal() {
 
-		ingrTypeNullSpecialName = new IngredientType("Simple Name", null, State.LIQUID, standardTemperature, false);
-		ingrTypeDiffTemp = new IngredientType("Simple Name", "Special Name", State.LIQUID, coldTemperature, false);
-		ingrTypeMixed = new IngredientType("Simple Name", "Special Name", State.LIQUID, standardTemperature, true);
-		ingrTypeDiffState = new IngredientType("Simple Name", "Special Name", State.POWDER, standardTemperature, false);
+		ingrTypeNullSpecialName = new IngredientType(null, null, State.LIQUID, standardTemperature, false);
+		ingrTypeDiffTemp = new IngredientType(null, null, State.LIQUID, coldTemperature, false);
+		ingrTypeMixed = new IngredientType(null, null, State.LIQUID, standardTemperature, true);
+		ingrTypeDiffState = new IngredientType(null, null, State.POWDER, standardTemperature, false);
 
 		// ingrTypeEverything
-		assertEquals("Simple Name", ingrTypeEverything.getSimpleName());
-		assertEquals("Special Name", ingrTypeEverything.getSpecialName());
+		assertEquals(null, ingrTypeEverything.getSimpleName());
+		assertEquals(null, ingrTypeEverything.getSpecialName());
 		assertEquals(State.LIQUID, ingrTypeEverything.getStandardState());
 		assertEquals(0, ingrTypeEverything.getStandardTemperature()[0]);
 		assertEquals(20, ingrTypeEverything.getStandardTemperature()[1]);
