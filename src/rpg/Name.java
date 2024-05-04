@@ -31,7 +31,7 @@ public class Name {
 	}
 
 	protected void setSpecialName(String specialName) {
-		if (!isValidName(specialName)) {
+		if (specialName != null && !isValidName(specialName)) {
 			throw new IllegalArgumentException("Illegal Name");
 		}
 		this.specialName = specialName;
@@ -107,12 +107,20 @@ public class Name {
 	}
 
 	public String getSimpleName() {
-		if (isMixed()) {
+		if (!isMixed()) {
 			return simpleNameParts[0];
 		} else {
+			// first part
 			String toReturn = simpleNameParts[0] + " mixed with " + simpleNameParts[1];
+			// middle parts
 			for (int i = 2; i < simpleNameParts.length; i++) {
-				toReturn += " and " + simpleNameParts[i];
+				if (i != simpleNameParts.length - 1) {
+					toReturn += ", ";
+				} else {
+					// last part
+					toReturn += " and ";
+				}
+				toReturn += simpleNameParts[i];
 			}
 			return toReturn;
 		}

@@ -28,4 +28,40 @@ public class NameTest {
 		assertTrue(Name.isValidName("Ab Cd's Ef"));
 	}
 
+	@Test
+	public void testConstructor1() {
+		Name name = new Name(null, "Red Mushroom Gas");
+		assertFalse(name.isMixed());
+		assertEquals("Red Mushroom Gas", name.getSimpleName());
+		assertNull(name.getSpecialName());
+	}
+
+	@Test
+	public void testConstructor2() {
+		Name name = new Name(null, "Red Mushroom Gas", "Lizard's Tale");
+		assertTrue(name.isMixed());
+		assertEquals("Lizard's Tale mixed with Red Mushroom Gas", name.getSimpleName());
+		assertNull(name.getSpecialName());
+	}
+
+	@Test
+	public void testConstructorAlphabeticalOrder() {
+		Name name = new Name(null, "Def", "Abc");
+		assertEquals("Abc mixed with Def", name.getSimpleName());
+	}
+
+	@Test
+	public void testConstructor3() {
+		Name name = new Name("Mazout", "Beer", "Coke");
+		assertTrue(name.isMixed());
+		assertEquals("Beer mixed with Coke", name.getSimpleName());
+		assertEquals("Mazout", name.getSpecialName());
+	}
+
+	@Test
+	public void testConstructor4() {
+		Name name = new Name(null, "Ccc", "Ddd", "Aaa", "Bbb");
+		assertEquals("Aaa mixed with Bbb, Ccc and Ddd", name.getSimpleName());
+	}
+
 }
