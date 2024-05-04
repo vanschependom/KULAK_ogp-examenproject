@@ -348,17 +348,42 @@ public class AlchemicIngredient {
      * NAME
      **********************************************************/
 
-    // TODO specification
+    /**
+     * A method for getting the simple name of the ingredient.
+     *
+     * @return  The simple name of the ingredient, which is the simple name of the
+     *          name of the type of the ingredient.
+     *          | result == getType().getName().getSimpleName()
+     */
     public String getSimpleName() {
         return getType().getName().getSimpleName();
     }
 
-    // TODO specification
+    /**
+     * A method for getting the special name of the ingredient.
+     *
+     * @return  The special name of the ingredient, which is the special name of the
+     *          name of the type of the ingredient.
+     *          | result == getType().getName().getSpecialName()
+     */
     public String getSpecialName() {
         return getType().getName().getSpecialName();
     }
 
-    // TODO specification
+    /**
+     * A method for getting the full name of the ingredient.
+     *
+     * @return  If the ingredient is heated, the full name is "Heated" + the simple name.
+     *          | if ( temperature.getHotness() > Temperature.getStandardHotness() )
+     *          | then result == "Heated" + getSimpleName()
+     * @return  If the ingredient is cooled, the full name is "Cooled" + the simple name.
+     *          | if ( temperature.getColdness() < Temperature.getStandardColdness() )
+     *          | then result == "Cooled" + getSimpleName()
+     * @return  If the ingredient is neither heated nor cooled, the full name is the simple name.
+     *          | if (temperature.getHotness() = Temperature.getStandardHotness() &&
+     *          |   temperature.getColdness() = Temperature.getStandardColdness() )
+     *          | then result == getSimpleName()
+     */
     public String getFullName() {
         if ( temperature.getHotness() > Temperature.getStandardHotness() ) {
             return "Heated" + getSimpleName();
