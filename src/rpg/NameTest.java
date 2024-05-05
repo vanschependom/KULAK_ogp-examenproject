@@ -49,6 +49,7 @@ public class NameTest {
 	public void testConstructorAlphabeticalOrder() {
 		Name name = new Name(null, "Def", "Abc");
 		assertEquals("Abc mixed with Def", name.getSimpleName());
+		assertNull(name.getSpecialName());
 	}
 
 	@Test
@@ -63,6 +64,7 @@ public class NameTest {
 	public void testConstructor4() {
 		Name name = new Name(null, "Ccc", "Ddd", "Aaa", "Bbb");
 		assertEquals("Aaa mixed with Bbb, Ccc and Ddd", name.getSimpleName());
+		assertNull(name.getSpecialName());
 	}
 
 }

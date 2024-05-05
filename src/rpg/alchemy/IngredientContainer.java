@@ -73,6 +73,21 @@ public class IngredientContainer {
         return content;
     }
 
+    /**
+     * A method to check if the content (ingredient) could be stored in the container.
+     *
+     * @param   content
+     *          The content that you want to check
+     * @return  If the content is a null pointer, return true.
+     *          | if (content == null)
+     *          | then result == true
+     * @return  If the amount of the content is less or equal than the capacity and
+     *          if the capacity and the content share the same state and if the ingredient
+     *          isn't terminated then return true, otherwise return false.
+     *          | result == (content.getSpoonAmount() <= getCapacity().getSpoonEquivalent())
+     *                      && ( getCapacity().hasAsAllowedState(content.getState()) )
+     *                      && ( !content.isTerminated())
+     */
     public boolean canHaveAsContent(AlchemicIngredient content) {
         if (content == null) {
             return true;
@@ -140,7 +155,5 @@ public class IngredientContainer {
         isTerminated = true;
         content = null;
     }
-
-
 
 }
