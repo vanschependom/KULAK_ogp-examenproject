@@ -65,7 +65,7 @@ public class Name {
 	@Raw
 	public Name(String specialName, String... simpleNameParts) throws IllegalArgumentException, IllegalStateException {
 		if (!isValidSimpleNameParts(simpleNameParts)) {
-			throw new IllegalArgumentException("Illegal simple name!");
+			throw new IllegalArgumentException("Invalid simple name parts!");
 		}
 		if (simpleNameParts.length == 1 && specialName != null) {
 			throw new IllegalStateException("No special name allowed!");

@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * @invar   The instruction set of the recipe is valid.
  *          | isValidInstructionSet(getIngredients(), getOperations())
  *
- * @note    We doen aan TOTAL programming
+ * @note    We implement this class using Total Programming.
  *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
@@ -45,22 +45,26 @@ public class Recipe {
      */
     private ArrayList<Operation> operations = new ArrayList<Operation>();
 
+
+
     /**********************************************************
      * Constructors
      **********************************************************/
 
     /**
-     * A constructor for the Recipe class
+     * A constructor for creating a new recipe with a given set of ingredients and operations.
      *
      * @param   ingredients
      *          The ingredient list for the recipe
      * @param   operations
      *          The operation list for the recipe
      *
-     * @effect  The ingredient list of the recipe is set to ingredients
-     *          | setIngredients(ingredients);
-     * @effect  The operation list of the recipe is set to operations
-     *          | setOperations(operations);
+     * @effect  The ingredient list of the recipe is set to ingredients if the instruction set is valid
+     *          | if isValidInstructionSet(ingredients, operations)
+     *          |   then setIngredients(ingredients)
+     * @effect  The operation list of the recipe is set to operations if the instruction set is valid
+     *          | if isValidInstructionSet(ingredients, operations)
+     *          |   then setOperations(operations)
      */
     @Raw
     public Recipe(ArrayList<AlchemicIngredient> ingredients, ArrayList<Operation> operations) {
@@ -71,7 +75,7 @@ public class Recipe {
     }
 
     /**
-     * A constructor for the Recipe class
+     * A constructor for creating a new recipe with an empty set of ingredients and operations.
      *
      * @effect  A recipe with no ingredients and no operations is created
      *          | this(new ArrayList<AlchemicIngredient>(), new ArrayList<Operation>())
@@ -80,6 +84,8 @@ public class Recipe {
     public Recipe() {
         this(new ArrayList<AlchemicIngredient>(), new ArrayList<Operation>());
     }
+
+
 
     /**********************************************************
      * Termination
