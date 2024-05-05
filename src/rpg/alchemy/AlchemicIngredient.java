@@ -383,9 +383,9 @@ public class AlchemicIngredient {
      *          | then result.equals(getSimpleName())
      */
     private String getExtendedSimpleName() {
-        if ( temperature.isHotterThan(getType().getStandardTemperatureObject()) ) {
+        if ( temperature.isHotterThan(getType().getStandardTemperature()) ) {
             return "Heated " + getSimpleName();
-        } else if ( temperature.isColderThan(getType().getStandardTemperatureObject()) ) {
+        } else if ( temperature.isColderThan(getType().getStandardTemperature()) ) {
             return "Cooled " + getSimpleName();
         } else {
             return getSimpleName();

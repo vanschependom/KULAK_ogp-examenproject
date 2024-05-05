@@ -5,6 +5,9 @@ import java.util.ArrayList;
 /**
  * A class representing a temperature device inside a laboratory.
  *
+ * @invar   The temperature device must always have a valid temperature.
+ *          | isValidTemperature(getTemperature())
+ *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
  * @author	Flor De Meulemeester
@@ -100,9 +103,37 @@ public abstract class TemperatureDevice extends Device {
     /**
      * A getter for the temperature of a temperature device.
      */
-    @Basic
-    public Temperature getTemperature() {
+    protected Temperature getTemperature() {
         return temperature;
+    }
+
+    /**
+     * A method to check if a temperature is a valid temperature.
+     *
+     * @param   temperature
+     *          The temperature to check.
+     *
+     * @return  False if the temperature is a null pointer.
+     *          | temperature == null
+     *
+     * @note    We don't close the specification yet!
+     */
+    public boolean isValidTemperature(Temperature temperature) {
+        return temperature != null;
+    }
+
+    /**
+     * A method to get the hotness of a temperature device.
+     */
+    public long getHotness() {
+        return getTemperature().getHotness();
+    }
+
+    /**
+     * A method to get the coldness of a temperature device.
+     */
+    public long getColdness() {
+        return getTemperature().getColdness();
     }
 
     /**

@@ -60,6 +60,16 @@ public abstract class StorageLocation {
     private final ArrayList<AlchemicIngredient> ingredients = new ArrayList<>();
 
     /**
+     * A method for checking if a storage location is empty.
+     *
+     * @return  True if and only if the storage location has no ingredients.
+     *          | result == (getNbOfIngredients() == 0)
+     */
+    public boolean isEmpty() {
+        return getNbOfIngredients() == 0;
+    }
+
+    /**
      * A method for checking if the ingredients in a storage location are valid.
      *
      * @return  False if there is an ingredient that is not valid

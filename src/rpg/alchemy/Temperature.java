@@ -277,17 +277,30 @@ public class Temperature {
 	 *
 	 * @param 	other
 	 * 			The other temperature to compare to
-	 * @return	True if one of the following is true:
-	 * 			  - other is a null pointer
-	 * 			  - the own hotness is bigger than the other hotness
-	 * 			  - the own coldness is smaller than the other coldness
-	 * 			False otherwise.
+	 * @return	True if and only if the other is a null pointer, or
+	 * 			the other hotness is smaller than the own hotness, or
+	 * 			the other coldness is bigger than the own coldness.
 	 * 			| result ==
-	 * 			|	( other == null	|| getHotness() > other.getHotness()
-	 * 			|		|| getColdness() < other.getColdness() )
+	 * 			|	( other == null	|| getHotness() > other[1]
+	 * 			|		|| getColdness() < other[0] )
 	 */
-	public boolean isHotterThan(Temperature other) {
-		return (other == null || getHotness() > other.getHotness() || getColdness() < other.getColdness());
+	public boolean isHotterThan(long[] other) {
+		return (other == null || getHotness() > other[1] || getColdness() < other[0]);
+	}
+
+	/**
+	 * A method for checking if one temperature is colder than the other.
+	 * @param 	other
+	 * 			The other temperature to compare to
+	 * @return	True if and only if the other is a null pointer, or
+	 * 			the other coldness is smaller than the own coldness, or
+	 * 			the other hotness is bigger than the own hotness.
+	 * 			| result ==
+	 * 			|	( other == null	|| getColdness() > other[0]
+	 * 			|		|| getHotness() < other[1] )
+	 */
+	public boolean isColderThan(long[] other) {
+		return (other == null || getColdness() > other[0] || getHotness() < other[1]);
 	}
 
 	/**
@@ -296,26 +309,8 @@ public class Temperature {
 	 * @param 	other
 	 * 			The other temperature to calculate the difference of
 	 */
-	public long difference(Temperature other) {
-		return abs(getColdness() - other.getColdness()) + abs(getHotness() - other.getHotness());
-	}
-
-	/**
-	 * A method for checking if one temperature is colder than the other.
-	 *
-	 * @param 	other
-	 * 			The other temperature to compare to
-	 * @return	True if one of the following is true:
-	 * 			  - other is a null pointer
-	 * 			  - the own coldness is bigger than the other coldness
-	 * 			  - the own hotness is smaller than the other hotness
-	 * 			False otherwise.
-	 * 			| result ==
-	 * 			| 	( other == null || getColdness() > other.getColdness()
-	 * 			|			|| getHotness() < other.getHotness() )
-	 */
-	public boolean isColderThan(Temperature other) {
-		return (other == null || getColdness() > other.getColdness() || getHotness() < other.getHotness());
+	public long difference(long[] other) {
+		return abs(getColdness() - other[0]) + abs(getHotness() - other[1]);
 	}
 
 	/**
