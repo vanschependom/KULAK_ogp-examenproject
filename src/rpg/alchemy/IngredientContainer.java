@@ -3,8 +3,6 @@ package rpg.alchemy;
 import be.kuleuven.cs.som.annotate.*;
 import rpg.Unit;
 
-import java.util.List;
-
 /**
  * A class representing an ingredient containers.
  *
@@ -45,12 +43,12 @@ public class IngredientContainer {
         if (!isValidCapacity(capacity)) {
             throw new IllegalArgumentException("The given unit is not a valid capacity!");
         } else {
-            this.capacity = capacity;           // static variable
+            this.capacity = capacity;           // final variable
         }
         if (!canHaveAsContent(content)){
             throw new IllegalArgumentException("The given content is not legal!");
         } else {
-            this.content = content;           // static variable
+            this.content = content;           // final variable
         }
     }
 
@@ -152,8 +150,10 @@ public class IngredientContainer {
      * Terminates the container.
      */
     public void terminate() {
-        isTerminated = true;
-        content = null;
+        if (!isTerminated()){
+            isTerminated = true;
+            content = null;
+        }
     }
 
 }
