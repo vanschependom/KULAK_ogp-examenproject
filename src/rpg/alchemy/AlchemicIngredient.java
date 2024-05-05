@@ -369,26 +369,45 @@ public class AlchemicIngredient {
     }
 
     /**
-     * A method for getting the full name of the ingredient.
+     * A method for getting the extended simple name of the ingredient (with heated or cooled).
      *
      * @return  If the ingredient is heated, the full name is "Heated" + the simple name.
      *          | if ( temperature.getHotness() > Temperature.getStandardHotness() )
-     *          | then result == "Heated" + getSimpleName()
+     *          | then result == "Heated " + getSimpleName()
      * @return  If the ingredient is cooled, the full name is "Cooled" + the simple name.
-     *          | if ( temperature.getColdness() < Temperature.getStandardColdness() )
-     *          | then result == "Cooled" + getSimpleName()
+     *          | if ( temperature.getColdness() > Temperature.getStandardColdness() )
+     *          | then result == "Cooled " + getSimpleName()
      * @return  If the ingredient is neither heated nor cooled, the full name is the simple name.
      *          | if (temperature.getHotness() = Temperature.getStandardHotness() &&
      *          |   temperature.getColdness() = Temperature.getStandardColdness() )
      *          | then result == getSimpleName()
      */
-    public String getFullName() {
+    private String getExtendedSimpleName() {
         if ( temperature.getHotness() > Temperature.getStandardHotness() ) {
-            return "Heated" + getSimpleName();
-        } else if ( temperature.getColdness() < Temperature.getStandardColdness() ) {
-            return "Cooled" + getSimpleName();
+            return "Heated " + getSimpleName();
+        } else if ( temperature.getColdness() > Temperature.getStandardColdness() ) {
+            return "Cooled " + getSimpleName();
         } else {
             return getSimpleName();
+        }
+    }
+
+    /**
+     * A method to get the full name of an ingredient.
+     *
+     * @return  If the ingredient is mixed and has a special name then the full name is
+     *          the special name followed by the extended simple name in brackets.
+     *          | if (getType().isMixed() && getSpecialName() != null)
+     *          | then result == getSpecialName() + " (" + getExtendedSimpleName() + ")"
+     * @return  Otherwise the full name is just the extended simple name
+     *          | if !(getType().isMixed() && getSpecialName() != null)
+     *          | then result == getExtendedSimpleName()
+     */
+    public String getFullName() {
+        if (getType().isMixed() && getSpecialName() != null) {
+            return getSpecialName() + " (" + getExtendedSimpleName() + ")";
+        } else {
+            return getExtendedSimpleName();
         }
     }
 
