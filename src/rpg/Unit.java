@@ -1,5 +1,6 @@
 package rpg;
 import be.kuleuven.cs.som.annotate.*;
+import rpg.alchemy.AlchemicIngredient;
 
 /**
  * An enumeration of units.
@@ -212,13 +213,25 @@ public enum Unit {
 		return maxUnit;
 	}
 
-	public static Unit getMinUnitForContainer(State state, Unit unit, double amount) {
-		Unit minUnit = getMaxUnitForContainer(state);
+	/**
+	 * A method for getting the minimum unit for a result container.
+	 *
+	 * @param 	result
+	 * 			The alchemic ingredient that needs to be returned.in a container.
+	 *
+	 * @pre 	The given resulting ingredient must be effective
+	 * 			| result != null
+	 *
+	 * @return	The minimum unit for a container for the result.
+	 * 			TODO
+	 */
+	public static Unit getMinUnitForContainer(AlchemicIngredient result) {
+		Unit minUnit = getMaxUnitForContainer(result.getState());
 		for (Unit u : Unit.values()) {
 			if (u.isAllowedForContainer()
-					&& u.hasAsAllowedState(state)
+					&& u.hasAsAllowedState(result.getState())
 					&& u.getSpoonEquivalent() < minUnit.getSpoonEquivalent()
-					&& u.getSpoonEquivalent() >= amount*unit.getSpoonEquivalent() ) {
+					&& u.getSpoonEquivalent() >= result.getSpoonAmount() ) {
 				minUnit = u;
 			}
 		}

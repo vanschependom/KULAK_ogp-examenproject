@@ -60,6 +60,7 @@ public abstract class Device extends StorageLocation{
      * @throws  IllegalStateException
      *          The device is terminated.
      *          | isTerminated()
+     * @return  TODO
      */
     public IngredientContainer getResult() throws DeviceNotYetUsedException, IllegalStateException {
         if (isTerminated()) {
@@ -80,7 +81,8 @@ public abstract class Device extends StorageLocation{
                     new Temperature(result.getColdness(), result.getHotness()),
                     result.getType(), result.getState());
         }
-        return new IngredientContainer(Unit.getMinUnitForContainer(result.getState(), result.getUnit(), result.getAmount()), result);
+        // return a new container with the minimum unit for the result, given the state and size of the result
+        return new IngredientContainer(Unit.getMinUnitForContainer(result), result);
     }
 
     /**
