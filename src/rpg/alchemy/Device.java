@@ -9,9 +9,8 @@ import rpg.exceptions.DeviceNotYetUsedException;
 /**
  * A class representing a device inside a laboratory.
  *
- * @invar   The device must always have a valid laboratory if it is not terminated.
- *          | if !isTerminated()
- *          | then isValidLaboratory(getLaboratory())
+ * @invar   The device must always have a valid laboratory.
+ *          | hasProperLaboratory()
  *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
@@ -35,7 +34,9 @@ public abstract class Device extends StorageLocation {
      */
     @Raw
     public Device(Laboratory laboratory) throws IllegalArgumentException{
-        if (!isValidLaboratory(laboratory)) throw new IllegalArgumentException();
+        if (!isValidLaboratory(laboratory)) {
+            throw new IllegalArgumentException("Not a legal laboratory for this device!");
+        }
         //TODO
     }
 
@@ -119,13 +120,46 @@ public abstract class Device extends StorageLocation {
     /**
      * A method for checking if a laboratory is valid for a device.
      *
+     * @note    Hier wordt enkel de INHOUD gecheckt (zie ook hasProperLaboratory())
+     *              --> als dit zou afhangen van de object properties, moet hier
+     *                  canHaveAsLaboratory() staan!
+     *              --> Weten we nu nog niet want nog niet uitgewerkt!
+     *
      * @param   laboratory
      *          The laboratory to check for this device
+     *
      * @return  TODO
      */
     @Raw
     public boolean isValidLaboratory(Laboratory laboratory) {
-        // return laboratory != null && laboratory.isValidDevice(this); TODO
+        // TODO: werk uit en pas eventueel aan naar canHaveAsLaboratory()
+        // voorlopig enkel nog maar null check, kweet niet of hier nog iets bij moet?
+        return laboratory != null;
+    }
+
+    /**
+     * A method for checking if the device has a proper laboratory.
+     *
+     * @note    Hier wordt
+     *              1. de consistentie van de relatie gecheckt (bidirectioneel)
+     *              2. de inhoud gecheckt (isValidLaboratory(getLaboratory()))
+     *
+     * @return  False if the laboratory is not valid laboratory.
+     *          | if !isValidLaboratory(getLaboratory())
+     *          | then result == false
+     * @return  False if the laboratory does not have this device as a device.
+     *          | if !getLaboratory().hasAsDevice(this)
+     *          | then result == false
+     *
+     * TODO:    close specification!
+     */
+    public boolean hasProperLaboratory() {
+        if (!isValidLaboratory(getLaboratory())) {
+            return false;
+        }
+        if (!getLaboratory().hasAsDevice(this)) {
+            return false;
+        }
         return false;
     }
 

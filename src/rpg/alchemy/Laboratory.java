@@ -1,4 +1,4 @@
 package rpg.alchemy;
 
-public class Laboratory extends StorageLocation{
+public class Laboratory extends StorageLocation {
 }

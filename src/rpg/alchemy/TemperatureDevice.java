@@ -1,7 +1,5 @@
 package rpg.alchemy;
-
-import be.kuleuven.cs.som.annotate.Model;
-
+import be.kuleuven.cs.som.annotate.*;
 import java.util.ArrayList;
 
 /**
@@ -102,8 +100,8 @@ public abstract class TemperatureDevice extends Device {
     /**
      * A getter for the temperature of a temperature device.
      */
-    @Model
-    private Temperature getTemperature() {
+    @Basic
+    public Temperature getTemperature() {
         return temperature;
     }
 
