@@ -28,7 +28,7 @@ public abstract class StorageLocation {
      * A constructor for creating a new storage location.
      *
      * @post    The new storage location has no ingredients.
-     *          | new.getNbOfIngredients() == 0
+     *          | new.isEmpty()
      */
     public StorageLocation() {
         //
@@ -109,7 +109,7 @@ public abstract class StorageLocation {
      *
      * @param   ingredient
      *          The ingredient to check
-     * @return  True if and only if the ingredient is present twice in the storage location
+     * @return  True if and only if the ingredient is present twice or more in the storage location
      *          | result == ( for some I in 0..getNbOfIngredients()-1:
      *          |   for some J in 0..getNbOfIngredients()-1:
      *          |       (I != J) && getIngredientAt(I).equals(getIngredientAt(J)) )
@@ -155,7 +155,7 @@ public abstract class StorageLocation {
      *
      * @post    The ingredient is added to the storage location, on the last index
      *          | new.getNbOfIngredients() == getNbOfIngredients() + 1 &&
-     *          | new.getIngredientAt(getNbOfIngredients()-1) == ingredient &&
+     *          | new.getIngredientAt(new.getNbOfIngredients()-1) == ingredient &&
      *          | new.hasAsIngredient(ingredient)
      *
      * @throws  IllegalArgumentException
