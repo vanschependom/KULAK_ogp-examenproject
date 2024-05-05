@@ -9,6 +9,7 @@ import be.kuleuven.cs.som.annotate.*;
  * @author 	Vincent Van Schependom
  * @author	Arne Claerhout
  * @author 	Flor De Meulemeester
+ *
  * @version 1.0
  */
 public enum Unit {
@@ -64,6 +65,15 @@ public enum Unit {
 	 *			The spoon equivalent value of the new unit.
 	 * @param 	allowedStates
 	 *			The list of allowed states which the new unit can be used for.
+	 * @param 	allowedForContainer
+	 * 			A boolean to check if the unit is allowed to be the unit for a container.
+	 *
+	 * @pre		The given spoon equivalent must be a positive number.
+	 * 			| spoonEquivalent > 0
+	 * @pre		The given list of allowed states must be effective.
+	 * 			| allowedStates != null &&
+	 * 			| for each state in allowedStates:
+	 * 			|	state != null
 	 *
 	 * @post	The spoon equivalent of the new unit is set to the given spoon equivalent.
 	 * 			| new.getSpoonEquivalent().equals(spoonEquivalent)
@@ -89,25 +99,66 @@ public enum Unit {
 	/**
 	 * Return the spoon equivalent of this unit.
 	 */
-	@Basic
+	@Basic @Immutable
 	public double getSpoonEquivalent() {
 		return spoonEquivalent;
 	}
 
 	/**
-	 * Return the list of allowed states of this unit.
+	 * Return a copy of the (fixed length) list of allowed states of this unit.
 	 */
-	@Basic
+	@Basic @Immutable
 	public State[] getAllowedStates() {
+		return allowedStates.clone();
+	}
+
+	/**
+	 * Return the private list of allowed states of this unit.
+	 */
+	@Model
+	private State[] getPrivateAllowedStates() {
 		return allowedStates;
 	}
 
+	/**
+	 * Check whether this unit has the given state as an allowed state.
+	 *
+	 * @param 	state
+	 * 			The state to check.
+	 * @return	True if and only if the given state is in the list of allowed states of this unit.
+	 * 			| result == ( for some allowedState in getAllowedStates():
+	 * 			|	allowedState == state )
+	 */
+	public boolean hasAsAllowedState(State state) {
+		for (State allowedState : getPrivateAllowedStates()) {
+			if (state == allowedState) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check whether this unit can be converted to the given unit.
+	 *
+	 * @param 	unit
+	 * 			The unit to convert to.
+	 * @return	False if the given unit is not effective.
+	 * 			| if (unit == null)
+	 * 			|	then result == false
+	 * @return	True if and only if the given effective unit has an allowed state which is also an allowed
+	 *			state of this unit.
+	 * 			| if ( (unit != null)
+	 * 			|	then result == (for some allowedState in getPrivateAllowedStates():
+	 * 			|			unit.hasAsAllowedState(allowedState))
+	 */
 	public boolean conversionAllowed(Unit unit) {
-		for (State state : unit.getAllowedStates()) {
-			for (State allowedState : this.allowedStates) {
-				if (state == allowedState) {
-					return true;
-				}
+		if (unit == null) {
+			return false;
+		}
+		for (State allowedState : getPrivateAllowedStates()) {
+			if (unit.hasAsAllowedState(allowedState)) {
+				return true;
 			}
 		}
 		return false;
@@ -118,15 +169,15 @@ public enum Unit {
 	 *
 	 * @param 	unit
 	 * 			The unit you want to convert to.
-	 * @return 	...
+	 *
+	 * @pre		The conversion must be allowed.
+	 * 			| conversionAllowed(unit)
+	 *
+	 * @return 	The conversion factor between this unit and the given unit.
+	 * 			| result == this.getSpoonEquivalent() / unit.getSpoonEquivalent()
 	 */
 	public double getConversionFor(Unit unit) {
-		if (conversionAllowed(unit)) {
-			return this.spoonEquivalent / unit.spoonEquivalent;
-		} else {
-			// niet nodig want quantity moet nominaal
-			throw new IllegalArgumentException("Cannot convert " + this + " to " + unit);
-		}
+		return this.spoonEquivalent / unit.spoonEquivalent;
 	}
 
 	/**

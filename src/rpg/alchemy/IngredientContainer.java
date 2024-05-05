@@ -74,10 +74,13 @@ public class IngredientContainer {
     }
 
     public boolean canHaveAsContent(AlchemicIngredient content) {
-        return ( content == null
-                || (content.getSpoonAmount() <= getCapacity().getSpoonEquivalent()) )
-                && ( List.of(getCapacity().getAllowedStates()).contains(content.getState())
-                && ( !content.isTerminated()));
+        if (content == null) {
+            return true;
+        } else {
+            return (content.getSpoonAmount() <= getCapacity().getSpoonEquivalent())
+                    && ( getCapacity().hasAsAllowedState(content.getState()) )
+                    && ( !content.isTerminated());
+        }
     }
 
 
