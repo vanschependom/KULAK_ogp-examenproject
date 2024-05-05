@@ -23,18 +23,24 @@ public class Oven extends TemperatureDevice{
 	 * @post	The ingredient in the device is heated to the temperature
 	 * 			of the device.
 	 * 			If the ingredient is already warmer, nothing happens
-	 * 			| if getTemperature().isHotterThan(getIngredientAt(0).getTemperatureObject())
-	 * 			| then getIngredientAt(0).heat(getIngredientAt(0).getTemperatureObject().difference(getTemperature()))
+	 * 			| if getTemperature().isHotterThan(getIngredientAt(0).getTemperature())
+	 * 			| then getIngredientAt(0).heat(getTemperature().difference(getIngredientAt(0).getTemperature()))
 	 * @throws 	IllegalStateException
 	 * 			There are no items in the device
-	 * 			| getNbOfIngredients() == 0
+	 * 			| isEmpty()
 	 */
 	@Override
 	public void executeOperation() throws IllegalStateException {
-		if (getNbOfIngredients() == 0) throw new IllegalStateException("No ingredients in Cooling Box");
-		AlchemicIngredient ing = getIngredientAt(0);
-		if (getTemperature().isHotterThan(ing.getTemperatureObject())) {
-			ing.heat(ing.getTemperatureObject().difference(getTemperature()));
+		if (isEmpty()) {
+			throw new IllegalStateException("There are no items in the device!");
+		}
+		// if the temperature of the cooling box is higher than the temperature of the ingredient, do nothing
+		if (getTemperature().isColderThan(getIngredientAt(0).getTemperature())) {
+			return;
+		} else {
+			// if the temperature of the ingredient is higher than the temperature of the cooling box, cool the ingredient
+			long difference = getTemperature().difference(getIngredientAt(0).getTemperature());
+			getIngredientAt(0).heat(difference);
 		}
 	}
 

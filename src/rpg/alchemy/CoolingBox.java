@@ -14,6 +14,17 @@ public class CoolingBox extends TemperatureDevice {
 	 * CONSTRUCTORS
 	 **********************************************************/
 
+	/**
+	 * A constructor for a cooling box.
+	 *
+	 * @param 	laboratory
+	 * 			The laboratory in which the cooling box will be situated.
+	 * @param 	temperature
+	 * 			The cooling temperature for the cooling box.
+	 *
+	 * @effect	A temperature device with given laboratory and temperature is created
+	 * 			| super(laboratory, temperature)
+	 */
 	public CoolingBox(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException {
 		super(laboratory, temperature);
 	}
@@ -27,6 +38,11 @@ public class CoolingBox extends TemperatureDevice {
 	/**
 	 * A method that executes the operation of the cooling box device.
 	 *
+	 * @post	The ingredient in the device is cooled to the temperature
+	 * 			of the device.
+	 * 			If the ingredient is already cooler, nothing happens
+	 * 			| if getTemperature().isColderThan(getIngredientAt(0).getTemperature())
+	 * 			| then getIngredientAt(0).cool(getTemperature().difference(getIngredientAt(0).getTemperature()))
 	 * @throws 	IllegalStateException
 	 * 			There are no items in the device
 	 * 			| isEmpty()
