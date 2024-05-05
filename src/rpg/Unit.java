@@ -188,4 +188,41 @@ public enum Unit {
 		return allowedForContainer;
 	}
 
+	/**
+	 * A method for getting the maximum unit for a container.
+	 *
+	 * @param 	state
+	 * 			The state of the container.
+	 *
+	 * @pre 	The given state must be effective.
+	 * 			| state != null
+	 *
+	 * @return	The maximum unit for a container.
+	 * 			TODO
+	 */
+	public static Unit getMaxUnitForContainer(State state) {
+		Unit maxUnit = null;
+		for (Unit unit : Unit.values()) {
+			if (unit.isAllowedForContainer() && unit.hasAsAllowedState(state)) {
+				if (maxUnit == null || unit.getSpoonEquivalent() > maxUnit.getSpoonEquivalent()) {
+					maxUnit = unit;
+				}
+			}
+		}
+		return maxUnit;
+	}
+
+	public static Unit getMinUnitForContainer(State state, Unit unit, double amount) {
+		Unit minUnit = getMaxUnitForContainer(state);
+		for (Unit u : Unit.values()) {
+			if (u.isAllowedForContainer()
+					&& u.hasAsAllowedState(state)
+					&& u.getSpoonEquivalent() < minUnit.getSpoonEquivalent()
+					&& u.getSpoonEquivalent() >= amount*unit.getSpoonEquivalent() ) {
+				minUnit = u;
+			}
+		}
+		return minUnit;
+	}
+
 }

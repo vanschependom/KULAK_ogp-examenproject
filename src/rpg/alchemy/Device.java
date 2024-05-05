@@ -30,9 +30,9 @@ public abstract class Device extends StorageLocation{
 
     private boolean isTerminated = false;
 
-    /*********************************
-     * Constructor
-     *********************************/
+    /**********************************************************
+     * CONSTRUCTORS
+     **********************************************************/
 
     /**
      * A constructor for a device with a given laboratory.
@@ -51,7 +51,7 @@ public abstract class Device extends StorageLocation{
 
     /**
      * Return the result of the device in an ingredient container
-     * with a maximum of one barrel or chest
+     * with a maximum of Unit.getMaximumUnitForContainer(getState())
      * Return null if there are no ingredients in the device
      *
      * @throws  DeviceNotYetUsedException
@@ -62,24 +62,25 @@ public abstract class Device extends StorageLocation{
      *          | isTerminated()
      */
     public IngredientContainer getResult() throws DeviceNotYetUsedException, IllegalStateException {
-        if(isTerminated) throw new IllegalStateException("Device is terminated");
-        if (getNbOfIngredients() > 1) throw new DeviceNotYetUsedException();
-        if (getNbOfIngredients() == 0) return null;
-        AlchemicIngredient result = getIngredientAt(0);
-        if (result.getState() == State.LIQUID) {
-            if (result.getSpoonAmount() > 1260)
-                result = new AlchemicIngredient(1, Unit.BARREL,
-                        new Temperature(result.getColdness(), result.getHotness()),
-                        result.getType(), result.getState());
-            return new IngredientContainer(Unit.BARREL, result);
-
-        } else {
-            if (result.getSpoonAmount() > 1260)
-                result = new AlchemicIngredient(1, Unit.CHEST,
-                        new Temperature(result.getColdness(), result.getHotness()),
-                        result.getType(), result.getState());
-            return new IngredientContainer(Unit.CHEST, result);
+        if (isTerminated()) {
+            throw new IllegalStateException("Device is terminated");
         }
+        if (getNbOfIngredients() > 1) {
+            throw new DeviceNotYetUsedException();
+        }
+        if (getNbOfIngredients() == 0) {
+            return null;
+        }
+        AlchemicIngredient result = getIngredientAt(0);
+        // get the maximum capacity for the state of the result
+        Unit maxUnit = Unit.getMaxUnitForContainer(result.getState());
+        // the result is more than this maximum capacity -> the excess goes to waste
+        if (result.getSpoonAmount() > maxUnit.getSpoonEquivalent()) {
+            result = new AlchemicIngredient(1, maxUnit,
+                    new Temperature(result.getColdness(), result.getHotness()),
+                    result.getType(), result.getState());
+        }
+        return new IngredientContainer(Unit.getMinUnitForContainer(result.getState(), result.getUnit(), result.getAmount()), result);
     }
 
     /**
