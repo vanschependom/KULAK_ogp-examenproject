@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author	Flor De Meulemeester
  * @version	1.0
  */
-public class TemperatureDevice extends Device{
+public class TemperatureDevice extends Device {
 
     /**
      * A variable that keeps track of the heating or cooling temperature of a temperature device
@@ -106,4 +106,10 @@ public class TemperatureDevice extends Device{
     public Temperature getTemperature() {
         return temperature;
     }
+
+    @Override
+    public void executeOperation () {
+       //
+    }
+
 }

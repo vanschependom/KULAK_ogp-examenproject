@@ -6,4 +6,9 @@ public class Kettle extends Device{
 		super(null);
 	}
 
+	@Override
+	public void executeOperation() {
+		//
+	}
+
 }

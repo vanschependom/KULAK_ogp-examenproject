@@ -65,7 +65,6 @@ public abstract class Device extends StorageLocation{
      *          | if result.getSpoonAmount() > Unit.getMaxUnitForContainer(getIngredientAt(0).getState()).getSpoonEquivalent()
      *          |   then result.equals(new AlchemicIngredient(1, Unit.getMaxUnitForContainer(getIngredientAt(0)), getIngredientAt(0).getTemperature(),
      *          |                       getIngredientAt(0).getType(), getIngredientAt(0).getState()))
-     *          TODO write equals method for AlchemicIngredient
      * @return  If the spoon amount of the result is not more than the spoon equivalent of the maximum
      *          unit for a container with the state of the result, return a new container with the minimum unit
      *          for the result, given the state and size of the result, containing the result.

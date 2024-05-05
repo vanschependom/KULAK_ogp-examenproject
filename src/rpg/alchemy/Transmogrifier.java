@@ -6,4 +6,9 @@ public class Transmogrifier extends Device{
 		super(null);
 	}
 
+	@Override
+	public void executeOperation() {
+		//
+	}
+
 }
