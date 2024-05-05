@@ -122,9 +122,7 @@ public abstract class Device extends StorageLocation{
      *
      * @param   laboratory
      *          The laboratory to check for this device
-     * @return  True if the laboratory is not a null pointer
-     *          and this device is valid in the laboratory
-     *          | laboratory != null && laboratory.isValidDevice(this)
+     * @return  TODO
      */
     @Raw
     public boolean isValidLaboratory(Laboratory laboratory) {
