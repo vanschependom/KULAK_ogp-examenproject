@@ -31,7 +31,7 @@ public class CoolingBox extends TemperatureDevice {
 	 * 			the ingredient is cooled to the temperature of the cooling box.
 	 * 			| if !getTemperature().isHotterThan(getIngredientAt(0).getTemperature())
 	 * 			|	then getIngredientAt(0).getHotness() == getTemperature().getHotness() &&
-	 * 			|		 getIngredientAt(0).getColdness() == getTemperature().getHotness()
+	 * 			|		 getIngredientAt(0).getColdness() == getTemperature().getColdness()
 	 *
 	 * @throws 	IllegalStateException
 	 * 			There are no items in the device
