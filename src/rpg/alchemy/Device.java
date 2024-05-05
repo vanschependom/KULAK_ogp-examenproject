@@ -18,7 +18,7 @@ import rpg.exceptions.DeviceNotYetUsedException;
  * @author	Flor De Meulemeester
  * @version	1.0
  */
-public abstract class Device extends StorageLocation{
+public abstract class Device extends StorageLocation {
 
     /**********************************************************
      * CONSTRUCTORS

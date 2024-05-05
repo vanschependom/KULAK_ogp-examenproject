@@ -8,9 +8,8 @@ import java.util.ArrayList;
 /**
  * A class representing a location for a storage
  *
- * @invar   The ingredients inside the storage location are valid
- *          | for I in 0..getNbOfIngredients()-1:
- *          |   canHaveAsIngredient(getIngredientAt(I))
+ * @invar   The ingredients in a storage location must be valid.
+ *          | hasProperIngredients()
  *
  * @note    This class is worked out using Defensive Programming
  *
@@ -59,6 +58,25 @@ public abstract class StorageLocation {
      *          |           then !getIngredientAt(index).equals(getIngredientAt(otherIndex)
      */
     private final ArrayList<AlchemicIngredient> ingredients = new ArrayList<>();
+
+    /**
+     * A method for checking if the ingredients in a storage location are valid.
+     *
+     * @return  False if there is an ingredient that is not valid
+     *          | if ( for some ingredient in ingredients:
+     *          |       !canHaveAsIngredient(ingredient) )
+     *          |   then result == false
+     *
+     * @note    We don't close the specification yet!
+     */
+    public boolean hasProperIngredients() {
+        for (AlchemicIngredient ingredient : ingredients) {
+            if (!canHaveAsIngredient(ingredient)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * A method for checking if a storage location can contain a given ingredient
@@ -125,9 +143,10 @@ public abstract class StorageLocation {
      * @param   ingredient
      *          The ingredient to add
      *
-     * @post    The ingredient is added to the storage location
+     * @post    The ingredient is added to the storage location, on the last index
      *          | new.getNbOfIngredients() == getNbOfIngredients() + 1 &&
-     *          | new.getIngredientAt(getNbOfIngredients()) == ingredient
+     *          | new.getIngredientAt(getNbOfIngredients()-1) == ingredient &&
+     *          | new.hasAsIngredient(ingredient)
      *
      * @throws  IllegalArgumentException
      *          The ingredient is not valid
@@ -136,7 +155,7 @@ public abstract class StorageLocation {
      *          The ingredient is already present
      *          | hasAsIngredient(ingredient)
      */
-    private void addAsIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
+    protected void addAsIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
         if (!canHaveAsIngredient(ingredient)) {
             throw new IllegalArgumentException("Invalid ingredient!");
         }
