@@ -95,6 +95,14 @@ public class AlchemicIngredientTest {
 
 	@Test
 	public void testFullName2() {
+		AlchemicIngredient ingredient = new AlchemicIngredient(30, Unit.PINCH, coldTemperature, mixedIngrTypePowder, State.POWDER);
+		assertEquals("Beer mixed with Coke", ingredient.getSimpleName());
+		assertEquals("Mazout", ingredient.getSpecialName());
+		assertEquals("Mazout (Cooled Beer mixed with Coke)", ingredient.getFullName());
+	}
+
+	@Test
+	public void testFullName3() {
 		IngredientType thisIngredientType = new IngredientType(water, State.LIQUID, standardTemperature, false);
 		AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE, coldTemperature, thisIngredientType, State.LIQUID);
 		// temperatuur(0, 20) --> (30, 0)
