@@ -29,7 +29,7 @@ public class AlchemicIngredientTest {
 
 	@BeforeAll
 	public static void setUp() {
-		water = Name.getWater();
+		water = Name.WATER;
 		mixed = new Name(null, "Beer", "Coke");
 		// set up the standard temperature
 		standardTemperature = new Temperature(0, 20);

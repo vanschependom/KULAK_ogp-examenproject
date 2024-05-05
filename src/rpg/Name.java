@@ -24,20 +24,16 @@ public class Name {
 
 	/**
 	 * A variable referencing the default name, water.
+	 *
+	 * @note 	We make this variable public because it is a constant and
+	 * 			clients can use it freely, i.e. they can't do illegal things with it.
 	 */
-	private static final Name WATER = new Name(null, "Water");
+	public static final Name WATER = new Name(null, "Water");
 
 	/**
 	 * A variable referencing the allowed symbols for a name.
 	 */
 	private static final String ALLOWED_NAME_SYMBOLS = " '()";
-
-	/**
-	 * A method for getting the default name, water.
-	 */
-	public static Name getWater() {
-		return WATER;
-	}
 
 
 
