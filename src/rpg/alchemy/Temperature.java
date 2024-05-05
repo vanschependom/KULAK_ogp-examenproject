@@ -339,6 +339,24 @@ public class Temperature {
 
 
 	/**********************************************************
+	 * EQUALS
+	 *********************************************************/
+
+	/**
+	 * A method for checking whether two temperatures are equal.
+	 * @param 	other
+	 * 			The other temperature to compare to.
+	 * @return	True if and only if the other temperature is effective and the hotness and coldness
+	 * 			are equal.
+	 * 			| result == (other != null && getHotness() == other.getHotness() && getColdness() == other.getColdness())
+	 */
+	public boolean equals(Temperature other) {
+		return other != null && getHotness() == other.getHotness() && getColdness() == other.getColdness();
+	}
+
+
+
+	/**********************************************************
 	 * DESTRUCTOR
 	 *
 	 * @note only AlchemicIngredient can destroy a Temperature object

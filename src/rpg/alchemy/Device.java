@@ -62,13 +62,13 @@ public abstract class Device extends StorageLocation{
      *          |   then result == null
      * @return  If the spoon amount of the result is more than the spoon equivalent of the maximum
      *          unit for a container with the state of the result, the excess goes to waste.
-     *          | if result.getSpoonAmount() > Unit.getMaxUnitForContainer(getIngredientAt(0).getState()).getSpoonEquivalent()
+     *          | if ( result.getSpoonAmount() > Unit.getMaxUnitForContainer(getIngredientAt(0).getState()).getSpoonEquivalent() )
      *          |   then result.equals(new AlchemicIngredient(1, Unit.getMaxUnitForContainer(getIngredientAt(0)), getIngredientAt(0).getTemperature(),
      *          |                       getIngredientAt(0).getType(), getIngredientAt(0).getState()))
      * @return  If the spoon amount of the result is not more than the spoon equivalent of the maximum
      *          unit for a container with the state of the result, return a new container with the minimum unit
      *          for the result, given the state and size of the result, containing the result.
-     *          | if result.getSpoonAmount() <= Unit.getMaxUnitForContainer(result.getState()).getSpoonEquivalent()
+     *          | if ( result.getSpoonAmount() <= Unit.getMaxUnitForContainer(result.getState()).getSpoonEquivalent() )
      *          |   then result.equals(new IngredientContainer(Unit.getMinUnitForContainer(getIngredientAt(0)), getIngredientAt(0))
      */
     public IngredientContainer getResult() throws DeviceNotYetUsedException, IllegalStateException {
@@ -149,7 +149,7 @@ public abstract class Device extends StorageLocation{
     private boolean isTerminated = false;
 
     /**
-     * Return whether or not the device is terminated.
+     * Return whether the device is terminated.
      */
     public boolean isTerminated() {
         return isTerminated;
@@ -168,8 +168,10 @@ public abstract class Device extends StorageLocation{
      *          | isTerminated()
      */
     protected void terminate() throws IllegalStateException {
-        if (!isTerminated()) {isTerminated = true;}
-        else throw new IllegalStateException("Device is terminated");
+        if (isTerminated()) {
+            throw new IllegalStateException("Device is already terminated!");
+        }
+        isTerminated = true;
     }
 
 }
