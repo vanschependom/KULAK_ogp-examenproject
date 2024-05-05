@@ -208,6 +208,14 @@ public class RecipeTest {
     }
 
     @Test
+    public void testAddInstructionValidCase3() {
+        preMadeRecipe.addInstruction(Operation.HEAT);
+        assertEquals(preMadeRecipe.getNbOfIngredients(), ingredientsSetUp.size());
+        assertEquals(preMadeRecipe.getNbOfOperations(), operationsSetUp.size()+1);
+        assertEquals(preMadeRecipe.getOperationAt(preMadeRecipe.getNbOfOperations()-1), Operation.HEAT);
+    }
+
+    @Test
     public void testAddInstructionInvalidCase() {
         AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE,
                 new Temperature(0, 20), type, State.LIQUID);
@@ -225,8 +233,6 @@ public class RecipeTest {
 
     @Test
     public void testAddInstructionInvalidCase3() {
-        AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE,
-                new Temperature(0, 20), type, State.LIQUID);
         preMadeRecipe.addInstruction(null, null);
         assertEquals(preMadeRecipe.getNbOfIngredients(), ingredientsSetUp.size());
         assertEquals(preMadeRecipe.getNbOfOperations(), operationsSetUp.size());
