@@ -99,4 +99,11 @@ public class TemperatureDevice extends Device{
         return super.canHaveAsIngredient(ingredient) &&
                 ( getNbOfIngredients() == 0 || getIngredientAt(0).equals(ingredient));
     }
+
+    /**
+     * Return the temperature
+     */
+    public Temperature getTemperature() {
+        return temperature;
+    }
 }
