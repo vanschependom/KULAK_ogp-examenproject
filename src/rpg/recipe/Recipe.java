@@ -88,44 +88,6 @@ public class Recipe {
 
 
     /**********************************************************
-     * Termination
-     **********************************************************/
-
-    /**
-     * A variable for keeping track of whether a recipe is terminated or not.
-     */
-    private boolean isTerminated = false;
-
-    /**
-     * A method for checking if a recipe is terminated.
-     */
-    @Basic
-    public boolean isTerminated() {
-        return isTerminated;
-    }
-
-    /**
-     * A method for checking if a recipe can be terminated.
-     *
-     * @return  True if and only if the recipe is not terminated.
-     *          | ! isTerminated()
-     */
-    public boolean canBeTerminated() {
-        return !isTerminated();
-    }
-
-    /**
-     * A method for terminating a recipe
-     *
-     * @post    The recipe is terminated if it can be terminated.
-     *          | if canBeTerminated()
-     *          | then new.isTerminated() == true
-     */
-    public void terminate() {
-        if (canBeTerminated()) {isTerminated = true;}
-    }
-
-    /**********************************************************
      * Ingredients/Operations: Instructions
      **********************************************************/
 
@@ -139,7 +101,7 @@ public class Recipe {
      *          The operations list to check
      *
      * @return  False if either ingredients or operations is a null reference
-     *          | if ingredients == null || operations == null
+     *          | if (ingredients == null || operations == null)
      *          | then result == false
      * @return  False if one of the instructions is not valid.
      *          | TODO
@@ -152,7 +114,9 @@ public class Recipe {
      *          | result == (ingredients.size() == amountOfAdds) TODO dit klopt niet denk ik
      */
     public boolean isValidInstructionSet(ArrayList<AlchemicIngredient> ingredients, ArrayList<Operation> operations) {
-        if (ingredients == null || operations == null) {return false;}
+        if (ingredients == null || operations == null) {
+            return false;
+        }
         int nbOfAdds = 0;
         for (Operation operation : operations) {
             if (operation == Operation.ADD) {
@@ -191,7 +155,7 @@ public class Recipe {
      */
     @Model
     private ArrayList<AlchemicIngredient> getIngredients() {
-        return new ArrayList<>(ingredients);
+        return new ArrayList<AlchemicIngredient>(ingredients);
     }
 
     /**
@@ -199,7 +163,7 @@ public class Recipe {
      */
     @Model
     private ArrayList<Operation> getOperations() {
-        return new ArrayList<>(operations);
+        return new ArrayList<Operation>(operations);
     }
 
     /**
@@ -350,8 +314,10 @@ public class Recipe {
         return operations.size();
     }
 
+
+
     /**********************************************************
-     * Copy
+     * COPY
      **********************************************************/
 
     /**
@@ -364,6 +330,47 @@ public class Recipe {
     @Model
     protected Recipe clone() {
         return new Recipe(getIngredients(), getOperations());
+    }
+
+
+
+
+    /**********************************************************
+     * Termination
+     **********************************************************/
+
+    /**
+     * A variable for keeping track of whether a recipe is terminated or not.
+     */
+    private boolean isTerminated = false;
+
+    /**
+     * A method for checking if a recipe is terminated.
+     */
+    @Basic
+    public boolean isTerminated() {
+        return isTerminated;
+    }
+
+    /**
+     * A method for checking if a recipe can be terminated.
+     *
+     * @return  True if and only if the recipe is not terminated.
+     *          | ! isTerminated()
+     */
+    public boolean canBeTerminated() {
+        return !isTerminated();
+    }
+
+    /**
+     * A method for terminating a recipe
+     *
+     * @post    The recipe is terminated if it can be terminated.
+     *          | if canBeTerminated()
+     *          | then new.isTerminated() == true
+     */
+    public void terminate() {
+        if (canBeTerminated()) {isTerminated = true;}
     }
 
 }
