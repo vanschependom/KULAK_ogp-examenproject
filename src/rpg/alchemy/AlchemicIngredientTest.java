@@ -14,9 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
  * @version 1.0
  */
 public class AlchemicIngredientTest {
-
-	private static Name water;
-	private static Name mixed;
+	
+	private static Name mixedName;
 
 	private IngredientType mixedIngrTypePowder;
 	private AlchemicIngredient ingredient;
@@ -29,8 +28,6 @@ public class AlchemicIngredientTest {
 
 	@BeforeAll
 	public static void setUp() {
-		water = Name.WATER;
-		mixed = new Name("Mazout", "Beer", "Coke");
 		// set up the standard temperature
 		standardTemperature = new Temperature(0, 20);
 		// set up the cold temperature
@@ -38,8 +35,9 @@ public class AlchemicIngredientTest {
 	}
 
 	@BeforeEach
-	public void setUpForEach(){
-		mixedIngrTypePowder = new IngredientType(mixed, State.POWDER, coldTemperature, true);
+	public void setUpForEach() {
+		mixedName = new Name("Mazout", "Beer", "Coke");
+		mixedIngrTypePowder = new IngredientType(mixedName, State.POWDER, coldTemperature, true);
 		legalIngredient = new AlchemicIngredient(20, Unit.BOX, standardTemperature, mixedIngrTypePowder, State.POWDER);
 	}
 
@@ -103,7 +101,7 @@ public class AlchemicIngredientTest {
 
 	@Test
 	public void testFullName3() {
-		IngredientType thisIngredientType = new IngredientType(water, State.LIQUID, standardTemperature, false);
+		IngredientType thisIngredientType = new IngredientType(Name.WATER, State.LIQUID, standardTemperature, false);
 		AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE, coldTemperature, thisIngredientType, State.LIQUID);
 		// temperatuur(0, 20) --> (30, 0) cooled
 		assertEquals("Water", ingredient.getSimpleName());
@@ -113,7 +111,7 @@ public class AlchemicIngredientTest {
 
 	@Test
 	public void testFullName4() {
-		IngredientType thisIngredientType = new IngredientType(water, State.LIQUID, standardTemperature, false);
+		IngredientType thisIngredientType = new IngredientType(Name.WATER, State.LIQUID, standardTemperature, false);
 		AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE, new Temperature(0,10), thisIngredientType, State.LIQUID);
 		// temperatuur(0, 20) --> (0, 10) cooled
 		assertEquals("Water", ingredient.getSimpleName());
@@ -123,7 +121,7 @@ public class AlchemicIngredientTest {
 
 	@Test
 	public void testFullName5() {
-		IngredientType thisIngredientType = new IngredientType(water, State.LIQUID, standardTemperature, false);
+		IngredientType thisIngredientType = new IngredientType(Name.WATER, State.LIQUID, standardTemperature, false);
 		AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE, standardTemperature, thisIngredientType, State.LIQUID);
 		// temperatuur(0, 20) --> (0, 20) niets
 		assertEquals("Water", ingredient.getSimpleName());
@@ -133,12 +131,35 @@ public class AlchemicIngredientTest {
 
 	@Test
 	public void testFullName6() {
-		IngredientType thisIngredientType = new IngredientType(water, State.LIQUID, standardTemperature, false);
+		IngredientType thisIngredientType = new IngredientType(Name.WATER, State.LIQUID, standardTemperature, false);
 		AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE, new Temperature(0,30), thisIngredientType, State.LIQUID);
 		// temperatuur(0, 20) --> (0, 30) Heated
 		assertEquals("Water", ingredient.getSimpleName());
 		assertNull(ingredient.getSpecialName());
 		assertEquals("Heated Water", ingredient.getFullName());
+	}
+
+	@Test
+	public void testEquals1() {
+		AlchemicIngredient ingredient1 = new AlchemicIngredient(30, Unit.PINCH, standardTemperature, mixedIngrTypePowder, State.POWDER);
+		AlchemicIngredient ingredient2 = new AlchemicIngredient(30, Unit.PINCH, standardTemperature, mixedIngrTypePowder, State.POWDER);
+		assertTrue(ingredient1.equals(ingredient2));
+	}
+
+	@Test
+	public void testEquals2() {
+		Temperature firstTemperature = new Temperature(420, 0);
+		Temperature secondTemperature = new Temperature(420, 0);
+		AlchemicIngredient ingredient1 = new AlchemicIngredient(30, Unit.PINCH, firstTemperature, mixedIngrTypePowder, State.POWDER);
+		AlchemicIngredient ingredient2 = new AlchemicIngredient(30, Unit.PINCH, secondTemperature, mixedIngrTypePowder, State.POWDER);
+		assertTrue(ingredient1.equals(ingredient2));
+	}
+
+	@Test
+	public void testEquals3() {
+		AlchemicIngredient ingredient1 = new AlchemicIngredient(30, Unit.PINCH, standardTemperature, mixedIngrTypePowder, State.POWDER);
+		AlchemicIngredient ingredient2 = new AlchemicIngredient(30, Unit.PINCH, standardTemperature, mixedIngrTypePowder, State.LIQUID);
+		assertFalse(ingredient1.equals(ingredient2));
 	}
 
 }
