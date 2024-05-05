@@ -1,5 +1,7 @@
 package rpg.alchemy;
 import be.kuleuven.cs.som.annotate.*;
+
+import static java.lang.Math.abs;
 import static java.lang.Math.min;
 
 /**
@@ -286,6 +288,16 @@ public class Temperature {
 	 */
 	public boolean isHotterThan(Temperature other) {
 		return (other == null || getHotness() > other.getHotness() || getColdness() < other.getColdness());
+	}
+
+	/**
+	 * Return the absolute difference between temperatures
+	 *
+	 * @param 	other
+	 * 			The other temperature to calculate the difference of
+	 */
+	public long difference(Temperature other) {
+		return abs(getColdness() - other.getColdness()) + abs(getHotness() - other.getHotness());
 	}
 
 	/**
