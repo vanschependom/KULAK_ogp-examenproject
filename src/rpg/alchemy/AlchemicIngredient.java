@@ -423,18 +423,14 @@ public class AlchemicIngredient {
      *
      * @param   other
      *          The other ingredient to compare with.
-     * @return  True if and only if the amount, unit, hotness, coldness, type and state of the ingredients are equal.
-     *          | result == (this.getAmount() == other.getAmount()
-     *          |   && this.getUnit().equals(other.getUnit())
-     *          |   && this.getHotness() == other.getHotness()
+     * @return  True if and only if the hotness, coldness, type and state of the ingredients are equal.
+     *          | result == this.getHotness() == other.getHotness()
      *          |   && this.getColdness() == other.getColdness()
      *          |   && this.getType().equals(other.getType())
      *          |   && this.getState().equals(other.getState()))
      */
     public boolean equals(AlchemicIngredient other) {
-    	return this.getAmount() == other.getAmount() &&
-    			this.getUnit().equals(other.getUnit()) &&
-    			this.getHotness() == other.getHotness() &&
+    	return this.getHotness() == other.getHotness() &&
                 this.getColdness() == other.getColdness() &&
     			this.getType().equals(other.getType()) &&
     			this.getState().equals(other.getState());
