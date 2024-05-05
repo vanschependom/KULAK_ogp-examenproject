@@ -87,20 +87,16 @@ abstract public class StorageLocation {
      * @param   ingredients
      *          The ingredients list to check
      *
-     * @return  True if every item is unique
-     *          and each item is valid
-     *          | result ==
-     *          |   ( for each index in 1..getNbOfIngredients():
-     *          |       canHaveAsIngredient(getIngredientAt(index))
-     *          |       for each otherIndex in index+1..getNbOfIngredients():
-     *          |           !getIngredientAt(index).equals(getIngredientAt(otherIndex) )
+     * @return  False if an ingredient is not unique, an ingredient is not valid
+     *          or ingredients is a null reference
+     *          | TODO
      */
     public boolean canHaveAsIngredients(ArrayList<AlchemicIngredient> ingredients) {
         if (ingredients == null) return false;
         for (int i = 0; i < getNbOfIngredients(); i++) {
             if (!canHaveAsIngredient(getIngredientAt(i))) return false;
             for (int j = i + 1; j < getNbOfIngredients(); j++) {
-                if (getIngredientAt(i).equals(getIngredientAt(j))) { //TODO gebruik
+                if (getIngredientAt(i).equals(getIngredientAt(j))) { //TODO equals uitwerken
                     return false;
                 }
             }
@@ -114,10 +110,10 @@ abstract public class StorageLocation {
      * @param   ingredient
      *          The ingredient to check
      *
-     * @return  True if the ingredient isn't a null reference
-     *          and if the ingredient is not terminated
-     *          | result ==
-     *          |   ingredient != null && !ingredient.isTerminated()
+     * @return  False if ingredient is a null reference
+     *          or if the ingredient is terminated
+     *          | if ingredient == null || ingredient.isTerminated()
+     *          | then result == false
      */
     public boolean canHaveAsIngredient(AlchemicIngredient ingredient) {
         return (ingredient != null && !ingredient.isTerminated());

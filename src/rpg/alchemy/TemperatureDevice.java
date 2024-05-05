@@ -65,29 +65,38 @@ public class TemperatureDevice extends Device{
     }
 
     /**
-     * Return whether or not a given list of ingredients
-     * is possible for this device to have
+     * A method for checking whether or not a list of ingredients
+     * is possible for a temperature device
      *
      * @param   ingredients
      *          The ingredients list to check
+     * @return  True if the size of ingredients is 0 or 1,
+     *          ingredients is not a null reference
+     *          and if every ingredient is valid.
+     *          False otherwise.
+     *          | result ==
+     *          |   super.canHaveAsIngredients(ingredients) && ingredients.size() <= 1
      */
     @Override
     public boolean canHaveAsIngredients(ArrayList<AlchemicIngredient> ingredients) {
-        if (ingredients.size() > 1) return false;
-        if (ingredients.isEmpty()) return true;
-        return ingredients.getFirst() != null && !ingredients.getFirst().isTerminated();
+        return super.canHaveAsIngredients(ingredients) && ingredients.size() <= 1;
     }
 
     /**
-     * Return whether or not a given ingredient is possible for this device to have
+     * A method for checking if a temperature device can have a given ingredient
      *
      * @param   ingredient
      *          The ingredient to check
+     * @return  True if the ingredient is valid and
+     *          the number of ingredients of the device is either 0
+     *          or the first and only ingredient is equal to ingredient
+     *          | result ==
+     *          |   super.canHaveAsIngredient(ingredient) &&
+     *          |       ( getNbOfIngredients() == 0 || getIngredientAt(0).equals(ingredient) )
      */
     @Override
     public boolean canHaveAsIngredient(AlchemicIngredient ingredient) {
-        if (!super.canHaveAsIngredient(ingredient)) return false;
-        if (getNbOfIngredients() == 0) return true;
-        return getIngredientAt(0).equals(ingredient);
+        return super.canHaveAsIngredient(ingredient) &&
+                ( getNbOfIngredients() == 0 || getIngredientAt(0).equals(ingredient));
     }
 }
