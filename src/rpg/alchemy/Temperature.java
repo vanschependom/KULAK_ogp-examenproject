@@ -271,6 +271,24 @@ public class Temperature {
 	}
 
 	/**
+	 * A method for checking if one temperature is hotter than the other
+	 *
+	 * @param 	other
+	 * 			The other temperature to compare to
+	 * @return	True if one of the following is true:
+	 * 			  - other is a null pointer
+	 * 			  - the own hotness is bigger than the other hotness
+	 * 			  - the own coldness is smaller than the other coldness
+	 * 			False otherwise.
+	 * 			| result ==
+	 * 			|	( other == null	|| getHotness() > other.getHotness()
+	 * 			|		|| getColdness() < other.getColdness() )
+	 */
+	public boolean isHotterThan(Temperature other) {
+		return (other == null || getHotness() > other.getHotness() || getColdness() < other.getColdness());
+	}
+
+	/**
 	 * A method for getting both the hotness and the coldness of the temperature.
 	 *
 	 * @return	An array containing the coldness and the hotness of the temperature.
