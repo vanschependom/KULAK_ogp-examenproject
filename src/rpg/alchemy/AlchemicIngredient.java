@@ -414,6 +414,35 @@ public class AlchemicIngredient {
 
 
     /**********************************************************
+     * EQUALS
+     **********************************************************/
+
+    /**
+     * A method to check whether this ingredient is equal to another ingredient, looking
+     * at all individual properties.
+     *
+     * @param   other
+     *          The other ingredient to compare with.
+     * @return  True if and only if the amount, unit, hotness, coldness, type and state of the ingredients are equal.
+     *          | result == (this.getAmount() == other.getAmount()
+     *          |   && this.getUnit().equals(other.getUnit())
+     *          |   && this.getHotness() == other.getHotness()
+     *          |   && this.getColdness() == other.getColdness()
+     *          |   && this.getType().equals(other.getType())
+     *          |   && this.getState().equals(other.getState()))
+     */
+    public boolean equals(AlchemicIngredient other) {
+    	return this.getAmount() == other.getAmount() &&
+    			this.getUnit().equals(other.getUnit()) &&
+    			this.getHotness() == other.getHotness() &&
+                this.getColdness() == other.getColdness() &&
+    			this.getType().equals(other.getType()) &&
+    			this.getState().equals(other.getState());
+    }
+
+
+
+    /**********************************************************
      * DESTRUCTOR
      **********************************************************/
 
@@ -442,10 +471,6 @@ public class AlchemicIngredient {
         getTemperatureObject().terminate();
         isTerminated = true;
     }
-
-
-    // TODO methode die checkt of ingredients gelijk zijn
-    //  alleen op vlak van type, state en temperature
 
 
 }
