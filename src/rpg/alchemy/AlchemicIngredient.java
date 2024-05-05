@@ -168,7 +168,7 @@ public class AlchemicIngredient {
      * A getter for the standard temperature object of the ingredient type.
      */
     @Model
-    private Temperature getTemperatureObject() {
+    protected Temperature getTemperatureObject() {
         return temperature;
     }
 
@@ -224,7 +224,7 @@ public class AlchemicIngredient {
      * @note    Temperatures are implemented totally, so we don't throw an exception
      *          if any illegal cases come up (e.g. terminated ingredient, negative amounts, etc.)
      */
-    public void heat(long amount) {
+    protected void heat(long amount) {
         if (!isTerminated()) {
             getTemperatureObject().heat(amount);
         }
@@ -240,7 +240,7 @@ public class AlchemicIngredient {
      *          | then getTemperatureObject().cool(amount)
      * @note    Same as for heating.
      */
-    public void cool(long amount) {
+    protected void cool(long amount) {
         if (!isTerminated()) {
             getTemperatureObject().cool(amount);
         }
