@@ -258,7 +258,8 @@ public class Name {
 			return false;
 		}
 		// illegal words
-		if (name.toLowerCase().contains("mixed with") || name.toLowerCase().contains("and")
+		if (name.toLowerCase().contains("mixed") || name.toLowerCase().contains("with")
+				|| name.toLowerCase().contains("and")
 				|| name.toLowerCase().contains("heated") || name.toLowerCase().contains("cooled")) {
 			return false;
 		}

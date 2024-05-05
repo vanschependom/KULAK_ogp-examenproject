@@ -18,6 +18,7 @@ public class NameTest {
 		assertFalse(Name.isValidName("Heated Cola"));
 		assertFalse(Name.isValidName("cooled Water"));
 		assertFalse(Name.isValidName("Something and Something Else"));
+		assertFalse(Name.isValidName("Mixed Coke"));
 	}
 
 	@Test
