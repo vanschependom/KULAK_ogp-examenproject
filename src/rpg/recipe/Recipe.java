@@ -233,7 +233,7 @@ public class Recipe {
      *
      * @param   ingredient
      *          The ingredient to be added as part of the instruction
-     *          If the operation does not require an ingredient, null should be provided
+     *          If the operation does not require an ingredient, null can be provided
      * @param   operation
      *          The operation to be added as part of the instruction
      *
@@ -254,6 +254,20 @@ public class Recipe {
             if (ingredient != null) addIngredient(ingredient);
             addOperation(operation);
         }
+    }
+
+    /**
+     * A method for adding an instruction to a recipe
+     *
+     * @param   operation
+     *          The operation to be added as part of the instruction
+     *
+     * @effect  The operation with a null reference ingredient is added
+     *          | addInstruction(null, operation)
+     */
+    @Raw
+    public void addInstruction(Operation operation) {
+        addInstruction(null, operation);
     }
 
     /**
