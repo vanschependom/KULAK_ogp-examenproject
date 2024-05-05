@@ -1,7 +1,9 @@
 package rpg.recipe;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import rpg.Name;
 import rpg.State;
 import rpg.Unit;
 import rpg.alchemy.AlchemicIngredient;
@@ -29,8 +31,8 @@ public class RecipeTest {
         ingredientsSetUp = new ArrayList<>();
         operations = new ArrayList<>();
         operationsSetUp = new ArrayList<>();
-        type = new IngredientType(null, State.LIQUID, new Temperature(0, 20), false);
-        type2 = new IngredientType(null, State.LIQUID, new Temperature(0, 20), false);
+        type = new IngredientType(new Name(null, "Beer"), State.LIQUID, new Temperature(0, 20), false);
+        type2 = new IngredientType(new Name(null, "Water"), State.LIQUID, new Temperature(0, 20), false);
         ingredientsSetUp.add(new AlchemicIngredient(2, Unit.BOTTLE,
                 new Temperature(0, 20), type, State.LIQUID));
         ingredientsSetUp.add(new AlchemicIngredient(3, Unit.SACHET,
@@ -74,13 +76,13 @@ public class RecipeTest {
 
     @Test
     public void constructorFullValidSet2() {
-        assertEquals(ingredients.size(), preMadeRecipe.getNbOfIngredients());
-        assertEquals(operations.size(), preMadeRecipe.getNbOfOperations());
+        assertEquals(ingredientsSetUp.size(), preMadeRecipe.getNbOfIngredients());
+        assertEquals(operationsSetUp.size(), preMadeRecipe.getNbOfOperations());
         for (int i = 0; i < preMadeRecipe.getNbOfIngredients(); i++) {
-            assertEquals(ingredients.get(i), preMadeRecipe.getIngredientAt(i));
+            assertEquals(ingredientsSetUp.get(i), preMadeRecipe.getIngredientAt(i));
         }
         for (int i = 0; i < preMadeRecipe.getNbOfOperations(); i++) {
-            assertEquals(operations.get(i), preMadeRecipe.getOperationAt(i));
+            assertEquals(operationsSetUp.get(i), preMadeRecipe.getOperationAt(i));
         }
     }
 

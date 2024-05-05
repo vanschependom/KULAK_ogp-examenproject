@@ -172,12 +172,12 @@ public class Recipe {
      * @param   ingredients
      *          The ingredients for the recipe
      *
-     * @post    The ingredients of the recipe are set to ingredients
-     *          | new.getIngredients() == ingredients
+     * @post    The ingredients of the recipe are set to a copy of ingredients
+     *          | new.getIngredients().equals(ingredients)
      */
     @Model @Raw
     private void setIngredients(ArrayList<AlchemicIngredient> ingredients) {
-        this.ingredients = ingredients;
+        this.ingredients = new ArrayList<>(ingredients);
     }
 
     /**
@@ -186,12 +186,12 @@ public class Recipe {
      * @param   operations
      *          The operations for the recipe
      *
-     * @post    The operations of the recipe are set to operations
-     *          | new.getOperations() == operations
+     * @post    The operations of the recipe are set to a copy of operations
+     *          | new.getOperations().equals(operations)
      */
     @Model @Raw
     private void setOperations(ArrayList<Operation> operations) {
-        this.operations = operations;
+        this.operations = new ArrayList<>(operations);
     }
 
     /**
