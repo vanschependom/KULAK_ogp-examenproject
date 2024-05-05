@@ -71,4 +71,15 @@ public class AlchemicIngredientTest {
 		assertEquals(State.POWDER, ingredient.getState());
 	}
 
+	/**
+	 * UNIT
+	 */
+	@Test
+	public void testCanHaveAsUnit() {
+		AlchemicIngredient ingredient = new AlchemicIngredient(30, Unit.PINCH, standardTemperature, mixedIngrTypePowder, State.POWDER);
+		assertTrue(ingredient.canHaveAsUnit(Unit.SPOON));
+		assertTrue(ingredient.canHaveAsUnit(Unit.SACHET));
+		assertFalse(ingredient.canHaveAsUnit(Unit.JUG));
+	}
+
 }

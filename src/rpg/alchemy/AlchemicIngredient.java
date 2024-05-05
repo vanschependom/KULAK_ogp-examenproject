@@ -1,9 +1,6 @@
 package rpg.alchemy;
 
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Immutable;
-import be.kuleuven.cs.som.annotate.Model;
-import be.kuleuven.cs.som.annotate.Raw;
+import be.kuleuven.cs.som.annotate.*;
 import rpg.*;
 
 import java.util.List;
@@ -116,6 +113,7 @@ public class AlchemicIngredient {
      * @return  The amount of this alchemic ingredient in spoons.
      *          | result == amount * getUnit().getSpoonEquivalent()
      */
+    @Immutable
     public double getSpoonAmount() {
     	return amount * getUnit().getSpoonEquivalent();
     }
@@ -152,7 +150,7 @@ public class AlchemicIngredient {
      */
     public boolean canHaveAsUnit(Unit unit) {
         return (unit != null) &&
-                List.of(unit.getAllowedStates()).contains(getState()); // ! test voor schrijven
+                List.of(unit.getAllowedStates()).contains(getState());
     }
 
 
