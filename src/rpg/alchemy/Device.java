@@ -50,13 +50,6 @@ public abstract class Device extends StorageLocation{
      * with a maximum of Unit.getMaximumUnitForContainer(getState())
      * Return null if there are no ingredients in the device
      *
-     * @throws  DeviceNotYetUsedException
-     *          The device has not been used yet so there is no result to be given
-     *          | getNbOfIngredients() > 1
-     * @throws  IllegalStateException
-     *          The device is terminated.
-     *          | isTerminated()
-     *
      * @return  If there are no ingredients in the device, return null
      *          | if getNbOfIngredients() == 0
      *          |   then result == null
@@ -70,6 +63,13 @@ public abstract class Device extends StorageLocation{
      *          for the result, given the state and size of the result, containing the result.
      *          | if ( result.getSpoonAmount() <= Unit.getMaxUnitForContainer(result.getState()).getSpoonEquivalent() )
      *          |   then result.equals(new IngredientContainer(Unit.getMinUnitForContainer(getIngredientAt(0)), getIngredientAt(0))
+     *
+     * @throws  DeviceNotYetUsedException
+     *          The device has not been used yet so there is no result to be given
+     *          | getNbOfIngredients() > 1
+     * @throws  IllegalStateException
+     *          The device is terminated.
+     *          | isTerminated()
      */
     public IngredientContainer getResult() throws DeviceNotYetUsedException, IllegalStateException {
         if (isTerminated()) {
@@ -112,7 +112,7 @@ public abstract class Device extends StorageLocation{
      * A method for getting the laboratory of the device.
      */
     @Basic
-    public Laboratory getLaboratory() throws IllegalStateException {
+    public Laboratory getLaboratory() {
         return laboratory;
     }
 

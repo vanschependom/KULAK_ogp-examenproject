@@ -31,7 +31,7 @@ public abstract class StorageLocation {
      * @post    The new storage location has no ingredients.
      *          | new.getNbOfIngredients() == 0
      */
-    public StorageLocation(){
+    public StorageLocation() {
         //
     }
 
