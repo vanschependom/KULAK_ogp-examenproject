@@ -372,20 +372,20 @@ public class AlchemicIngredient {
      * A method for getting the extended simple name of the ingredient (with heated or cooled).
      *
      * @return  If the ingredient is heated, the full name is "Heated" + the simple name.
-     *          | if ( temperature.getHotness() > Temperature.getStandardHotness() )
+     *          | if ( temperature.isHotterThan(getType().getStandardTemperatureObject()) )
      *          | then result == "Heated " + getSimpleName()
      * @return  If the ingredient is cooled, the full name is "Cooled" + the simple name.
-     *          | if ( temperature.getColdness() > Temperature.getStandardColdness() )
+     *          | if ( temperature.isColderThan(getType().getStandardTemperatureObject()) )
      *          | then result == "Cooled " + getSimpleName()
      * @return  If the ingredient is neither heated nor cooled, the full name is the simple name.
-     *          | if (temperature.getHotness() = Temperature.getStandardHotness() &&
-     *          |   temperature.getColdness() = Temperature.getStandardColdness() )
+     *          | if (temperature.getHotness() = getType().getStandardTemperature()[1] &&
+     *          |   temperature.getColdness() = getType().getStandardTemperature()[0] )
      *          | then result == getSimpleName()
      */
     private String getExtendedSimpleName() {
-        if ( temperature.getHotness() > Temperature.getStandardHotness() ) {
+        if ( temperature.isHotterThan(getType().getStandardTemperatureObject()) ) {
             return "Heated " + getSimpleName();
-        } else if ( temperature.getColdness() > Temperature.getStandardColdness() ) {
+        } else if ( temperature.isColderThan(getType().getStandardTemperatureObject()) ) {
             return "Cooled " + getSimpleName();
         } else {
             return getSimpleName();

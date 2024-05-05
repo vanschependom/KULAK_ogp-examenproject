@@ -90,7 +90,7 @@ public class AlchemicIngredientTest {
 		AlchemicIngredient ingredient = new AlchemicIngredient(30, Unit.PINCH, standardTemperature, mixedIngrTypePowder, State.POWDER);
 		assertEquals("Beer mixed with Coke", ingredient.getSimpleName());
 		assertEquals("Mazout", ingredient.getSpecialName());
-		assertEquals("Mazout (Beer mixed with Coke)", ingredient.getFullName());
+		assertEquals("Mazout (Heated Beer mixed with Coke)", ingredient.getFullName());
 	}
 
 	@Test
@@ -98,17 +98,47 @@ public class AlchemicIngredientTest {
 		AlchemicIngredient ingredient = new AlchemicIngredient(30, Unit.PINCH, coldTemperature, mixedIngrTypePowder, State.POWDER);
 		assertEquals("Beer mixed with Coke", ingredient.getSimpleName());
 		assertEquals("Mazout", ingredient.getSpecialName());
-		assertEquals("Mazout (Cooled Beer mixed with Coke)", ingredient.getFullName());
+		assertEquals("Mazout (Beer mixed with Coke)", ingredient.getFullName());
 	}
 
 	@Test
 	public void testFullName3() {
 		IngredientType thisIngredientType = new IngredientType(water, State.LIQUID, standardTemperature, false);
 		AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE, coldTemperature, thisIngredientType, State.LIQUID);
-		// temperatuur(0, 20) --> (30, 0)
+		// temperatuur(0, 20) --> (30, 0) cooled
 		assertEquals("Water", ingredient.getSimpleName());
 		assertNull(ingredient.getSpecialName());
 		assertEquals("Cooled Water", ingredient.getFullName());
+	}
+
+	@Test
+	public void testFullName4() {
+		IngredientType thisIngredientType = new IngredientType(water, State.LIQUID, standardTemperature, false);
+		AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE, new Temperature(0,10), thisIngredientType, State.LIQUID);
+		// temperatuur(0, 20) --> (0, 10) cooled
+		assertEquals("Water", ingredient.getSimpleName());
+		assertNull(ingredient.getSpecialName());
+		assertEquals("Cooled Water", ingredient.getFullName());
+	}
+
+	@Test
+	public void testFullName5() {
+		IngredientType thisIngredientType = new IngredientType(water, State.LIQUID, standardTemperature, false);
+		AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE, standardTemperature, thisIngredientType, State.LIQUID);
+		// temperatuur(0, 20) --> (0, 20) niets
+		assertEquals("Water", ingredient.getSimpleName());
+		assertNull(ingredient.getSpecialName());
+		assertEquals("Water", ingredient.getFullName());
+	}
+
+	@Test
+	public void testFullName6() {
+		IngredientType thisIngredientType = new IngredientType(water, State.LIQUID, standardTemperature, false);
+		AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE, new Temperature(0,30), thisIngredientType, State.LIQUID);
+		// temperatuur(0, 20) --> (0, 30) Heated
+		assertEquals("Water", ingredient.getSimpleName());
+		assertNull(ingredient.getSpecialName());
+		assertEquals("Heated Water", ingredient.getFullName());
 	}
 
 }

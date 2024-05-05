@@ -208,7 +208,7 @@ public class IngredientType {
 	 * A getter for the standard temperature object of the ingredient type.
 	 */
 	@Model
-	private Temperature getStandardTemperatureObject() {
+	protected Temperature getStandardTemperatureObject() {
 		return standardTemperature;
 	}
 
