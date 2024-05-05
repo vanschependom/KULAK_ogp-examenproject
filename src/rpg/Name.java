@@ -11,6 +11,8 @@ import be.kuleuven.cs.som.annotate.*;
  * @invar 	The simple name parts of a name must be valid.
  * 			| isValidSimpleNameParts(getSimpleNameParts())
  *
+ * @note 	We use DEFENSIVE PROGRAMMING for the name.
+ *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
  * @author	Flor De Meulemeester
