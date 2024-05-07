@@ -1,5 +1,8 @@
 package rpg.alchemy;
 
+import be.kuleuven.cs.som.annotate.*;
+import java.util.Random;
+
 /**
  * A class representing an Oven device inside a laboratory.
  *
@@ -14,6 +17,18 @@ public class Oven extends TemperatureDevice {
 	 * CONSTRUCTORS
 	 **********************************************************/
 
+	/**
+	 * A constructor for an oven given a laboratory and a temperature.
+	 *
+	 * @param 	laboratory
+	 * 			The laboratory to add the oven in.
+	 * @param 	temperature
+	 *			The temperature for this oven to heat to.
+	 *
+	 * @effect 	A temperature device with given laboratory and temperature is created
+	 * 	 		| super(laboratory, temperature)
+	 */
+	@Raw
 	public Oven(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException {
 		super(laboratory, temperature);
 	}
@@ -25,7 +40,7 @@ public class Oven extends TemperatureDevice {
 	 **********************************************************/
 
 	/**
-	 * A method that executes the operation of the cooling box device.
+	 * A method that executes the operation of the oven device.
 	 *
 	 * @effect  Executes operation from temperature device
 	 *          | super.executeOperation()
@@ -34,22 +49,25 @@ public class Oven extends TemperatureDevice {
 	 * 			the ingredient is heated to the temperature of the oven (with a deviation of 5).
 	 * 			| if !getTemperature().isColderThan(getIngredientAt(0).getTemperature())
 	 * 			|	then getIngredientAt(0).getHotness() == getTemperature().getHotness() &&
-	 * 			|		 getIngredientAt(0).getColdness() == getTemperature().Coldness()
-	 *
-	 * @throws 	IllegalStateException
-	 * 			There are no items in the device
-	 * 			| isEmpty()
+	 * 			|		 getIngredientAt(0).getColdness() == getTemperature().getColdness()
 	 */
 	@Override
 	public void executeOperation() throws IllegalStateException {
-		if (isEmpty()) {
-			throw new IllegalStateException("There are no items in the device!");
-		}
-		// if the temperature of the cooling box is higher than the temperature of the ingredient, do nothing
+		super.executeOperation();
+		// if the temperature of the oven is higher than the temperature of the ingredient, do nothing
 		if (!getTemperature().isColderThan(getIngredientAt(0).getTemperature())) {
-			// if the temperature of the ingredient is higher than the temperature of the cooling box, cool the ingredient
+			// if the temperature of the ingredient is lower than the temperature of the oven, heat the ingredient
 			long difference = getTemperature().difference(getIngredientAt(0).getTemperature());
 			getIngredientAt(0).heat(difference);
+
+			// deviation of 5
+			Random random = new Random();
+			int extra = random.nextInt(-5,5);	// random int between -5 en 5
+			if (extra > 0){
+				getIngredientAt(0).heat(extra);
+			} else if (extra < 0) {
+				getIngredientAt(0).cool(Math.abs(extra));
+			}
 		}
 	}
 

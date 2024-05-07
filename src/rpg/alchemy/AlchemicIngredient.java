@@ -68,7 +68,7 @@ public class AlchemicIngredient {
      *          | !isValidState(state)
      */
     @Raw
-    public AlchemicIngredient(double amount, Unit unit, Temperature temperature, IngredientType type, State state) throws IllegalStateException {
+    public AlchemicIngredient(int amount, Unit unit, Temperature temperature, IngredientType type, State state) throws IllegalStateException {
         if (!isValidState(state)) {
             throw new IllegalStateException("The given state is not valid!");
         }
@@ -98,13 +98,13 @@ public class AlchemicIngredient {
      *          wanneer een methode/constructor wordt aangeroepen
      **********************************************************/
 
-    private final double amount;
+    private final int amount;
 
     /**
      * A method to get the amount of this alchemic ingredient.
      */
     @Basic @Immutable
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
 
@@ -378,6 +378,19 @@ public class AlchemicIngredient {
      */
     public String getSpecialName() {
         return getType().getName().getSpecialName();
+    }
+
+    /**
+     * A method that changes the special name of an alchemic ingredient.
+     *
+     * @param   specialName
+     *          The special name to change to.
+     * @effect  The special name of the ingredient type of this ingredient
+     *          is set to the given special name
+     *          | getType().getName().setSpecialName(specialName)
+     */
+    public void setSpecialName(String specialName) {
+        getType().getName().setSpecialName(specialName);
     }
 
     /**

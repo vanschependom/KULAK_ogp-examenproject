@@ -93,7 +93,7 @@ public class Name {
 	 * A getter for the simple name parts of the name.
 	 */
 	@Model
-	private String[] getSimpleNameParts() {
+	protected String[] getSimpleNameParts() {
 		return simpleNameParts;
 	}
 

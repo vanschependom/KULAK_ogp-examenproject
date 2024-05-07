@@ -30,6 +30,11 @@ public class IngredientContainer {
      * @param   content
      *          The contents of the new container (an ingredient).
      *
+     * @post    The capacity of this new container is equal to the given capacity.
+     *          | new.getCapacity() == capacity
+     * @post    The content of this new container is equal to the given content (an ingredient).
+     *          | new.getContent() == content
+     *
      * @throws  IllegalArgumentException
      *          The given capacity is not valid.
      *          | !isValidCapacity(capacity)

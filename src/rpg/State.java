@@ -19,4 +19,16 @@ public enum State {
 	 */
 	LIQUID, POWDER;
 
+	/**
+	 * A method to get the next state in the list of states.
+	 */
+	public State getNext() {
+		for (State i : State.values()) {
+			if (i != this) {
+				return i;
+			}
+		}
+		return this;
+	}
+
 }

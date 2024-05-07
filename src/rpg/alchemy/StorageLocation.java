@@ -318,7 +318,7 @@ public abstract class StorageLocation {
             int index = getIndexOf(container.getContent());
             AlchemicIngredient alreadyInLocation = getIngredientAt(index);
             AlchemicIngredient replacement = new AlchemicIngredient(
-                    alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount(),
+                    (int) (alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount()),
                     Unit.SPOON,
                     new Temperature(alreadyInLocation.getColdness(), alreadyInLocation.getHotness()),
                     alreadyInLocation.getType(),

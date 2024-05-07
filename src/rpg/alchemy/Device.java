@@ -1,6 +1,7 @@
 package rpg.alchemy;
 
 import be.kuleuven.cs.som.annotate.Basic;
+import be.kuleuven.cs.som.annotate.Immutable;
 import be.kuleuven.cs.som.annotate.Raw;
 import rpg.State;
 import rpg.Unit;
@@ -28,16 +29,23 @@ public abstract class Device extends StorageLocation {
      *
      * @param   laboratory
      *          The laboratory to add the device in.
+     * @param   maxNbOfIngredients
+     *          The maximum number of ingredients for this device.
      *
      * @post    The device is added to the laboratory
      *          TODO
+     * @post    The max number of ingredients is set to maxNbOfIngredients
+     *          | new.getMaxNbOfIngredients() == maxNbOfIngredients
      */
     @Raw
-    public Device(Laboratory laboratory) throws IllegalArgumentException{
+    public Device(Laboratory laboratory, int maxNbOfIngredients) throws IllegalArgumentException{
+        super();
         if (!isValidLaboratory(laboratory)) {
             throw new IllegalArgumentException("Not a legal laboratory for this device!");
         }
-        //TODO
+        this.laboratory = laboratory;
+        this.maxNbOfIngredients = maxNbOfIngredients;
+        // TODO
     }
 
 
@@ -93,6 +101,41 @@ public abstract class Device extends StorageLocation {
         }
         // return a new container with the minimum unit for the result, given the state and size of the result
         return new IngredientContainer(Unit.getMinUnitForContainer(result), result);
+    }
+
+    /**********************************************************
+     * INGREDIENTS
+     **********************************************************/
+
+    /**
+     * A variable that keeps track of the maximum amount of ingredients a device can have.
+     */
+    private final int maxNbOfIngredients;
+
+    /**
+     * Return the maximum number of ingredients for the device.
+     */
+    @Basic @Immutable
+    public int getMaxNbOfIngredients() {
+        return maxNbOfIngredients;
+    }
+
+    /**
+     * A method to add an ingredient to a temperature device.
+     *
+     * @param   ingredient
+     *          The ingredient to add
+     *
+     * @throws  IllegalStateException
+     *          The maximum amount of ingredients has been reached
+     *          | getNbOfIngredients() == getMaxNbOfIngredients()
+     */
+    @Override
+    protected void addAsIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException, IllegalStateException {
+        if(getNbOfIngredients() == getMaxNbOfIngredients()) {
+            throw new IllegalStateException();
+        }
+        super.addAsIngredient(ingredient);
     }
 
 

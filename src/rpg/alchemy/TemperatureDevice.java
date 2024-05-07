@@ -27,13 +27,15 @@ public abstract class TemperatureDevice extends Device {
      * @param   temperature
      *          The temperature for this device to cool or heat to.
      *
-     * @effect  A device with a given laboratory is created.
-     *          | super(laboratory)
+     * @effect  A device with a given laboratory
+     *          and a maximum number of ingredients equal to 1 is created.
+     *          | super(laboratory, 1)
      * @effect  The temperature of the temperature device is set to temperature
      *          | setTemperature(temperature, 1)
      */
+    @Raw
     public TemperatureDevice(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException {
-        super(laboratory);
+        super(laboratory, 1);
         setTemperature(temperature);
     }
 
@@ -133,9 +135,15 @@ public abstract class TemperatureDevice extends Device {
      * OPERATION EXECUTION
      **********************************************************/
 
+    /**
+     * A method for executing the device instruction.
+     *
+     * @effect  Executes the operation from device
+     *          | super.executeOperation()
+     */
     @Override
     public void executeOperation () {
-       //
+       super.executeOperation();
     }
 
 }
