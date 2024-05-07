@@ -157,9 +157,9 @@ public abstract class Device extends StorageLocation {
         if (!isValidLaboratory(getLaboratory())) {
             return false;
         }
-        if (!getLaboratory().hasAsDevice(this)) {
-            return false;
-        }
+//        if (!getLaboratory().hasAsDevice(this)) {
+//            return false;
+//        }
         return false;
     }
 
@@ -171,8 +171,19 @@ public abstract class Device extends StorageLocation {
 
     /**
      * An abstract method for executing the device instructions.
+     *
+     * @throws  IllegalStateException
+     *          The device is not present in a valid laboratory.
+     *          | !hasProperLaboratory()
      */
-    public abstract void executeOperation();
+    public void executeOperation() throws IllegalStateException {
+        if (!hasProperLaboratory()) {
+            throw new IllegalStateException("The device can't be used, since the laboratory is not valid!");
+        }
+        if (isEmpty()) {
+            throw new IllegalStateException("There are no items in the device!");
+        }
+    }
 
 
 

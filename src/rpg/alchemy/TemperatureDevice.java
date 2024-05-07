@@ -30,17 +30,7 @@ public abstract class TemperatureDevice extends Device {
      * @effect  A device with a given laboratory is created.
      *          | super(laboratory)
      * @effect  The temperature of the temperature device is set to temperature
-     *          | setTemperature(temperature)
-     *
-     * @throws  IllegalArgumentException
-     *          The device cannot be inside the given laboratory
-     *          | !isValidLaboratory(laboratory)
-     *          | TODO vragen aan Tommy, maar wordt overgenomen door @effect en super() denk ik
-     * @throws  IllegalArgumentException
-     *          The given temperature is a null pointer
-     *          | temperature == null
-     *          | TODO zelfde opmerking
-     *
+     *          | setTemperature(temperature, 1)
      */
     public TemperatureDevice(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException {
         super(laboratory);
@@ -64,29 +54,6 @@ public abstract class TemperatureDevice extends Device {
     @Override
     public boolean hasProperIngredients() {
         return super.hasProperIngredients() && getNbOfIngredients() == 1;
-    }
-
-    /**
-     * A method to add an ingredient to a temperature device.
-     *
-     * @param   ingredient
-     *          The ingredient to add to the device.
-     *
-     * @effect  The ingredient is added to the device.
-     *          | new.hasAsIngredient(ingredient) &&
-     *          | new.getNbOfIngredients() == getNbOfIngredients() + 1 &&
-     *          | new.getIngredientAt(getNbOfIngredients() - 1).equals(ingredient)
-     *
-     * @throws  IllegalStateException
-     *          The device already has an ingredient.
-     *          | getNbOfIngredients() == 1
-     */
-    @Override
-    protected void addAsIngredient(AlchemicIngredient ingredient) {
-        if (getNbOfIngredients() == 1) {
-            throw new IllegalStateException("Temperature devices can only have one ingredient!");
-        }
-        super.addAsIngredient(ingredient);
     }
 
 

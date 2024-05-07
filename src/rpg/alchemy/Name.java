@@ -1,4 +1,4 @@
-package rpg;
+package rpg.alchemy;
 
 import rpg.exceptions.IllegalNameException;
 
@@ -228,61 +228,75 @@ public class Name {
 	 * @param 	name
 	 * 			The name to check.
 	 *
-	 * @return	False if the name is null or the name is empty.
-	 * 			| if (name == null || name.isEmpty())
-	 * 			| then result == false
-	 * @return	False if the name contains the words "mixed with", "and", "heated" or "cooled",
-	 * 			ignoring the case.
-	 * 			| if (name.toLowerCase().contains("mixed with") || name.toLowerCase().contains("and")
-	 * 			|	|| name.toLowerCase().contains("heated") || name.toLowerCase().contains("cooled"))
-	 * 			| then result == false
-	 * @return	False if the name contains illegal symbols.
-	 * 			| if (containsIllegalSymbols(name))
-	 * 			| then result == false
-	 * @return 	False if the name consists of one part and the part is not correctly cased or the part
-	 * 			is shorter than 3 characters.
-	 * 			| if ( (name.split(" ").length == 1)
-	 * 			| and ( !isCorrectlyCased(parts[0]) || !parts[0].length() >= 3) )
-	 * 			|	then result == false
-	 * @return 	False if the name consists of multiple parts and at least one part is not correctly cased
-	 * 			or the part is shorter than 2 characters.
-	 * 			| if ( (name.split(" ").length > 1)
-	 * 			| and ( for some part in name.split(" "): !isCorrectlyCased(part) || part.length() < 2) )
-	 * 			|	then result == false
-	 * @return	True otherwise.
-	 * 			| todo vraag na voor specificatie
+	 * @return	True if and only if the name is not null, the name is not empty, the name doesn't
+	 * 			contain any illegal words, the name doesn't contain any illegal symbols
+	 * 			and the name doesn't contain any illegal parts.
+	 * 			| result ==
+	 * 			| 	( name != null
+	 * 			|	&& !name.isEmpty()
+	 * 			|	&& !containsIllegalWords(name)
+	 * 			|	&& !containsIllegalSymbols(name)
+	 * 			|	&& !containsIllegalPart(name.split(" ") )
 	 */
 	public static boolean isValidName(String name) {
-		// empty or null
-		if (name == null || name.isEmpty()) {
-			return false;
-		}
-		// illegal words
-		if (name.toLowerCase().contains("mixed") || name.toLowerCase().contains("with")
-				|| name.toLowerCase().contains("and")
-				|| name.toLowerCase().contains("heated") || name.toLowerCase().contains("cooled")) {
-			return false;
-		}
-		// illegal symbols
-		if (containsIllegalSymbols(name)) {
-			return false;
-		}
-		// split
-		String[] parts = name.split(" ");
-		// only one word in name
+		return (
+				name != null
+				&& !name.isEmpty()
+				&& !containsIllegalWords(name)
+				&& !containsIllegalSymbols(name)
+				&& !containsIllegalPart(name.split(" "))
+		);
+	}
+
+	/**
+	 * A method for checking if a given string contains illegal words for a name.
+	 *
+	 * @param 	str
+	 * 			The string to check.
+	 * @return	True if and only if the string contains (ignoring case) mixed, with, and heated or cooled.
+	 * 			| result ==
+	 * 			|	( str.toLowerCase().contains("mixed")
+	 * 			|		|| str.toLowerCase().contains("with")
+	 * 			|		|| str.toLowerCase().contains("and")
+	 * 			|		|| str.toLowerCase().contains("heated")
+	 * 			|		|| str.toLowerCase().contains("cooled") )
+	 */
+	public static boolean containsIllegalWords(String str) {
+		return (str.toLowerCase().contains("mixed") || str.toLowerCase().contains("with")
+				|| str.toLowerCase().contains("and")
+				|| str.toLowerCase().contains("heated") || str.toLowerCase().contains("cooled"));
+	}
+
+	/**
+	 * A method for checking if a list of name parts contains an illegal part,
+	 * i.e. a part that is too short or isn't correctly cased.
+	 *
+	 * @param 	parts
+	 * 			The list of strings to check.
+	 * @return	If there is only one part, true if and only if the part is not correctly cased
+	 * 			or the length of this part is smaller than 3.
+	 * 			| if (parts.length == 1) then
+	 * 			| 	result == ( !isCorrectlyCased(parts[0])	|| parts[0].length < 3 )
+	 * @return	If there is more than one part, true if and only if there exists a part
+	 * 			which is not correctly cased or which has a length shorter than 2.
+	 * 			| if (parts.length > 1) then
+	 * 			| 	result == ( for some part in parts:
+	 * 			|		!isCorrectlyCased(part)
+	 * 			|		|| part.length() < 2 )
+	 */
+	public static boolean containsIllegalPart(String[] parts) {
+		// only one part
 		if (parts.length == 1) {
-			if (!isCorrectlyCased(parts[0]) || parts[0].length() < 3) {
-				return false;
-			}
+			return (!isCorrectlyCased(parts[0]) || parts[0].length() < 3);
 		} else {
-			// multiple words in name
+			// multiple parts
 			for (String part : parts) {
 				if (!isCorrectlyCased(part) || part.length() < 2) {
-					return false;
+					return true;
 				}
 			}
+			return false;
 		}
-		return true;
 	}
 
 	/**

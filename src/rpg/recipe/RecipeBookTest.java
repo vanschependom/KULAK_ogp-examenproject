@@ -2,7 +2,7 @@ package rpg.recipe;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import rpg.Name;
+import rpg.alchemy.Name;
 import rpg.State;
 import rpg.Unit;
 import rpg.alchemy.AlchemicIngredient;

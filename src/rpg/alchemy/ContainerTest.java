@@ -1,7 +1,6 @@
 package rpg.alchemy;
 
 import org.junit.jupiter.api.*;
-import rpg.Name;
 import rpg.State;
 import rpg.Unit;
 

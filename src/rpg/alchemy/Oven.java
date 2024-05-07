@@ -27,8 +27,11 @@ public class Oven extends TemperatureDevice {
 	/**
 	 * A method that executes the operation of the cooling box device.
 	 *
+	 * @effect  Executes operation from temperature device
+	 *          | super.executeOperation()
+	 *
 	 * @post	If the temperature of the oven is not colder than the temperature of the ingredient,
-	 * 			the ingredient is heated to the temperature of the cooling box.
+	 * 			the ingredient is heated to the temperature of the oven (with a deviation of 5).
 	 * 			| if !getTemperature().isColderThan(getIngredientAt(0).getTemperature())
 	 * 			|	then getIngredientAt(0).getHotness() == getTemperature().getHotness() &&
 	 * 			|		 getIngredientAt(0).getColdness() == getTemperature().Coldness()

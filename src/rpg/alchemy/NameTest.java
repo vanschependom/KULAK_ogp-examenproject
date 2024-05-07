@@ -1,4 +1,4 @@
-package rpg;
+package rpg.alchemy;
 
 import org.junit.jupiter.api.Test;
 

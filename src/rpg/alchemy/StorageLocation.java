@@ -116,8 +116,10 @@ public abstract class StorageLocation {
      */
     public boolean containsTwice(AlchemicIngredient ingredient) {
         int count = 0;
-        for (AlchemicIngredient ing : ingredients) {
-            if (ing.equals(ingredient)) count++;
+        for (int i=0; i<getNbOfIngredients(); i++) {
+            if (getIngredientAt(i).equals(ingredient)) {
+                count++;
+            }
         }
         return count > 1;
     }
@@ -176,7 +178,24 @@ public abstract class StorageLocation {
     }
 
     /**
-     * A method for getting the index of a given ingredient.
+     * A method for removing an ingredient from this storage location.
+     *
+     * @param   ingredient
+     *          The ingredient to remove.
+     * @throws  IllegalArgumentException
+     *          The given ingredient is not present in this StorageLocation
+     *          | !hasAsIngredient(ingredient)
+     */
+    protected void removeAsIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
+        if (!hasAsIngredient(ingredient)) {
+            throw new IllegalArgumentException("Item is not present!");
+        }
+        ingredients.remove(ingredient);
+    }
+
+    /**
+     * A method for getting the index of a given ingredient, just looking at the properties
+     * and not the actual object itself.
      *
      * @param   ingredient
      *          The ingredient to get the index of.
@@ -211,7 +230,8 @@ public abstract class StorageLocation {
     }
 
     /**
-     * A method for checking if a storage location contains a given ingredient.
+     * A method for checking if a storage location contains a given ingredient,
+     * not looking at the object reference, but only looking at the characteristics
      *
      * @param   ingredient
      *          The ingredient to check
@@ -219,6 +239,8 @@ public abstract class StorageLocation {
      * @return  True if and only if the ingredient is present in the storage location
      *          | result == ( for some I in 0..getNbOfIngredients()-1:
      *          |   getIngredientAt(I).equals(ingredient) )
+     *
+     * @note    We use .equals() here and not '==' !
      */
     public boolean hasAsIngredient(AlchemicIngredient ingredient) {
         for (int i=0; i < getNbOfIngredients(); i++) {
@@ -230,13 +252,36 @@ public abstract class StorageLocation {
     }
 
     /**
+     * A method for checking if a storage location contains a given ingredient,
+     * looking at the object reference itself.
+     *
+     * @param   ingredient
+     *          The ingredient to check
+     *
+     * @return  True if and only if the ingredient is present in the storage location
+     *          | result == ( for some I in 0..getNbOfIngredients()-1:
+     *          |   getIngredientAt(I) == ingredient )
+     *
+     * @note    We use '==' here and not .equals !
+     */
+    public boolean hasAsIngredientObject(AlchemicIngredient ingredient) {
+        for (int i=0; i < getNbOfIngredients(); i++) {
+            if (getIngredientAt(i) == (ingredient)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
      * A method for adding a container to the storage location, unpacking
      * the contents of the container and adding them to the ingredients ArrayList.
      *
      * @param   container
      *          The container of which the contents should be added to the storage location.
      *
-     * @post    If the AlchemicIngredient inside the container is already present in the storage location,
+     * @effect  If the AlchemicIngredient inside the container is already present in the storage location,
      *          just looking at the properties and not the actual object, the already present object is replaced
      *          with a new object with the spoon amount of the old object and the new object combined, and the
      *          other properties of the old object; the old object is terminated.
@@ -278,8 +323,10 @@ public abstract class StorageLocation {
                     new Temperature(alreadyInLocation.getColdness(), alreadyInLocation.getHotness()),
                     alreadyInLocation.getType(),
                     alreadyInLocation.getState());
-            // replace the old ingredient with the new one
-            ingredients.set(index, replacement);
+            // delete the old ingredient
+            removeAsIngredient(alreadyInLocation);
+            // add the replacement
+            addAsIngredient(replacement);
             // terminate the old ingredient (and thus the temperature)
             alreadyInLocation.terminate();
         }
