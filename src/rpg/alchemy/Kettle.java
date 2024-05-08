@@ -73,7 +73,7 @@ public class Kettle extends Device {
 			}
 
 			// Set the new name
-			Name name = new Name(null, String.valueOf(List.of(names)));
+			Name newName = new Name(null, String.valueOf(List.of(names)));
 
 			// Set the new state
 			State newState = getIngredientAt(closestTemperatureIndex).getState();
@@ -91,7 +91,7 @@ public class Kettle extends Device {
 			}
 
 			// create the new ingredient(type) and add to the kettle
-			IngredientType newType = new IngredientType(name, newState, newStandardTemperature, true);
+			IngredientType newType = new IngredientType(newName, newState, newStandardTemperature, true);
 			addAsIngredient(new AlchemicIngredient((int) totalSpoonAmount, Unit.SPOON, averageTemperature, newType, newState));
 
 		}

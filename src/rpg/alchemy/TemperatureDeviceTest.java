@@ -41,28 +41,28 @@ public class TemperatureDeviceTest {
 
     @Test
     public void constructorInvalid2() {
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             CoolingBox coolingBox1 = new CoolingBox(null, null);
         });
     }
 
     @Test
     public void constructorInvalid3() {
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             CoolingBox coolingBox1 = new CoolingBox(null, new Temperature(10, 0));
         });
     }
 
     @Test
     public void constructorInvalid4() {
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             Oven oven1 = new Oven(null, new Temperature(10, 0));
         });
     }
 
     @Test
     public void constructorInvalid5() {
-        assertThrows(NullPointerException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             Oven oven1 = new Oven(null, null);
         });
     }
@@ -76,22 +76,22 @@ public class TemperatureDeviceTest {
 
     @Test
     public void setTemperatureValid() {
-        coolingBox.setTemperature(new Temperature(120, 0));
+        coolingBox.changeTemperatureTo(new Temperature(120, 0));
         assertEquals(120, coolingBox.getColdness());
         assertEquals(0, coolingBox.getHotness());
     }
 
     @Test
     public void setTemperatureValid2() {
-        oven.setTemperature(new Temperature(10, 0));
-        assertEquals(10, coolingBox.getColdness());
-        assertEquals(0, coolingBox.getHotness());
+        oven.changeTemperatureTo(new Temperature(10, 0));
+        assertEquals(10, oven.getColdness());
+        assertEquals(0, oven.getHotness());
     }
 
     @Test
     public void setTemperatureInvalid() {
         assertThrows(NullPointerException.class, () -> {
-            oven.setTemperature(null);
+            oven.changeTemperatureTo(null);
         });
     }
 }

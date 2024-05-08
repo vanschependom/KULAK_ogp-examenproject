@@ -7,10 +7,10 @@ import rpg.Unit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CoolingBoxTest {
+public class OvenTest {
 
     private Laboratory lab;
-    private CoolingBox coolingBox;
+    private Oven oven;
     private IngredientType type1;
     private IngredientType type2;
     private AlchemicIngredient ingredient1;
@@ -27,32 +27,32 @@ public class CoolingBoxTest {
         ingredient2 = new AlchemicIngredient(15, Unit.PINCH, type2);
         container1 = new IngredientContainer(Unit.BARREL, ingredient1);
         container2 = new IngredientContainer(Unit.CHEST, ingredient2);
-        coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+        oven = new Oven(lab, new Temperature(0, 150));
     }
 
     @Test
     public void executeOperationValid() {
-        coolingBox.addIngredients(container1);
-        coolingBox.executeOperation();
-        IngredientContainer container = coolingBox.getResult();
+        oven.addIngredients(container1);
+        oven.executeOperation();
+        IngredientContainer container = oven.getResult();
         AlchemicIngredient ingredient = container.getContent();
         assertEquals(ingredient.getAmount(), ingredient1.getAmount());
         assertEquals(ingredient.getType(), ingredient1.getType());
-        assertTrue(coolingBox.getTemperature().difference(ingredient.getTemperature()) <= 5);
+        assertTrue(oven.getTemperature().difference(ingredient.getTemperature()) <= 5);
         assertEquals(ingredient.getUnit(), ingredient1.getUnit());
         assertEquals(ingredient.getState(), ingredient1.getState());
     }
 
     @Test
     public void executeOperationValid2() {
-        coolingBox.addIngredients(container2);
-        coolingBox.changeTemperatureTo(new Temperature(60, 0));
-        coolingBox.executeOperation();
-        IngredientContainer container = coolingBox.getResult();
+        oven.addIngredients(container2);
+        oven.changeTemperatureTo(new Temperature(0, 600));
+        oven.executeOperation();
+        IngredientContainer container = oven.getResult();
         AlchemicIngredient ingredient = container.getContent();
         assertEquals(ingredient.getAmount(), ingredient2.getAmount());
         assertEquals(ingredient.getType(), ingredient2.getType());
-        assertTrue(coolingBox.getTemperature().difference(ingredient.getTemperature()) <= 5);
+        assertTrue(oven.getTemperature().difference(ingredient.getTemperature()) <= 5);
         assertEquals(ingredient.getUnit(), ingredient2.getUnit());
         assertEquals(ingredient.getState(), ingredient2.getState());
     }
@@ -60,7 +60,7 @@ public class CoolingBoxTest {
     @Test
     public void executeOperationInvalid() {
         assertThrows(IllegalStateException.class, () -> {
-            coolingBox.executeOperation();
+            oven.executeOperation();
         });
     }
 }

@@ -203,7 +203,7 @@ public abstract class Device extends StorageLocation {
 //        if (!getLaboratory().hasAsDevice(this)) {
 //            return false;
 //        }
-        return false;
+        return true;
     }
 
 
