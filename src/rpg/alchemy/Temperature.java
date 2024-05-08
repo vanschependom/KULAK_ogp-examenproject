@@ -31,6 +31,14 @@ public class Temperature {
 	private static final long UPPERBOUND = 10000;
 
 	/**
+	 * Return the upper bound of temperature
+	 */
+	@Immutable @Basic
+	protected static long getUpperbound() {
+		return UPPERBOUND;
+	}
+
+	/**
 	 * A variable referencing the standard hotness.
 	 */
 	private static final long STANDARD_HOTNESS = 20;
