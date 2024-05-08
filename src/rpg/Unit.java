@@ -202,7 +202,7 @@ public enum Unit {
 	 * @pre 	The given state must be effective.
 	 * 			| state != null
 	 *
-	 * @return	The maximum unit for a container.
+	 * @return	The maximum unit (with biggest spoon equivalent) for a container.
 	 * 			TODO
 	 */
 	public static Unit getMaxUnitForContainer(State state) {
@@ -241,6 +241,7 @@ public enum Unit {
 		}
 		if (minUnit.getSpoonEquivalent() < ingr.getSpoonAmount()) {
 			throw new IllegalArgumentException("The given result is too large for any container!");
+			// TODO deze class is nominaal, dus geen expection smijten ???
 		}
 		return minUnit;
 	}

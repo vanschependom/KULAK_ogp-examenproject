@@ -266,6 +266,15 @@ public class TemperatureTest {
 	}
 
 	@Test
+	public void add3() {
+		Temperature t1 = new Temperature(0, 5000);
+		Temperature t2 = new Temperature(0, 6000);
+		Temperature t3 = Temperature.add(t1,t2);
+		assertEquals(0,t3.getColdness());
+		assertEquals(10000,t3.getHotness());
+	}
+
+	@Test
 	public void mul1() {
 		Temperature t = new Temperature(0, 45);
 		t.mul(2);
@@ -279,6 +288,14 @@ public class TemperatureTest {
 		t.mul(0.5);
 		assertEquals(0,t.getColdness());
 		assertEquals(22,t.getHotness());
+	}
+
+	@Test
+	public void mul3() {
+		Temperature t = new Temperature(0, 6000);
+		t.mul(2);
+		assertEquals(0,t.getColdness());
+		assertEquals(10000,t.getHotness());
 	}
 
 }

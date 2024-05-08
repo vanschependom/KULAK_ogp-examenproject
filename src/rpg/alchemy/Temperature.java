@@ -127,13 +127,18 @@ public class Temperature {
 	 * A setter for the hotness of the temperature.
 	 * @param 	hotness
 	 * 			The new hotness to be set
-	 * @post	If the hotness is positive, the hotness is set to the given hotness.
-	 * 			| if (hotness >= 0)
+	 * @post	If the hotness is bigger then the upperbound then the hotness is set to the upperbound.
+	 * 			| if (hotness > UPPERBOUND)
+	 * 			| then new.getHotness() == UPPERBOUND
+	 * @post	If the hotness is positive and lower than the upperbound, the hotness is set to the given hotness.
+	 * 			| if (hotness >= 0 && hotness < UPPERBOUND)
 	 * 			| then new.getHotness() == hotness
 	 */
-	@Model @Raw
+	@Model
 	private void setHotness(long hotness) {
-		if (hotness >= 0) {
+		if (hotness >= UPPERBOUND) {
+			this.hotness = UPPERBOUND;
+		} else if (hotness >= 0) {
 			this.hotness = hotness;
 		}
 	}
@@ -163,13 +168,18 @@ public class Temperature {
 	 * A setter for the coldness of the temperature.
 	 * @param 	coldness
 	 * 			The new coldness to be set
-	 * @post	If the coldness is positive, the coldness is set to the given coldness
-	 * 			| if (coldness >= 0)
+	 * @post	If the coldness is bigger the upperbound then the coldness is set to the upperbound.
+	 * 			| if (coldness >= UPPERBOUND)
+	 * 			| then new.getColdness() == UPPERBOUND
+	 * @post	If the coldness is positive and lower than the upperbound, the coldness is set to the given coldness
+	 * 			| if (coldness >= 0 && coldness < UPPERBOUND)
 	 * 			| then new.getColdness() == coldness
 	 */
 	@Model @Raw
 	private void setColdness(long coldness) {
-		if (coldness >= 0) {
+		if (coldness >= UPPERBOUND) {
+			this.coldness = UPPERBOUND;
+		} else if (coldness >= 0) {
 			this.coldness = coldness;
 		}
 	}
@@ -400,9 +410,9 @@ public class Temperature {
 		long hot = t1.getHotness() + t2.getHotness();
 		long difference = hot - cold;
 		if (difference > 0) {
-			return new Temperature(0, difference);
+			return new Temperature(0, Math.min(difference,UPPERBOUND));
 		} else if (difference < 0) {
-			return  new Temperature(Math.abs(difference),0);
+			return  new Temperature(Math.min(Math.abs(difference),UPPERBOUND),0);
 		} else {
 			return new Temperature(0, 0);
 		}
@@ -418,8 +428,8 @@ public class Temperature {
 	 */
 	public void mul(double delta) {
 		if (delta > 0) {
-			setColdness((long) (delta * getColdness()));
-			setHotness((long) (delta * getHotness()));
+			setColdness(Math.min((long) (delta * getColdness()), UPPERBOUND));
+			setHotness(Math.min((long) (delta * getHotness()),UPPERBOUND));
 		}
 	}
 
