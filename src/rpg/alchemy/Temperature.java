@@ -376,6 +376,24 @@ public class Temperature {
 
 	/**
 	 * A method to add two temperatures together.
+	 *
+	 * @param 	t1
+	 * 			The first temperature that you want to add together
+	 * @param	t2
+	 * 			The other temperature that you want to add together
+	 *
+	 * @return	If the difference between the sum of the hotness and the sum of the coldness
+	 * 			is positive then return a new temperature with that difference as the hotness.
+	 * 			| if (t1.getHotness() + t2.getHotness() > t1.getColdness() + t2.getColdness())
+	 * 			| 	result == new Temperature(0, t1.getHotness() + t2.getHotness() - t1.getColdness() + t2.getColdness())
+	 * @return	If the difference between the sum of the hotness and the sum of the coldness
+	 * 			is negative then return a new temperature with the absolute value of that difference as the coldness.
+	 * 			| if (t1.getHotness() + t2.getHotness() < t1.getColdness() + t2.getColdness())
+	 * 			| 	result == new Temperature(abs(t1.getHotness() + t2.getHotness() - t1.getColdness() + t2.getColdness()), 0)
+	 * @return	If the difference between the sum of the hotness and the sum of the coldness is equal to zero
+	 * 			then return a new temperature with both hotness and coldness equal to zero.
+	 * 			| if (t1.getHotness() + t2.getHotness() == t1.getColdness() + t2.getColdness())
+	 * 			| 	result == new Temperature(0, 0)
 	 */
 	public static Temperature add(Temperature t1, Temperature t2) {
 		long cold = t1.getColdness() + t2.getColdness();
@@ -392,6 +410,11 @@ public class Temperature {
 
 	/**
 	 * A method to multiply a temperature with a given factor delta.
+	 *
+	 * @post	The coldness of the new temperature is multiplied with a factor delta.
+	 * 			| new.getColdness = delta * getColdness()
+	 * @post	The hotness of the new temperature is multiplied with a factor delta.
+	 * 			| new.getHotness = delta * getHotness()
 	 */
 	public void mul(double delta) {
 		if (delta > 0) {
