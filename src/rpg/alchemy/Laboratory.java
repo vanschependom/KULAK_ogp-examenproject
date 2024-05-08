@@ -1,7 +1,9 @@
 package rpg.alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
+import rpg.Unit;
 
+import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -215,6 +217,97 @@ public class Laboratory extends StorageLocation {
 	 **********************************************************/
 
 	/**
+	 * A method for getting a container with all the ingredient present
+	 * at a certain index.
+	 *
+	 * @param 	index
+	 * 			The index of the ingredient to get.
+	 * @return 	TODO
+	 */
+	private IngredientContainer getAllOfIngredientAt(int index) {
+		// TODO check index
+		AlchemicIngredient ingredient = getIngredientAt(index);
+		removeAsIngredient(ingredient);
+		return new IngredientContainer(ingredient);
+	}
+
+	/**
+	 * A method for getting a certain amount of a certain unit at a given index,
+	 * returned in a container.
+	 *
+	 * @param   index
+	 *          The index of the ingredient to get a certain quantity of.
+	 * @param   amount
+	 *          The amount to get.
+	 * @param   unit
+	 *          The unit of the amount.
+	 * @return  TODO
+	 */
+	private IngredientContainer getAmountOfIngredientAt(int index, int amount, Unit unit) {
+		// TODO check index out of bounds
+		// 		check amount > 0
+		//		check unit != null
+		AlchemicIngredient ingredient = getIngredientAt(index);
+		double amountLeft = ingredient.getAmount() - amount*unit.getConversionFor(ingredient.getUnit());
+		if (amountLeft < 0) {
+			throw new IllegalArgumentException("Not enough of this ingredient in the storage location!");
+		}
+		if (amountLeft == 0) {
+			removeAsIngredient(ingredient);
+		} else {
+			removeAsIngredient(ingredient);
+			addAsIngredient(new AlchemicIngredient(
+					(int) amountLeft,  // afronding!
+					ingredient.getUnit(),
+					new Temperature(ingredient.getColdness(), ingredient.getHotness()),
+					ingredient.getType(),
+					ingredient.getState()
+			));
+		}
+		return new IngredientContainer(new AlchemicIngredient(
+				amount,
+				unit,
+				new Temperature(ingredient.getColdness(), ingredient.getHotness()),
+				ingredient.getType(),
+				ingredient.getState()
+		));
+	}
+
+	/**
+	 * A method for getting the index of an ingredient with a given simple name.
+	 *
+	 * @param 	name
+	 * 			The simple name to check.
+	 * @return	The index of the ingredient with the given simple name.
+	 * 			| TODO
+	 */
+	public int getIndexOfSimpleName(String name) {
+		for (int i=0; i<getNbOfIngredients(); i++) {
+			if (getIngredientAt(i).getSimpleName().equals(name)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	/**
+	 * A method for getting the index of an ingredient with a given special name.
+	 *
+	 * @param 	name
+	 * 			The special name to check.
+	 * @return	The index of the ingredient with the given simple name.
+	 * 			| TODO
+	 */
+	public int getIndexOfSpecialName(String name) {
+		for (int i=0; i<getNbOfIngredients(); i++) {
+			if (getIngredientAt(i).getSpecialName().equals(name)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	/**
 	 * A method for getting the total amount of ingredients stored in this laboratory,
 	 * expressed in storerooms.
 	 *
@@ -259,38 +352,36 @@ public class Laboratory extends StorageLocation {
 		if (exceedsCapacity(container)) {
 			throw new IllegalArgumentException("The content of the container is too large to fit inside this lab!");
 		}
-		if (container.getContent().isHotterThanStandardTemperature()) {
-			if (!hasDeviceOfType(CoolingBox.class)) {
+		if (container.getContent().isHotterThanStandardTemperature() && !hasDeviceOfType(CoolingBox.class)) {
 				throw new IllegalStateException("The content is hotter than standard temperature, but there is no cooling box in the lab!");
-			} else if (getDeviceOfType(CoolingBox.class).canGetToStandardTemperature()) {
-				throw new IllegalStateException("The content is hotter than standard temperature, but the cooling box cannot cool it down!");
-			}
-		} else if (container.getContent().isColderThanStandardTemperature()) {
-			if (!hasDeviceOfType(Oven.class)) {
+		} else if (container.getContent().isColderThanStandardTemperature() && !hasDeviceOfType(Oven.class)) {
 				throw new IllegalStateException("The content is colder than standard temperature, but there is no oven in the lab!");
-			} else if (getDeviceOfType(Oven.class).canGetToStandardTemperature()) {
-				throw new IllegalStateException("The content is colder than standard temperature, but the oven cannot heat it up!");
-			}
 		}
-		if (hasIngredientWithSimpleName(container.getContent().getSimpleName())
-				&& !hasDeviceOfType(Kettle.class)) {
+		if (getIndexOfSimpleName(container.getContent().getSimpleName()) != -1 && !hasDeviceOfType(Kettle.class)) {
 			throw new IllegalStateException("There is already an ingredient with the same name in the lab, but there is no kettle in the lab!");
 		}
 		if (container.getContent().isHotterThanStandardTemperature()) {
-			Device coolingBox = getDeviceOfType(CoolingBox.class);
+			// warmer -> koel af
+			CoolingBox coolingBox = (CoolingBox) getDeviceOfType(CoolingBox.class);
+			coolingBox.changeTemperatureTo(new Temperature()); 	// standard temperature
 			coolingBox.addIngredients(container);
-			coolingBox.bringToStandardTemperature();
+			// TODO operaties (evt meerdere)
+			coolingBox.executeOperation();
 			container = coolingBox.getResult();
 		} else if (container.getContent().isColderThanStandardTemperature()) {
-			Device oven = getDeviceOfType(Oven.class);
+			// kouder -> warm op
+			Oven oven = (Oven) getDeviceOfType(Oven.class);
+			oven.changeTemperatureTo(new Temperature()); 		// standard temperature
 			oven.addIngredients(container);
-			oven.bringToStandardTemperature();
+			// TODO operaties (evt meerdere)
+			oven.executeOperation();
 			container = oven.getResult();
 		}
-		if (hasIngredientWithSimpleName(container.getContent().getSimpleName())) {
+		int indexSameName = getIndexOfSimpleName(container.getContent().getSimpleName());
+		if (indexSameName != -1) {
 			Device kettle = getDeviceOfType(Kettle.class);
 			kettle.addIngredients(container);
-			kettle.addIngredients(getIngredientWithSimpleName(container.getContent().getSimpleName()));
+			kettle.addIngredients(getAllOfIngredientAt(indexSameName));
 		} else {
 			super.addIngredients(container);
 		}

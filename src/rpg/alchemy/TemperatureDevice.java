@@ -122,11 +122,25 @@ public abstract class TemperatureDevice extends Device {
      *          so temperature.isValidTemperature() is not necessary.
      */
     @Model
-    public void setTemperature(Temperature temperature) throws NullPointerException, IllegalArgumentException {
+    private void setTemperature(Temperature temperature) throws NullPointerException, IllegalArgumentException {
         if (temperature == null) {
             throw new NullPointerException();
         }
         this.temperature = temperature;
+    }
+
+    /**
+     * A method to change the temperature of a temperature device.
+     *
+     * @param   temperature
+     *          The new temperature for the device.
+     * @effect  The current temperature of the device is terminated and the new temperature is set.
+     *          | getTemperature().terminate()
+     *          | && setTemperature(temperature)
+     */
+    public void changeTemperatureTo(Temperature temperature) throws NullPointerException {
+        setTemperature(temperature);
+        getTemperature().terminate();
     }
 
 

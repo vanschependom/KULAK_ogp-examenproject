@@ -71,7 +71,7 @@ public abstract class Device extends StorageLocation {
      *          unit for a container with the state of the result, return a new container with the minimum unit
      *          for the result, given the state and size of the result, containing the result.
      *          | if ( result.getSpoonAmount() <= Unit.getMaxUnitForContainer(result.getState()).getSpoonEquivalent() )
-     *          |   then result.equals(new IngredientContainer(Unit.getMinUnitForContainer(getIngredientAt(0)), getIngredientAt(0))
+     *          |   then result.equals(new IngredientContainer(Unit.getMinUnitForContainerWith(getIngredientAt(0)), getIngredientAt(0))
      *
      * @throws  DeviceNotYetUsedException
      *          The device has not been used yet so there is no result to be given
@@ -100,7 +100,7 @@ public abstract class Device extends StorageLocation {
                     result.getType(), result.getState());
         }
         // return a new container with the minimum unit for the result, given the state and size of the result
-        return new IngredientContainer(Unit.getMinUnitForContainer(result), result);
+        return new IngredientContainer(Unit.getMinUnitForContainerWith(result), result);
     }
 
     /**********************************************************

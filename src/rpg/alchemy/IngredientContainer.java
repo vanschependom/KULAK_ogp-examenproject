@@ -57,6 +57,19 @@ public class IngredientContainer {
         }
     }
 
+    /**
+     * A method for creating a new container with a given content and the minimum unit
+     * for the container based on this content.
+     *
+     * @param   content
+     *          The content of the new container (an ingredient).
+     * @effect  A new container is created with the minimum unit for the container based on the content.
+     *          | this(Unit.getMinUnitForContainerWith(content), content)
+     */
+    public IngredientContainer(AlchemicIngredient content) throws IllegalArgumentException {
+        this(Unit.getMinUnitForContainerWith(content), content);
+    }
+
 
 
     /**********************************************************

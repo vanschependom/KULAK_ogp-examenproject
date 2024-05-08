@@ -136,8 +136,7 @@ public abstract class StorageLocation {
      *          The index is negative or is bigger than the size of ingredients
      *          | (index < 0) || (index > getNbOfIngredients())
      */
-    @Basic
-    public AlchemicIngredient getIngredientAt(int index) throws IndexOutOfBoundsException {
+    protected AlchemicIngredient getIngredientAt(int index) throws IndexOutOfBoundsException {
         if (index < 0 || index >= getNbOfIngredients()) {
             throw new IndexOutOfBoundsException();
         }

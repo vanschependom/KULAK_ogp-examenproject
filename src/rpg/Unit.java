@@ -220,24 +220,27 @@ public enum Unit {
 	/**
 	 * A method for getting the minimum unit for a result container.
 	 *
-	 * @param 	result
-	 * 			The alchemic ingredient that needs to be returned.in a container.
+	 * @param 	ingr
+	 * 			The alchemic ingredient that needs to be in a container.
 	 *
-	 * @pre 	The given resulting ingredient must be effective
-	 * 			| result != null
+	 * @pre 	The given ingredient must be effective
+	 * 			| ingr != null
 	 *
 	 * @return	The minimum unit for a container for the result.
 	 * 			TODO
 	 */
-	public static Unit getMinUnitForContainer(AlchemicIngredient result) {
-		Unit minUnit = getMaxUnitForContainer(result.getState());
+	public static Unit getMinUnitForContainerWith(AlchemicIngredient ingr) {
+		Unit minUnit = getMaxUnitForContainer(ingr.getState());
 		for (Unit u : Unit.values()) {
 			if (u.isAllowedForContainer()
-					&& u.hasAsAllowedState(result.getState())
+					&& u.hasAsAllowedState(ingr.getState())
 					&& u.getSpoonEquivalent() < minUnit.getSpoonEquivalent()
-					&& u.getSpoonEquivalent() >= result.getSpoonAmount() ) {
+					&& u.getSpoonEquivalent() >= ingr.getSpoonAmount() ) {
 				minUnit = u;
 			}
+		}
+		if (minUnit.getSpoonEquivalent() < ingr.getSpoonAmount()) {
+			throw new IllegalArgumentException("The given result is too large for any container!");
 		}
 		return minUnit;
 	}
