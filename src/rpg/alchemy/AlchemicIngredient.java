@@ -90,6 +90,26 @@ public class AlchemicIngredient {
     }
 
 
+    /**
+     * Initialize a new non-containerized alchemic ingredient with given amount, unit and type.
+     *
+     * @param   amount
+     *          The amount of the new alchemic ingredient.
+     * @param   unit
+     *          The unit of the new alchemic ingredient.
+     * @param   type
+     *          The type of the new alchemic ingredient.
+     *
+     * @effect  A new alchemic ingredient with given amount, unit, the standard temperature of the given type,
+     *          the given ingredient type and the standard state of that same ingredient type is initialized.
+     *          | this(amount, unit, type.getStandardTemperatureObject(), type, type.getStandardState())
+     */
+    @Raw
+    public AlchemicIngredient(int amount, Unit unit, IngredientType type) {
+        this(amount, unit, type.getStandardTemperatureObject(), type, type.getStandardState());
+    }
+
+
 
     /**********************************************************
      * AMOUNT and UNIT - NOMINAL PROGRAMMING
