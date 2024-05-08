@@ -220,7 +220,7 @@ public abstract class Device extends StorageLocation {
      *          | !hasProperLaboratory()
      */
     public void executeOperation() throws IllegalStateException {
-        if (!hasProperLaboratory()) {
+        if (!hasProperLaboratory()) { // TODO Dit is een klasseinvariant en is dus altijd geldig, moet dit dan nog gecheckt worden
             throw new IllegalStateException("The device can't be used, since the laboratory is not valid!");
         }
         if (isEmpty()) {
