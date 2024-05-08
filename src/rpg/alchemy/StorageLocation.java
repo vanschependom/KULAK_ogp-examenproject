@@ -6,7 +6,8 @@ import rpg.Unit;
 import java.util.ArrayList;
 
 /**
- * A class representing a location for a storage
+ * A class representing a location for a storage, i.e. a location that contains
+ * ingredients and where ingredients can be added with a container.
  *
  * @invar   The ingredients in a storage location must be valid.
  *          | hasProperIngredients()
@@ -28,7 +29,7 @@ public abstract class StorageLocation {
      * A constructor for creating a new storage location.
      *
      * @post    The new storage location has no ingredients.
-     *          | new.isEmpty()
+     *          | new.getNbOfIngredients() == 0
      */
     public StorageLocation() {
         //
@@ -51,7 +52,7 @@ public abstract class StorageLocation {
      * @invar   Each ingredient in the list references a non-terminated ingredient.
      *          | for each ingredient in ingredients:
      *          |   !ingredient.isTerminated()
-     * @invar   Each element in the list is unique
+     * @invar   Each element in the list is unique (looking at the properties of the ingredient)
      *          | for each index in 0..getNbOfIngredients()-1:
      *          |   for each otherIndex in 0..getNbOfIngredients()-1:
      *          |       if index != otherIndex
@@ -96,16 +97,18 @@ public abstract class StorageLocation {
      *
      * @return  True if and only if the ingredient is effective,
      *          not terminated and not already in the storage location
-     *          | result == (ingredient != null && !ingredient.isTerminated() && !containsTwice(ingredient))
+     *          | result == (ingredient != null
+     *          |   && !ingredient.isTerminated()
+     *          |   && !containsIngredientTwice(ingredient) )
      */
     public boolean canHaveAsIngredient(AlchemicIngredient ingredient) {
         return (ingredient != null
                 && !ingredient.isTerminated()
-                && !containsTwice(ingredient));
+                && !containsIngredientTwice(ingredient));
     }
 
     /**
-     * A method for checking if a storage location contains two of the same ingredients
+     * A method for checking if a storage location contains two of the same ingredients.
      *
      * @param   ingredient
      *          The ingredient to check
@@ -114,7 +117,7 @@ public abstract class StorageLocation {
      *          |   for some J in 0..getNbOfIngredients()-1:
      *          |       (I != J) && getIngredientAt(I).equals(getIngredientAt(J)) )
      */
-    public boolean containsTwice(AlchemicIngredient ingredient) {
+    public boolean containsIngredientTwice(AlchemicIngredient ingredient) {
         int count = 0;
         for (int i=0; i<getNbOfIngredients(); i++) {
             if (getIngredientAt(i).equals(ingredient)) {
@@ -188,9 +191,13 @@ public abstract class StorageLocation {
      */
     protected void removeAsIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
         if (!hasAsIngredient(ingredient)) {
-            throw new IllegalArgumentException("Item is not present!");
+            throw new IllegalArgumentException("Ingredient is not present!");
         }
-        ingredients.remove(ingredient);
+        try {
+            ingredients.remove(ingredient);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Ingredient (actual object) is not present!");
+        }
     }
 
     /**
@@ -252,27 +259,23 @@ public abstract class StorageLocation {
     }
 
     /**
-     * A method for checking if a storage location contains a given ingredient,
-     * looking at the object reference itself.
+     * A method for checking if a storage location contains an ingredient with a given simple name.
      *
-     * @param   ingredient
-     *          The ingredient to check
+     * @param   name
+     *          The simple name of the ingredient to check
      *
-     * @return  True if and only if the ingredient is present in the storage location
+     * @return  True if and only if the storage location contains an ingredient with the given simple name
      *          | result == ( for some I in 0..getNbOfIngredients()-1:
-     *          |   getIngredientAt(I) == ingredient )
-     *
-     * @note    We use '==' here and not .equals !
+     *          |   getIngredientAt(I).getSimpleName().equals(name) )
      */
-    public boolean hasAsIngredientObject(AlchemicIngredient ingredient) {
-        for (int i=0; i < getNbOfIngredients(); i++) {
-            if (getIngredientAt(i) == (ingredient)) {
+    public boolean hasIngredientWithSimpleName(String name) {
+    	for (int i=0; i < getNbOfIngredients(); i++) {
+            if (getIngredientAt(i).getSimpleName().equals(name)) {
                 return true;
             }
         }
         return false;
     }
-
 
     /**
      * A method for adding a container to the storage location, unpacking
@@ -282,19 +285,22 @@ public abstract class StorageLocation {
      *          The container of which the contents should be added to the storage location.
      *
      * @effect  If the AlchemicIngredient inside the container is already present in the storage location,
-     *          just looking at the properties and not the actual object, the already present object is replaced
-     *          with a new object with the spoon amount of the old object and the new object combined, and the
-     *          other properties of the old object; the old object is terminated.
+     *          just looking at the properties and not the actual object, the already present object is removed
+     *          a new object with the spoon amount of the old object and the new object combined, and the
+     *          other properties of the old object is added; the old object is terminated.
      *          | if hasAsIngredient(container.getContent())
      *          |   then new.getNbOfIngredients() == getNbOfIngredients() &&
      *          |        for some I in 0..getNbOfIngredients()-1:
      *          |           if getIngredientAt(I).equals(container.getContent())
-     *          |               then new.getIngredientAt(I).getSpoonAmount() == getIngredientAt(I).getSpoonAmount() + container.getContent().getSpoonAmount() &&
-     *          |                    new.getIngredientAt(I).getTemperature().equals(getIngredientAt(I).getTemperature()) &&
-     *          |                    new.getIngredientAt(I).getType() == getIngredientAt(I).getType() &&
-     *          |                    new.getIngredientAt(I).getState() == getIngredientAt(I).getState() &&
-     *          |                    new.getIngredientAt(I).isTerminated()
-     *
+     *          |               then removeAsIngredient(getIngredientAt(I)) &&
+     *          |                    addAsIngredient( new AlchemicIngredient(
+     *          |                       getIngredientAt(I).getSpoonAmount() + container.getContent().getSpoonAmount(),
+     *          |                       Unit.SPOON,
+     *          |                       new Temperature(getIngredientAt(I).getColdness(), getIngredientAt(I).getHotness()),
+     *          |                       getIngredientAt(I).getType(),
+     *          |                       getIngredientAt(I).getState()
+     *          |                   ) )
+     *          |                   && getIngredientAt(I).terminate()
      * @effect  If the AlchemicIngredient inside the container is not already present in the storage location,
      *          the AlchemicIngredient is added to the storage location.
      *          | if !hasAsIngredient(container.getContent())

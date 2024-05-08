@@ -105,6 +105,10 @@ public enum Unit {
 		return spoonEquivalent;
 	}
 
+	public double getStoreroomEquivalent() {
+		return getConversionFor(STOREROOM);
+	}
+
 	/**
 	 * Return a copy of the (fixed length) list of allowed states of this unit.
 	 */
@@ -178,7 +182,7 @@ public enum Unit {
 	 * 			| result == this.getSpoonEquivalent() / unit.getSpoonEquivalent()
 	 */
 	public double getConversionFor(Unit unit) {
-		return this.spoonEquivalent / unit.spoonEquivalent;
+		return this.getSpoonEquivalent() / unit.getSpoonEquivalent();
 	}
 
 	/**

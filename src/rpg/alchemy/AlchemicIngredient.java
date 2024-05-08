@@ -120,6 +120,16 @@ public class AlchemicIngredient {
     }
 
     /**
+     * A method to get the amount of this alchemic ingredient in storerooms.
+     *
+     * @return  The amount of this alchemic ingredient in storerooms.
+     *          | result == amount * getUnit().getStoreroomEquivalent()
+     */
+    public double getStoreroomAmount() {
+        return amount * getUnit().getStoreroomEquivalent();
+    }
+
+    /**
      * A method to get the floored amount of this alchemic ingredient in spoons.
      *
      * @return  The amount of this alchemic ingredient in spoons.
@@ -258,6 +268,25 @@ public class AlchemicIngredient {
         }
     }
 
+    /**
+     * A method to check whether the ingredient is hotter than the standard temperature.
+     *
+     * @return  True if and only if the ingredient is hotter than the standard temperature.
+     *          | result == getTemperatureObject().isHotterThan(getType().getStandardTemperature())
+     */
+    public boolean isHotterThanStandardTemperature() {
+        return getTemperatureObject().isHotterThan(getType().getStandardTemperature());
+    }
+
+    /**
+     * A method to check whether the ingredient is colder than the standard temperature.
+     *
+     * @return  True if and only if the ingredient is colder than the standard temperature.
+     *          | result == getTemperatureObject().isColderThan(getType().getStandardTemperature())
+     */
+    public boolean isColderThanStandardTemperature() {
+        return getTemperatureObject().isColderThan(getType().getStandardTemperature());
+    }
 
 
 
@@ -408,9 +437,9 @@ public class AlchemicIngredient {
      *          | then result.equals(getSimpleName())
      */
     private String getExtendedSimpleName() {
-        if ( temperature.isHotterThan(getType().getStandardTemperature()) ) {
+        if ( isHotterThanStandardTemperature() ) {
             return "Heated " + getSimpleName();
-        } else if ( temperature.isColderThan(getType().getStandardTemperature()) ) {
+        } else if ( isColderThanStandardTemperature() ) {
             return "Cooled " + getSimpleName();
         } else {
             return getSimpleName();
