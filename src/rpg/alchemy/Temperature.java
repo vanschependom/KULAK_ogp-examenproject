@@ -362,6 +362,35 @@ public class Temperature {
 	}
 
 
+	/**********************************************************
+	 * HELP METHODS
+	 *********************************************************/
+
+	/**
+	 * A method to add two temperatures together.
+	 */
+	public static Temperature add(Temperature t1, Temperature t2) {
+		long cold = t1.getColdness() + t2.getColdness();
+		long hot = t1.getHotness() + t2.getHotness();
+		long difference = hot - cold;
+		if (difference > 0) {
+			return new Temperature(0, difference);
+		} else if (difference < 0) {
+			return  new Temperature(Math.abs(difference),0);
+		} else {
+			return new Temperature(0, 0);
+		}
+	}
+
+	/**
+	 * A method to multiply a temperature with a given factor delta.
+	 */
+	public void mul(double delta) {
+		if (delta > 0) {
+			setColdness((long) (delta * getColdness()));
+			setHotness((long) (delta * getHotness()));
+		}
+	}
 
 	/**********************************************************
 	 * DESTRUCTOR
