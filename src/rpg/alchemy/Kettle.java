@@ -46,7 +46,7 @@ public class Kettle extends Device {
 			names.addAll(Arrays.asList(getIngredientAt(i).getType().getName().getSimpleNameParts()));
 		}
 		// we return a new name with all the names of the ingredients
-		return new Name(null, String.valueOf(List.of(names)));
+		return new Name(null, names.toArray(new String[0]));
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class Kettle extends Device {
 			if ( difference < smallestDifference || ( difference == smallestDifference &&
 					getIngredientAt(i).getHotness() > smallestDifferenceTemperature.getHotness() ) ) {
 				smallestDifferenceTemperature = getIngredientAt(i).getType().getStandardTemperatureObject();
-				smallestDifference = smallestDifferenceTemperature.difference(new long[]{0, 20});
+				smallestDifference = difference;
 			}
 		}
 		return smallestDifferenceTemperature;
@@ -112,7 +112,9 @@ public class Kettle extends Device {
 	private Temperature getNewTemperature() {
 		Temperature totalTemperature = new Temperature(0, 0);
 		for (int i = 0; i < getNbOfIngredients(); i++) {
-			Temperature.add(getIngredientAt(i).getTemperatureObject(), totalTemperature).mul(getIngredientAt(i).getSpoonAmount());
+			Temperature tempToAdd = new Temperature(getIngredientAt(i).getColdness(), getIngredientAt(i).getHotness());
+			tempToAdd.mul(getIngredientAt(i).getSpoonAmount());
+			totalTemperature = Temperature.add(tempToAdd, totalTemperature);
 		}
 
 		totalTemperature.mul(1 / getNewSpoonAmount());
@@ -141,8 +143,8 @@ public class Kettle extends Device {
 		Name newName = getNewName();
 		State newState = getNewState();
 		double newSpoonAmount = getNewSpoonAmount();
-		Temperature newStandardTemperature = getNewStandardTemperature();
 		Temperature newTemperature = getNewTemperature();
+		Temperature newStandardTemperature = getNewStandardTemperature();
 
 		// delete all ingredients
 		while (getNbOfIngredients() > 0) {

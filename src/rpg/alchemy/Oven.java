@@ -3,6 +3,8 @@ package rpg.alchemy;
 import be.kuleuven.cs.som.annotate.*;
 import java.util.Random;
 
+import static java.lang.Math.abs;
+
 /**
  * A class representing an Oven device inside a laboratory.
  *
@@ -56,18 +58,12 @@ public class Oven extends TemperatureDevice {
 		super.executeOperation();
 		// if the temperature of the oven is higher than the temperature of the ingredient, do nothing
 		if (!getTemperature().isColderThan(getIngredientAt(0).getTemperature())) {
-			// if the temperature of the ingredient is lower than the temperature of the oven, heat the ingredient
-			long difference = getTemperature().difference(getIngredientAt(0).getTemperature());
-			getIngredientAt(0).heat(difference);
-
-			// deviation of 5
 			Random random = new Random();
-			int extra = random.nextInt(-5,5);	// random int between -5 en 5
-			if (extra > 0){
-				getIngredientAt(0).heat(extra);
-			} else if (extra < 0) {
-				getIngredientAt(0).cool(Math.abs(extra));
-			}
+			// if the temperature of the ingredient is lower than the temperature of the oven, heat the ingredient
+			long difference = getTemperature().difference(getIngredientAt(0).getTemperature())
+					+ random.nextInt(-5,5);
+			// negative differences do nothing
+			getIngredientAt(0).heat(difference);
 		}
 	}
 
