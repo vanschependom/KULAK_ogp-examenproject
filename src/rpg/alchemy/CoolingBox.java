@@ -19,17 +19,15 @@ public class CoolingBox extends TemperatureDevice {
 	/**
 	 * A constructor for a cooling box.
 	 *
-	 * @param 	laboratory
-	 * 			The laboratory in which the cooling box will be situated.
 	 * @param 	temperature
 	 * 			The cooling temperature for the cooling box.
 	 *
-	 * @effect	A temperature device with given laboratory and temperature is created
-	 * 			| super(laboratory, temperature)
+	 * @effect	A temperature device with given temperature is created
+	 * 			| super(temperature)
 	 */
 	@Raw
-	public CoolingBox(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException {
-		super(laboratory, temperature);
+	public CoolingBox(Temperature temperature) throws IllegalArgumentException {
+		super(temperature);
 	}
 
 

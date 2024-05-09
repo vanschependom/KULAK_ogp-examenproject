@@ -20,19 +20,17 @@ public class Oven extends TemperatureDevice {
 	 **********************************************************/
 
 	/**
-	 * A constructor for an oven given a laboratory and a temperature.
+	 * A constructor for an oven given a temperature.
 	 *
-	 * @param 	laboratory
-	 * 			The laboratory to add the oven in.
 	 * @param 	temperature
 	 *			The temperature for this oven to heat to.
 	 *
-	 * @effect 	A temperature device with given laboratory and temperature is created
-	 * 	 		| super(laboratory, temperature)
+	 * @effect 	A temperature device with given temperature is created
+	 * 	 		| super(temperature)
 	 */
 	@Raw
-	public Oven(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException {
-		super(laboratory, temperature);
+	public Oven(Temperature temperature) throws IllegalArgumentException {
+		super(temperature);
 	}
 
 

@@ -22,20 +22,17 @@ public abstract class TemperatureDevice extends Device {
     /**
      * A constructor for a temperature device.
      *
-     * @param   laboratory
-     *          The laboratory in which this device will be located.
      * @param   temperature
      *          The temperature for this device to cool or heat to.
      *
-     * @effect  A device with a given laboratory
-     *          and a maximum number of ingredients equal to 1 is created.
-     *          | super(laboratory, 1)
+     * @effect  A device with a maximum number of ingredients equal to 1 is created.
+     *          | super(1)
      * @effect  The temperature of the temperature device is set to temperature
-     *          | setTemperature(temperature, 1)
+     *          | setTemperature(temperature)
      */
     @Raw
-    public TemperatureDevice(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException {
-        super(laboratory, 1);
+    public TemperatureDevice(Temperature temperature) throws IllegalArgumentException {
+        super(1);
         setTemperature(temperature);
     }
 
