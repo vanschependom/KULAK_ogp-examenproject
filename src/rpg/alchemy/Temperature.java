@@ -405,14 +405,14 @@ public class Temperature {
 	 * 			| if (t1.getHotness() + t2.getHotness() == t1.getColdness() + t2.getColdness())
 	 * 			| 	result == new Temperature(0, 0)
 	 */
-	public static Temperature add(Temperature t1, Temperature t2) {
+	protected static Temperature add(Temperature t1, Temperature t2) {
 		long cold = t1.getColdness() + t2.getColdness();
 		long hot = t1.getHotness() + t2.getHotness();
 		long difference = hot - cold;
 		if (difference > 0) {
-			return new Temperature(0, Math.min(difference,UPPERBOUND));
+			return new Temperature(0, difference);
 		} else if (difference < 0) {
-			return  new Temperature(Math.min(Math.abs(difference),UPPERBOUND),0);
+			return  new Temperature(Math.abs(difference),0);
 		} else {
 			return new Temperature(0, 0);
 		}
@@ -426,10 +426,10 @@ public class Temperature {
 	 * @post	The hotness of the new temperature is multiplied with a factor delta.
 	 * 			| new.getHotness = delta * getHotness()
 	 */
-	public void mul(double delta) {
+	protected void mul(double delta) {
 		if (delta > 0) {
-			setColdness(Math.min((long) (delta * getColdness()), UPPERBOUND));
-			setHotness(Math.min((long) (delta * getHotness()),UPPERBOUND));
+			setColdness((long)(delta * getColdness()));
+			setHotness((long)(delta * getHotness()));
 		}
 	}
 

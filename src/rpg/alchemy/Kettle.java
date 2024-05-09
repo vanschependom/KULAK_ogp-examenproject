@@ -4,9 +4,7 @@ import be.kuleuven.cs.som.annotate.*;
 import rpg.State;
 import rpg.Unit;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * A class representing a Kettle device inside a laboratory.
@@ -45,6 +43,10 @@ public class Kettle extends Device {
 			// we get all names of the ingredients
 			names.addAll(Arrays.asList(getIngredientAt(i).getType().getName().getSimpleNameParts()));
 		}
+		// we remove all duplicates, so that the same ingredientType but different Alchemic ingredient does not get repeated
+		Set<String> set = new HashSet<>(names);
+		names.clear();
+		names.addAll(set);
 		// we return a new name with all the names of the ingredients
 		return new Name(null, names.toArray(new String[0]));
 	}
@@ -116,8 +118,7 @@ public class Kettle extends Device {
 			tempToAdd.mul(getIngredientAt(i).getSpoonAmount());
 			totalTemperature = Temperature.add(tempToAdd, totalTemperature);
 		}
-
-		totalTemperature.mul(1 / getNewSpoonAmount());
+		totalTemperature.mul(1/getNewSpoonAmount());
 		return totalTemperature;
 	}
 
@@ -152,7 +153,7 @@ public class Kettle extends Device {
 		}
 
 		// create the new ingredient(type) and add to the kettle
-		IngredientType newType = new IngredientType(newName, newState, newStandardTemperature, true);
+		IngredientType newType = new IngredientType(newName, newState, newStandardTemperature, newName.isMixed());
 		addAsIngredient(new AlchemicIngredient((int) newSpoonAmount, Unit.SPOON, newTemperature, newType, newState));
 	}
 

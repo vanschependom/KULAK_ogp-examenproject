@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Test;
 import rpg.State;
 import rpg.Unit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class KettleTest {
 
@@ -85,5 +84,59 @@ public class KettleTest {
         assertEquals(0, result.getColdness());
         assertEquals(2, result.getHotness());
     }
+
+    @Test
+    public void executeOperationValid3() {
+        Oven oven = new Oven(lab, new Temperature(0, 200));
+        oven.addIngredients(container1);
+        oven.executeOperation();
+        container1 = oven.getResult();
+        AlchemicIngredient ingredient = new AlchemicIngredient(5, Unit.BOX, new Temperature(200, 0), type1, State.POWDER);
+        IngredientContainer container = new IngredientContainer(ingredient);
+        kettle.addIngredients(container1);
+        kettle.addIngredients(container);
+        kettle.executeOperation();
+        container = kettle.getResult();
+        AlchemicIngredient result = container.getContent();
+        assertEquals((int) (ingredient1.getSpoonAmount() + ingredient.getSpoonAmount()), (int) result.getSpoonAmount());
+        assertEquals("Milk", result.getSimpleName());
+        assertEquals(State.LIQUID, result.getState());
+        assertEquals(0,result.getType().getStandardTemperatureObject().getColdness());
+        assertEquals(15, result.getType().getStandardTemperatureObject().getHotness());
+        // hotness is 8 to 9
+        // coldness is 190
+        assertTrue(result.getColdness() == 181 || result.getColdness() == 182);
+        assertEquals(0, result.getHotness());
+        assertFalse(result.getType().isMixed());
+    }
+
+    @Test
+    public void executeOperationValid4() {
+        Oven oven = new Oven(lab, new Temperature(0, 150));
+        oven.addIngredients(container1);
+        oven.executeOperation();
+        container1 = oven.getResult();
+        kettle.addIngredients(container1);
+        kettle.executeOperation();
+        IngredientContainer container = kettle.getResult();
+        AlchemicIngredient result = container.getContent();
+        assertEquals((int) (ingredient1.getSpoonAmount()), (int) result.getSpoonAmount());
+        assertEquals("Milk", result.getSimpleName());
+        assertEquals(State.LIQUID, result.getState());
+        assertEquals(0,result.getType().getStandardTemperatureObject().getColdness());
+        assertEquals(15, result.getType().getStandardTemperatureObject().getHotness());
+        assertEquals(0, result.getColdness());
+        assertTrue(result.getHotness() >= 145 && result.getHotness() <= 155);
+        assertFalse(result.getType().isMixed());
+    }
+
+    @Test
+    public void executeOperationInvalid() {
+        assertThrows(IllegalStateException.class, () -> {
+            kettle.executeOperation();
+        });
+    }
+
+
 
 }
