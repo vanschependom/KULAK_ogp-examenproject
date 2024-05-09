@@ -2,6 +2,7 @@ package rpg.alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
 import rpg.Unit;
+import rpg.exceptions.IngredientNotPresentException;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -357,7 +358,7 @@ public class Laboratory extends StorageLocation {
 		} else if (container.getContent().isColderThanStandardTemperature() && !hasDeviceOfType(Oven.class)) {
 				throw new IllegalStateException("The content is colder than standard temperature, but there is no oven in the lab!");
 		}
-		if (getIndexOfSimpleName(container.getContent().getSimpleName()) != -1 && !hasDeviceOfType(Kettle.class)) {
+		if (hasIngredientWithSimpleName(container.getContent().getSimpleName()) && !hasDeviceOfType(Kettle.class)) {
 			throw new IllegalStateException("There is already an ingredient with the same name in the lab, but there is no kettle in the lab!");
 		}
 		if (container.getContent().isHotterThanStandardTemperature()) {
@@ -365,26 +366,31 @@ public class Laboratory extends StorageLocation {
 			CoolingBox coolingBox = (CoolingBox) getDeviceOfType(CoolingBox.class);
 			coolingBox.changeTemperatureTo(new Temperature()); 	// standard temperature
 			coolingBox.addIngredients(container);
-			// TODO operaties (evt meerdere)
-			coolingBox.executeOperation();
+			coolingBox.executeOperation();						// cooling box is exact!
 			container = coolingBox.getResult();
 		} else if (container.getContent().isColderThanStandardTemperature()) {
 			// kouder -> warm op
 			Oven oven = (Oven) getDeviceOfType(Oven.class);
 			oven.changeTemperatureTo(new Temperature()); 		// standard temperature
 			oven.addIngredients(container);
-			// TODO operaties (evt meerdere)
-			oven.executeOperation();
+			// oven is not exact! +- 5 degrees
+			do {
+				oven.executeOperation();
+			} while (oven.getIngredientAt(0).isColderThanStandardTemperature() || oven.getIngredientAt(0).isHotterThanStandardTemperature());
 			container = oven.getResult();
 		}
-		int indexSameName = getIndexOfSimpleName(container.getContent().getSimpleName());
-		if (indexSameName != -1) {
+		// mix with ingredients with same name
+		try {
+			int indexSameName = getIndexOfSimpleName(container.getContent().getSimpleName());
 			Device kettle = getDeviceOfType(Kettle.class);
 			kettle.addIngredients(container);
 			kettle.addIngredients(getAllOfIngredientAt(indexSameName));
-		} else {
-			super.addIngredients(container);
+			kettle.executeOperation();
+			container = kettle.getResult();
+		} catch (IngredientNotPresentException e) {
+			// no ingredient with same name
 		}
+		super.addIngredients(container);
 	}
 
 

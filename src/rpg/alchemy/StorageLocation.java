@@ -2,6 +2,7 @@ package rpg.alchemy;
 
 import be.kuleuven.cs.som.annotate.*;
 import rpg.Unit;
+import rpg.exceptions.IngredientNotPresentException;
 
 import java.util.ArrayList;
 
@@ -144,6 +145,22 @@ public abstract class StorageLocation {
     }
 
     /**
+     * A method for removing an ingredient at a given index.
+     *
+     * @param   index
+     *          The index of the ingredient to be removed
+     * @throws  IndexOutOfBoundsException
+     *          The index is negative or is bigger than the size of ingredients
+     *          | (index < 0) || (index > getNbOfIngredients())
+     */
+    protected void removeIngredientAt(int index) throws IndexOutOfBoundsException {
+        if (index < 0 || index >= getNbOfIngredients()) {
+            throw new IndexOutOfBoundsException();
+        }
+        ingredients.remove(index);
+    }
+
+    /**
      * Return the number of ingredients in container.
      */
     @Basic
@@ -184,18 +201,19 @@ public abstract class StorageLocation {
      *
      * @param   ingredient
      *          The ingredient to remove.
-     * @throws  IllegalArgumentException
-     *          The given ingredient is not present in this StorageLocation
+     *
+     * @effect  The ingredient is removed from the storage location.
+     *          | removeIngredientAt(getIndexOf(ingredient))
+     *
+     * @throws  IngredientNotPresentException
+     *          The ingredient is not present in the storage location.
      *          | !hasAsIngredient(ingredient)
      */
-    protected void removeAsIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
-        if (!hasAsIngredient(ingredient)) {
-            throw new IllegalArgumentException("Ingredient is not present!");
-        }
+    protected void removeAsIngredient(AlchemicIngredient ingredient) throws IngredientNotPresentException {
         try {
-            ingredients.remove(ingredient);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Ingredient (actual object) is not present!");
+            removeIngredientAt(getIndexOf(ingredient));
+        } catch (IngredientNotPresentException e) {
+            throw new IngredientNotPresentException();
         }
     }
 
@@ -206,33 +224,27 @@ public abstract class StorageLocation {
      * @param   ingredient
      *          The ingredient to get the index of.
      *
-     * @return  The index of the ingredient in the storage location.
+     * @return  The index of the ingredient in the storage location, if it is present.
      *          | getItemAt(result).equals(ingredient)
      *
-     * @throws  IllegalArgumentException
-     *          The ingredient is not present in the storage location
-     *          | !hasAsIngredient(ingredient)
      * @throws  NullPointerException
      *          The given ingredient is null
      *          | ingredient == null
+     * @throws  IngredientNotPresentException
+     *          The given ingredient is not present in the storage location.
+     *          | !hasAsIngredient(ingredient)
      */
-    public int getIndexOf(AlchemicIngredient ingredient) throws IllegalArgumentException {
+    public int getIndexOf(AlchemicIngredient ingredient) throws NullPointerException, IngredientNotPresentException {
         if (ingredient == null) {
-            throw new NullPointerException();
+            throw new NullPointerException("Ingredient is null!");
         }
-        if (!hasAsIngredient(ingredient)) {
-            throw new IllegalArgumentException("This ingredient is not present!");
-        }
-        else {
-            for (int i=0; i<getNbOfIngredients(); i++) {
-                if (getIngredientAt(i).equals(ingredient)) {
-                    return i;
-                }
+        for (int i=0; i<getNbOfIngredients(); i++) {
+            if (getIngredientAt(i).equals(ingredient)) {
+                return i;
             }
-            //this will never happen!
-            assert false;
-            return -1;
         }
+        // not found
+        throw new IngredientNotPresentException();
     }
 
     /**
@@ -319,8 +331,8 @@ public abstract class StorageLocation {
         if (!canHaveAsIngredient(container.getContent())) {
             throw new IllegalArgumentException("Invalid contents in container!");
         }
-        if (hasAsIngredient(container.getContent())) {
-            int index = getIndexOf(container.getContent());
+        int index = getIndexOf(container.getContent());
+        if (index != -1) {
             AlchemicIngredient alreadyInLocation = getIngredientAt(index);
             AlchemicIngredient replacement = new AlchemicIngredient(
                     (int) (alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount()),
@@ -334,8 +346,7 @@ public abstract class StorageLocation {
             addAsIngredient(replacement);
             // terminate the old ingredient (and thus the temperature)
             alreadyInLocation.terminate();
-        }
-        else {
+        } else {
             addAsIngredient(container.getContent());
         }
         // set containerized to false

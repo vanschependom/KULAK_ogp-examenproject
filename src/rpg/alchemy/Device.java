@@ -57,7 +57,7 @@ public abstract class Device extends StorageLocation {
     /**
      * Return the result of the device in an ingredient container
      * with a maximum of Unit.getMaximumUnitForContainer(getState())
-     * Return null if there are no ingredients in the device
+     * Return null if there are no ingredients in the device.
      *
      * @return  If there are no ingredients in the device, return null
      *          | if getNbOfIngredients() == 0
@@ -72,6 +72,11 @@ public abstract class Device extends StorageLocation {
      *          for the result, given the state and size of the result, containing the result.
      *          | if ( result.getSpoonAmount() <= Unit.getMaxUnitForContainer(result.getState()).getSpoonEquivalent() )
      *          |   then result.equals(new IngredientContainer(Unit.getMinUnitForContainerWith(getIngredientAt(0)), getIngredientAt(0))
+     *
+     * @effect  The result is removed from the device.
+     *          | removeIngredientAt(0)
+     * @effect  The result is set to containerized.
+     *          | result.setContainerized(true)
      *
      * @throws  DeviceNotYetUsedException
      *          The device has not been used yet so there is no result to be given
@@ -99,6 +104,10 @@ public abstract class Device extends StorageLocation {
                     new Temperature(result.getColdness(), result.getHotness()),
                     result.getType(), result.getState());
         }
+        // remove the result
+        removeIngredientAt(0);
+        // set containerized for the resulting ingredient
+        result.setContainerized(true);
         // return a new container with the minimum unit for the result, given the state and size of the result
         return new IngredientContainer(Unit.getMinUnitForContainerWith(result), result);
     }
