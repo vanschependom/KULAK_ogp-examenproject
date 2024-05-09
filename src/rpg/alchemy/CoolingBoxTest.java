@@ -27,7 +27,7 @@ public class CoolingBoxTest {
         ingredient2 = new AlchemicIngredient(15, Unit.PINCH, type2);
         container1 = new IngredientContainer(Unit.BARREL, ingredient1);
         container2 = new IngredientContainer(Unit.CHEST, ingredient2);
-        coolingBox = new CoolingBox(new Temperature(20, 0));
+        coolingBox = new CoolingBox(lab, new Temperature(20, 0));
     }
 
     @Test

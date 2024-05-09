@@ -19,13 +19,16 @@ public class Kettle extends Device {
 	/**
 	 * A constructor for a kettle device.
 	 *
-	 * @effect	A kettle device with a maximum number of ingredients of
-	 * 			Integer.MAX_VALUE is created.
-	 * 			| super(Integer.MAX_VALUE)
+	 * @param 	laboratory
+	 * 			The laboratory in which this device will be positioned
+	 * @effect	A device with the given laboratory
+	 * 			and a maximum number of ingredients equal to
+	 * 			the maximum integer value is created.
+	 * 			| super(laboratory, Integer.MAX_VALUE)
 	 */
 	@Raw
-	public Kettle() {
-		super(Integer.MAX_VALUE);
+	public Kettle(Laboratory laboratory) {
+		super(laboratory, Integer.MAX_VALUE);
 	}
 
 	/**

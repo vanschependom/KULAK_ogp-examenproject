@@ -331,9 +331,9 @@ public abstract class StorageLocation {
         if (!canHaveAsIngredient(container.getContent())) {
             throw new IllegalArgumentException("Invalid contents in container!");
         }
-        try {
-            // if the ingredient is already present, combine them
-            AlchemicIngredient alreadyInLocation = getIngredientAt(getIndexOf(container.getContent()));
+        int index = getIndexOf(container.getContent());
+        if (index != -1) {
+            AlchemicIngredient alreadyInLocation = getIngredientAt(index);
             AlchemicIngredient replacement = new AlchemicIngredient(
                     (int) (alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount()),
                     Unit.SPOON,
@@ -346,7 +346,7 @@ public abstract class StorageLocation {
             addAsIngredient(replacement);
             // terminate the old ingredient (and thus the temperature)
             alreadyInLocation.terminate();
-        } catch (IngredientNotPresentException e) {
+        } else {
             addAsIngredient(container.getContent());
         }
         // set containerized to false

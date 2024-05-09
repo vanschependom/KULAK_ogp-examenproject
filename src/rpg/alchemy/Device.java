@@ -27,6 +27,8 @@ public abstract class Device extends StorageLocation {
     /**
      * A constructor for a device with a given laboratory.
      *
+     * @param   laboratory
+     *          The laboratory to add the device in.
      * @param   maxNbOfIngredients
      *          The maximum number of ingredients for this device.
      *
@@ -36,8 +38,12 @@ public abstract class Device extends StorageLocation {
      *          | new.getMaxNbOfIngredients() == maxNbOfIngredients
      */
     @Raw
-    public Device(int maxNbOfIngredients) throws IllegalArgumentException{
+    public Device(Laboratory laboratory, int maxNbOfIngredients) throws IllegalArgumentException{
         super();
+        if (!isValidLaboratory(laboratory)) {
+            throw new IllegalArgumentException("Not a legal laboratory for this device!");
+        }
+        this.laboratory = laboratory;
         this.maxNbOfIngredients = maxNbOfIngredients;
         // TODO
     }

@@ -72,7 +72,7 @@ public class Laboratory extends StorageLocation {
 	/**
 	 * A variable for keeping track of the devices within this laboratory.
 	 */
-	private ArrayList<Device> devices = new ArrayList<>();
+	private ArrayList<Device> devices;
 
 	/**
 	 * Return the number of devices.
@@ -209,7 +209,6 @@ public class Laboratory extends StorageLocation {
 			|| hasDeviceOfType(device.getClass()) ) {
 			throw new IllegalArgumentException("Illegal device!");
 		}
-		devices.add(device);
 	}
 
 
