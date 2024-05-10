@@ -61,6 +61,10 @@ public class DeviceTest {
 		mixedLiquid = new AlchemicIngredient(10, Unit.VIAL, liquidTypeMixed);
 	}
 
+	/**********************************************************
+	 * CONSTRUCTORS
+	 **********************************************************/
+
 	@Test
 	public void testConstructor_legal() {
 		// a new storage location has no ingredients
@@ -88,6 +92,10 @@ public class DeviceTest {
 			new Oven(lab, new Temperature(0, 500));
 		});
 	}
+
+	/**********************************************************
+	 * INGREDIENTS
+	 **********************************************************/
 
 	@Test
 	public void testAddAsIngredient_legal() {
@@ -118,6 +126,136 @@ public class DeviceTest {
 		kettle.addAsIngredient(liquid);
 		assertThrows(IllegalArgumentException.class, () -> {
 			kettle.addAsIngredient(liquid);
+		});
+	}
+
+	/**********************************************************
+	 * LABORATORY
+	 **********************************************************/
+
+	@Test
+	public void testMove_legal() {
+		Laboratory newLab = new Laboratory(2);
+		oven.move(newLab);
+		// The new lab is set to lab of the device
+		assertEquals(oven.getLaboratory(), newLab);
+		// The device is removed from old lab
+		assertFalse(lab.hasDeviceOfType(Oven.class));
+		// The device is added to the new lab
+		assertTrue(newLab.hasDeviceOfType(Oven.class));
+	}
+
+	@Test
+	public void testMove_illegal_terminated() {
+		Laboratory newLab = new Laboratory(2);
+		oven.terminate();
+		assertThrows(IllegalStateException.class, () -> {
+			oven.move(newLab);
+		});
+	}
+
+	@Test
+	public void testMove_illegal_null() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			oven.move(null);
+		});
+	}
+
+	@Test
+	public void testMove_illegal_alreadySameDeviceInLab() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			oven.move(lab);
+		});
+	}
+
+	@Test
+	public void testMove_illegal_alreadyOtherDeviceInLab() {
+		Laboratory newLab = new Laboratory(2);
+		Oven newOven = new Oven(newLab, new Temperature());
+		assertThrows(IllegalArgumentException.class, () -> {
+			newOven.move(lab);
+		});
+	}
+
+	@Test
+	public void testCanHaveAsLaboratory_legal() {
+		Laboratory newLab = new Laboratory(2);
+		oven.move(newLab);
+		assertTrue(oven.canHaveAsLaboratory(lab));
+	}
+
+	@Test
+	public void testCanHaveAsLaboratory_illegal_null() {
+		Laboratory newLab = new Laboratory(2);
+		oven.move(newLab);
+		assertFalse(oven.canHaveAsLaboratory(null));
+	}
+
+	@Test
+	public void testCanHaveAsLaboratory_illegal_terminated() {
+		Laboratory newLab = new Laboratory(2);
+		oven.move(newLab);
+		oven.terminate();
+		assertFalse(oven.canHaveAsLaboratory(lab));
+	}
+
+	@Test
+	public void testCanHaveAsLaboratory_illegal_terminatedAndNull() {
+		Laboratory newLab = new Laboratory(2);
+		oven.move(newLab);
+		oven.terminate();
+		assertTrue(oven.canHaveAsLaboratory(null));
+	}
+
+	@Test
+	public void testHasProperLaboratory_legal() {
+		assertTrue(oven.hasProperLaboratory());
+	}
+	// illegal cases van hasProperLaboratory testen gaat niet met public methodes
+
+	/**********************************************************
+	 * OPERATION EXECUTION (we can test the general exceptions here)
+	 **********************************************************/
+
+	@Test
+	public void testExecuteOperation_illegal_terminated() {
+		oven.addAsIngredient(powder); // not empty
+		oven.terminate();
+		// oven is terminated
+		assertThrows(IllegalStateException.class, () -> {
+			oven.executeOperation();
+		});
+	}
+
+	@Test
+	public void testExecuteOperation_illegal_empty() {
+		// oven is empty
+		assertThrows(IllegalStateException.class, () -> {
+			oven.executeOperation();
+		});
+	}
+
+	/**********************************************************
+	 * DESTRUCTION
+	 **********************************************************/
+
+	@Test
+	public void testTerminate_legal() {
+		oven.terminate();
+		// device will be terminated
+		assertTrue(oven.isTerminated());
+		// lab is set to null
+		assertNull(oven.getLaboratory());
+		// lab will not have device anymore
+		assertFalse(lab.hasDeviceOfType(Oven.class));
+	}
+
+	@Test
+	public void testTerminate_illegal_alreadyTerminated() {
+		oven.terminate();
+		// already terminated
+		assertThrows(IllegalStateException.class, () -> {
+			oven.terminate();
 		});
 	}
 
