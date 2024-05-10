@@ -8,44 +8,45 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TemperatureDeviceTest {
 
     private Laboratory laboratory;
+    private Laboratory otherLaboratory;
     private CoolingBox coolingBox;
     private Oven oven;
 
     @BeforeEach
     public void setUp() {
         laboratory = new Laboratory(30);
+        otherLaboratory = new Laboratory(20);
         coolingBox = new CoolingBox(laboratory, new Temperature(90, 0));
         oven = new Oven(laboratory, new Temperature(0, 120));
     }
 
     @Test
-    public void constructorValid() {
-        CoolingBox coolingBox1 = new CoolingBox(laboratory, new Temperature(90, 0));
-        assertTrue(new Temperature(90, 0).equals(coolingBox1.getTemperature()));
+    public void constructorValid1() {
+        assertTrue(new Temperature(90, 0).equals(coolingBox.getTemperature()));
     }
 
     @Test
     public void constructorValid2() {
-        Oven oven1 = new Oven(laboratory, new Temperature(0, 500));
+        Oven oven1 = new Oven(otherLaboratory, new Temperature(0, 500));
         assertTrue(new Temperature(0, 500).equals(oven1.getTemperature()));
     }
 
     @Test
-    public void constructorInvalid() {
+    public void constructorInvalid1() {
         assertThrows(NullPointerException.class, () -> {
-            CoolingBox coolingBox1 = new CoolingBox(laboratory, null);
+            CoolingBox coolingBox1 = new CoolingBox(otherLaboratory, null);
         });
     }
 
     @Test
-    public void constructorInvalid5() {
+    public void constructorInvalid2() {
         assertThrows(IllegalArgumentException.class, () -> {
-            Oven oven1 = new Oven( laboratory, null);
+            Oven oven1 = new Oven(laboratory, null);
         });
     }
 
     @Test
-    public void setTemperatureValid() {
+    public void setTemperatureValid1() {
         coolingBox.changeTemperatureTo(new Temperature(120, 0));
         assertEquals(120, coolingBox.getColdness());
         assertEquals(0, coolingBox.getHotness());
