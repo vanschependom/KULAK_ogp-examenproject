@@ -119,12 +119,12 @@ public class AlchemicIngredient {
      *          wanneer een methode/constructor wordt aangeroepen
      **********************************************************/
 
-    private int amount;
+    private final int amount;
 
     /**
      * A method to get the amount of this alchemic ingredient.
      */
-    @Basic
+    @Basic @Immutable
     public int getAmount() {
         return amount;
     }
@@ -134,11 +134,9 @@ public class AlchemicIngredient {
      *
      * @return  The amount of this alchemic ingredient in spoons.
      *          | result == amount * getUnit().getSpoonEquivalent()
-     * @throws  NullPointerException
-     *          The ingredient is terminated, therefore the unit is null.
-     *          | getUnit() == null
      */
-    public double getSpoonAmount() throws NullPointerException {
+    @Immutable
+    public double getSpoonAmount() {
     	return amount * getUnit().getSpoonEquivalent();
     }
 
@@ -147,11 +145,8 @@ public class AlchemicIngredient {
      *
      * @return  The amount of this alchemic ingredient in storerooms.
      *          | result == amount * getUnit().getStoreroomEquivalent()
-     * @throws  NullPointerException
-     *          The ingredient is terminated, therefore the unit is null.
-     *          | getUnit() == null
      */
-    public double getStoreroomAmount() throws NullPointerException {
+    public double getStoreroomAmount() {
         return amount * getUnit().getStoreroomEquivalent();
     }
 
@@ -160,11 +155,9 @@ public class AlchemicIngredient {
      *
      * @return  The amount of this alchemic ingredient in spoons.
      *          | result == (int) amount * getUnit().getSpoonEquivalent()
-     * @throws  NullPointerException
-     *          The ingredient is terminated, therefore the unit is null.
-     *          | getUnit() == null
      */
-    public int getFlooredSpoonAmount() throws NullPointerException {
+    @Immutable
+    public int getFlooredSpoonAmount() {
         return (int) (amount * getUnit().getSpoonEquivalent());
     }
 
@@ -172,20 +165,19 @@ public class AlchemicIngredient {
      * A method to check whether the given amount is a valid amount for an alchemic ingredient.
      * @param 	amount
      * 			The amount to check
-     * @return	True if and only if the amount is positive
-     *          or if the ingredient is terminated and the amount is 0.
-     * 			| result == (isTerminated() && amount == 0) || (!isTerminated() && amount > 0)
+     * @return	True if and only if the amount is positive.
+     * 			| result == (amount >= 0)
      */
     public boolean isValidAmount(double amount) {
-        return (isTerminated() && amount == 0) || (!isTerminated() && amount > 0);
+        return amount >= 0;
     }
 
-    private Unit unit;
+    private final Unit unit;
 
     /**
      * A method to get the unit of this alchemic ingredient.
      */
-    @Basic
+    @Basic @Immutable
     public Unit getUnit() {
         return unit;
     }
@@ -195,16 +187,13 @@ public class AlchemicIngredient {
      * @param 	unit
      * 			The unit to check
      * @return	True if and only if the unit is effective, and the unit
-     *          is a legal unit for the state of the ingredient
-     *          or if the ingredient is terminated and unit is null.
-     * 			| result == ( !isTerminated() && unit != null &&
-     *          |   List.of(unit.getAllowedStates()).contains(getState() ) ||
-     *          |   ( isTerminated() && unit == null ) )
+     *          is a legal unit for the state of the ingredient.
+     * 			| result == ( (unit != null)
+     * 		    |   && List.of(unit.getAllowedStates()).contains(getState()) )
      */
     public boolean canHaveAsUnit(Unit unit) {
-        return (!isTerminated() && unit != null &&
-                List.of(unit.getAllowedStates()).contains(getState()) ||
-                (isTerminated() && unit == null));
+        return (unit != null) &&
+                List.of(unit.getAllowedStates()).contains(getState());
     }
 
 
@@ -216,12 +205,12 @@ public class AlchemicIngredient {
     /**
      * A variable referencing the temperature of the ingredient.
      */
-    private Temperature temperature;
+    private final Temperature temperature;
 
     /**
      * A getter for the standard temperature object of the ingredient type.
      */
-    @Model @Raw
+    @Model
     protected Temperature getTemperatureObject() {
         return temperature;
     }
@@ -229,13 +218,12 @@ public class AlchemicIngredient {
     /**
      * A method for checking whether the given temperature is a valid temperature for an ingredient.
      *
-     * @return 	True if and only if the temperature is effective
-     *          or the ingredient is terminated and the temperature is null.
-     * 			| result == (isTerminated() && temperature == null) || (!isTerminated() && temperature != null)
+     * @return 	True if and only if the temperature is effective.
+     * 			| result == (temperature != null)
      */
     @Raw
     public boolean isValidTemperature(Temperature temperature) {
-        return (isTerminated() && temperature == null) || (!isTerminated() && temperature != null);
+        return temperature != null;
     }
 
     /**
@@ -244,11 +232,8 @@ public class AlchemicIngredient {
      * @return  The valid coldness of the ingredient is returned.
      *          | result == getTemperatureObject().getColdness()
      *          | && Temperature.isValidColdness(result)
-     * @throws  NullPointerException
-     *          The ingredient is terminated, therefore the temperature is null.
-     *          | getTemperatureObject() == null
      */
-    public long getHotness() throws NullPointerException {
+    public long getHotness() {
     	return getTemperatureObject().getHotness();
     }
 
@@ -258,23 +243,16 @@ public class AlchemicIngredient {
      * @return  The valid hotness of the ingredient is returned.
      *          | result == getTemperatureObject().getHotness()
      *          | && Temperature.isValidHotness(result)
-     * @throws  NullPointerException
-     *          The ingredient is terminated, therefore the temperature is null.
-     *          | getTemperatureObject() == null
      */
-    public long getColdness() throws NullPointerException {
+    public long getColdness() {
         return getTemperatureObject().getColdness();
     }
 
     /**
      * A getter for the temperature of the ingredient.
-     *
-     * @throws  NullPointerException
-     *          The ingredient is terminated, therefore the temperature is null.
-     *          | getTemperatureObject() == null
      */
     @Basic
-    public long[] getTemperature() throws NullPointerException {
+    public long[] getTemperature() {
         return getTemperatureObject().getTemperature();
     }
 
@@ -316,11 +294,8 @@ public class AlchemicIngredient {
      *
      * @return  True if and only if the ingredient is hotter than the standard temperature.
      *          | result == getTemperatureObject().isHotterThan(getType().getStandardTemperature())
-     * @throws  NullPointerException
-     *          The ingredient is terminated, therefore the temperature is null.
-     *          | getTemperatureObject() == null
      */
-    public boolean isHotterThanStandardTemperature() throws NullPointerException {
+    public boolean isHotterThanStandardTemperature() {
         return getTemperatureObject().isHotterThan(getType().getStandardTemperature());
     }
 
@@ -329,11 +304,8 @@ public class AlchemicIngredient {
      *
      * @return  True if and only if the ingredient is colder than the standard temperature.
      *          | result == getTemperatureObject().isColderThan(getType().getStandardTemperature())
-     * @throws  NullPointerException
-     *          The ingredient is terminated, therefore the temperature is null.
-     *          | getTemperatureObject() == null
      */
-    public boolean isColderThanStandardTemperature() throws NullPointerException {
+    public boolean isColderThanStandardTemperature() {
         return getTemperatureObject().isColderThan(getType().getStandardTemperature());
     }
 
@@ -343,12 +315,12 @@ public class AlchemicIngredient {
      * TYPE - TOTAL PROGRAMMING
      **********************************************************/
 
-    private IngredientType type;
+    private final IngredientType type;
 
     /**
      * A method to get the type of this alchemic ingredient.
      */
-    @Basic
+    @Basic @Immutable
     public IngredientType getType() {
         return type;
     }
@@ -358,13 +330,12 @@ public class AlchemicIngredient {
      *
      * @param 	type
      * 			The type to check
-     * @return	True if and only if the type is effective
-     *          or the ingredients is terminated and the type is null.
-     * 			| result == (isTerminated() && type == null) || (!isTerminated() && type != null)
+     * @return	True if and only if the type is effective.
+     * 			| result == (type != null)
      */
     @Raw
     public boolean isValidType(IngredientType type) {
-        return (isTerminated() && type == null) || (!isTerminated() && type != null);
+        return type != null;
     }
 
 
@@ -373,12 +344,12 @@ public class AlchemicIngredient {
      * STATE
      **********************************************************/
 
-    private State state;
+    private final State state;
 
     /**
      * A method to get the state of this alchemic ingredient.
      */
-    @Basic
+    @Basic @Immutable
     public State getState() {
         return state;
     }
@@ -388,12 +359,12 @@ public class AlchemicIngredient {
      *
      * @param 	state
      * 			The state to check
-     * @return	True if and only if the state is effective or the ingredient is terminated and the state is null.
-     * 			| result == (isTerminated() && state == null) || (!isTerminated() && state != null)
+     * @return	True if and only if the state is effective.
+     * 			| result == (state != null)
      */
     @Raw
     public boolean isValidState(State state) {
-        return (isTerminated() && state == null) || (!isTerminated() && state != null);
+        return state != null;
     }
 
 
@@ -443,11 +414,8 @@ public class AlchemicIngredient {
      * @return  The simple name of the ingredient, which is the simple name of the
      *          name of the type of the ingredient.
      *          | result == getType().getName().getSimpleName()
-     * @throws  NullPointerException
-     *          The ingredient is terminated, therefore the type is null.
-     *          | getType() == null
      */
-    public String getSimpleName() throws NullPointerException {
+    public String getSimpleName() {
         return getType().getName().getSimpleName();
     }
 
@@ -457,11 +425,8 @@ public class AlchemicIngredient {
      * @return  The special name of the ingredient, which is the special name of the
      *          name of the type of the ingredient.
      *          | result == getType().getName().getSpecialName()
-     * @throws  NullPointerException
-     *          The ingredient is terminated, therefore the type is null.
-     *          | getType() == null
      */
-    public String getSpecialName() throws NullPointerException {
+    public String getSpecialName() {
         return getType().getName().getSpecialName();
     }
 
@@ -473,11 +438,8 @@ public class AlchemicIngredient {
      * @effect  The special name of the ingredient type of this ingredient
      *          is set to the given special name
      *          | getType().getName().setSpecialName(specialName)
-     * @throws  NullPointerException
-     *          The ingredient is terminated, therefore the type is null.
-     *          | getType() == null
      */
-    public void setSpecialName(String specialName) throws NullPointerException {
+    public void setSpecialName(String specialName) {
         getType().getName().setSpecialName(specialName);
     }
 
@@ -495,7 +457,7 @@ public class AlchemicIngredient {
      *          |   temperature.getColdness() = getType().getStandardTemperature()[0] )
      *          | then result.equals(getSimpleName())
      */
-    private String getExtendedSimpleName() throws NullPointerException {
+    private String getExtendedSimpleName() {
         if ( isHotterThanStandardTemperature() ) {
             return "Heated " + getSimpleName();
         } else if ( isColderThanStandardTemperature() ) {
@@ -515,11 +477,8 @@ public class AlchemicIngredient {
      * @return  Otherwise the full name is just the extended simple name
      *          | if !(getType().isMixed() && getSpecialName() != null)
      *          | then result.equals(getExtendedSimpleName())
-     * @throws  NullPointerException
-     *          The ingredient is terminated, therefore the type is null.
-     *          | getType() == null
      */
-    public String getFullName() throws NullPointerException {
+    public String getFullName() {
         if (getType().isMixed() && getSpecialName() != null) {
             return getSpecialName() + " (" + getExtendedSimpleName() + ")";
         } else {
@@ -576,30 +535,11 @@ public class AlchemicIngredient {
      *
      * @effect  The temperature of the ingredient is terminated.
      *          | getTemperatureObject().terminate()
-     * @post    The amount is set to 0
-     *          | new.getAmount() == 0
-     * @post    The unit is set to null
-     *          | new.getUnit() == null
-     * @post    The temperature is set to null
-     *          | new.getTemperatureObject() == null
-     * @post    The type is set to null
-     *          | new.getType() == null
-     * @post    The state is set to null
-     *          | new.getState() == null
-     * @post    The ingredient is not containerized
-     *          | !new.isContainerized()
      * @post    The ingredient is terminated.
      *          | new.isTerminated()
      */
-    @Raw
     public void terminate() {
         getTemperatureObject().terminate();
-        amount = 0;
-        unit = null;
-        temperature = null;
-        type = null;
-        state = null;
-        isContainerized = false;
         isTerminated = true;
     }
 
