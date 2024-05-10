@@ -27,7 +27,7 @@ public class OvenTest {
         ingredient2 = new AlchemicIngredient(15, Unit.PINCH, type2);
         container1 = new IngredientContainer(Unit.BARREL, ingredient1);
         container2 = new IngredientContainer(Unit.CHEST, ingredient2);
-        oven = new Oven(lab, new Temperature(0, 150));
+        oven = new Oven(new Temperature(0, 150));
     }
 
     @Test

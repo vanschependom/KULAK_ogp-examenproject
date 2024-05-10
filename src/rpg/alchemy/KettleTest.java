@@ -40,7 +40,7 @@ public class KettleTest {
         container2 = new IngredientContainer(Unit.CHEST, ingredient2);
         container3 = new IngredientContainer(Unit.BARREL, ingredient3);
         container4 = new IngredientContainer(Unit.BARREL, ingredient4);
-        kettle = new Kettle(lab);
+        kettle = new Kettle();
     }
 
     @Test
@@ -61,7 +61,7 @@ public class KettleTest {
 
     @Test
     public void executeOperationValid2() {
-        Oven oven = new Oven(lab, new Temperature(0, 100));
+        Oven oven = new Oven(new Temperature(0, 100));
         oven.addIngredients(container2);
         oven.executeOperation();
         container2 = oven.getResult();
@@ -87,7 +87,7 @@ public class KettleTest {
 
     @Test
     public void executeOperationValid3() {
-        Oven oven = new Oven(lab, new Temperature(0, 200));
+        Oven oven = new Oven(new Temperature(0, 200));
         oven.addIngredients(container1);
         oven.executeOperation();
         container1 = oven.getResult();
@@ -112,7 +112,7 @@ public class KettleTest {
 
     @Test
     public void executeOperationValid4() {
-        Oven oven = new Oven(lab, new Temperature(0, 150));
+        Oven oven = new Oven(new Temperature(0, 150));
         oven.addIngredients(container1);
         oven.executeOperation();
         container1 = oven.getResult();

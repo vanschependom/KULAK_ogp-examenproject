@@ -27,7 +27,7 @@ public class TransmogrifierTest {
         ingredient2 = new AlchemicIngredient(15, Unit.PINCH, type2);
         container1 = new IngredientContainer(Unit.BARREL, ingredient1);
         container2 = new IngredientContainer(Unit.CHEST, ingredient2);
-        transmogrifier = new Transmogrifier(lab);
+        transmogrifier = new Transmogrifier();
     }
 
     @Test
