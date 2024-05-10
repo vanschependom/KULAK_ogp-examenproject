@@ -393,13 +393,14 @@ public class Temperature {
 	 * 			The other temperature that you want to add together
 	 *
 	 * @return	If the difference between the sum of the hotness and the sum of the coldness
-	 * 			is positive then return a new temperature with that difference as the hotness.
+	 * 			is positive then return a new temperature with coldness zero and hotness the minimum of the difference and the upperbound.
 	 * 			| if (t1.getHotness() + t2.getHotness() > t1.getColdness() + t2.getColdness())
-	 * 			| 	result == new Temperature(0, t1.getHotness() + t2.getHotness() - t1.getColdness() + t2.getColdness())
+	 * 			| 	result == new Temperature(0, min(t1.getHotness() + t2.getHotness() - t1.getColdness() + t2.getColdness(), UPPERBOUND))
 	 * @return	If the difference between the sum of the hotness and the sum of the coldness
-	 * 			is negative then return a new temperature with the absolute value of that difference as the coldness.
+	 * 			is negative then return a new temperature with coldness the minimum of the absolute value of the difference and the upperbound
+	 * 			and with hotness zero.
 	 * 			| if (t1.getHotness() + t2.getHotness() < t1.getColdness() + t2.getColdness())
-	 * 			| 	result == new Temperature(abs(t1.getHotness() + t2.getHotness() - t1.getColdness() + t2.getColdness()), 0)
+	 * 			| 	result == new Temperature(min(abs(t1.getHotness() + t2.getHotness() - t1.getColdness() + t2.getColdness()), UPPERBOUND), 0)
 	 * @return	If the difference between the sum of the hotness and the sum of the coldness is equal to zero
 	 * 			then return a new temperature with both hotness and coldness equal to zero.
 	 * 			| if (t1.getHotness() + t2.getHotness() == t1.getColdness() + t2.getColdness())
@@ -410,9 +411,9 @@ public class Temperature {
 		long hot = t1.getHotness() + t2.getHotness();
 		long difference = hot - cold;
 		if (difference > 0) {
-			return new Temperature(0, difference);
+			return new Temperature(0, Math.min(difference,UPPERBOUND));
 		} else if (difference < 0) {
-			return  new Temperature(Math.abs(difference),0);
+			return  new Temperature(Math.min(Math.abs(difference),UPPERBOUND),0);
 		} else {
 			return new Temperature(0, 0);
 		}
@@ -421,10 +422,10 @@ public class Temperature {
 	/**
 	 * A method to multiply a temperature with a given factor delta.
 	 *
-	 * @post	The coldness of the new temperature is multiplied with a factor delta.
-	 * 			| new.getColdness = delta * getColdness()
-	 * @post	The hotness of the new temperature is multiplied with a factor delta.
-	 * 			| new.getHotness = delta * getHotness()
+	 * @effect	The coldness of the new temperature is set to the temperature multiplied with a factor delta
+	 * 			| new.getColdness = setColdness(delta * getColdness())
+	 * @effect	The hotness of the new temperature is multiplied with a factor delta.
+	 * 			| new.getHotness = setHotness(delta * getHotness())
 	 */
 	protected void mul(double delta) {
 		if (delta > 0) {

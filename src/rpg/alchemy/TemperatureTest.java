@@ -93,7 +93,7 @@ public class TemperatureTest {
 	@Test
 	public void legalHeatUpperBound2() {
 		Temperature t = new Temperature(5000, 0);
-		t.heat(12000); // je moet wel iets meer dan 10000 kunnen opwarmen denk ik, zoals in dit scenario
+		t.heat(12000);
 		assertEquals(7000, t.getHotness());
 		assertEquals(0, t.getColdness());
 	}
