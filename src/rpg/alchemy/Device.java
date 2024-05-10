@@ -26,8 +26,10 @@ public abstract class Device extends StorageLocation {
      **********************************************************/
 
     /**
-     * A constructor for a device with a given laboratory.
+     * A constructor for a device with a given laboratory and a maximum number of ingredients.
      *
+     * @param   laboratory
+     *          The laboratory in which the device is stored.
      * @param   maxNbOfIngredients
      *          The maximum number of ingredients for this device.
      *
@@ -35,15 +37,18 @@ public abstract class Device extends StorageLocation {
      *          | new.getMaxNbOfIngredients() == maxNbOfIngredients
      * @effect  The device is added to the laboratory.
      *          | setLaboratory(laboratory)
+     *
+     * @throws  IllegalArgumentException
+     *          The laboratory is not allowed for this device.
      */
     @Raw
-    public Device(Laboratory laboratory, int maxNbOfIngredients) throws IllegalArgumentException{
+    public Device(Laboratory laboratory, int maxNbOfIngredients) throws IllegalArgumentException {
         super();
-        if(!canHaveAsLaboratory(laboratory)) {throw new IllegalArgumentException("The given laboratory is not allowed");}
-        // the laboratory is allowed, we set the laboratory of this device to the given lab
+        if(!canHaveAsLaboratory(laboratory)) {
+            throw new IllegalArgumentException("The given laboratory is not allowed");
+        }
         setLaboratory(laboratory);
-        this.maxNbOfIngredients = maxNbOfIngredients;
-
+        this.maxNbOfIngredients = maxNbOfIngredients; // final so no setter
     }
 
 
@@ -85,7 +90,7 @@ public abstract class Device extends StorageLocation {
      */
     public IngredientContainer getResult() throws DeviceNotYetUsedException, IllegalStateException {
         if (isTerminated()) {
-            throw new IllegalStateException("Device is terminated");
+            throw new IllegalStateException("Device is terminated!");
         }
         if (getNbOfIngredients() > 1) {
             throw new DeviceNotYetUsedException();
@@ -109,6 +114,8 @@ public abstract class Device extends StorageLocation {
         // return a new container with the minimum unit for the result, given the state and size of the result
         return new IngredientContainer(Unit.getMinUnitForContainerWith(result), result);
     }
+
+
 
     /**********************************************************
      * INGREDIENTS
@@ -155,7 +162,7 @@ public abstract class Device extends StorageLocation {
      * A variable containing the laboratory in which this device is stored.
      *
      * @note    This is done bi-directionally, all the main methods are
-     *          worked out in Laboratory
+     *          worked out in Device.
      */
     private Laboratory laboratory;
 
@@ -172,17 +179,16 @@ public abstract class Device extends StorageLocation {
      *          The device is terminated.
      *          | isTerminated()
      * @throws  IllegalArgumentException
-     *          The laboratory is null.
-     *          | laboratory == null
-     * @throws  IllegalArgumentException
      *          The device is already present in the given laboratory.
      *          | laboratory == getLaboratory()
      */
     public void move(Laboratory laboratory) throws IllegalStateException, IllegalArgumentException {
-        if (isTerminated()) throw new IllegalStateException("Device is terminated");
-        if (laboratory == null) {throw new IllegalArgumentException("The laboratory is null");}
-        if (laboratory == getLaboratory()) {throw new IllegalArgumentException("The device already is in the given laboratory");}
-        // if everything is correct, we move the device
+        if (isTerminated()) {
+            throw new IllegalStateException("Device is terminated");
+        }
+        if (laboratory == getLaboratory()) {
+            throw new IllegalArgumentException("The device is already present in this lab!");
+        }
         setLaboratory(laboratory);
     }
 
@@ -194,14 +200,11 @@ public abstract class Device extends StorageLocation {
      *
      * @post    The laboratory of this device is set to the given laboratory
      *          | new.getLaboratory() == laboratory
-     * @effect  The device is removed out of it's old laboratory
+     * @effect  The device is removed from its old laboratory
      *          | getLaboratory().removeAsDevice(this)
      * @effect  The device is added to the new laboratory
      *          | laboratory.addAsDevice(this)
      *
-     * @throws  IllegalStateException
-     *          The device is terminated and the laboratory is not null.
-     *          | isTerminated() && (laboratory != null)
      * @throws  IllegalArgumentException
      *          The device can not have the given laboratory as its laboratory.
      *          | !canHaveAsLaboratory(laboratory)
@@ -210,10 +213,13 @@ public abstract class Device extends StorageLocation {
      *          | laboratory != null && !laboratory.canHaveAsDevice(this)
      */
     @Raw @Model
-    protected void setLaboratory(Laboratory laboratory) throws IllegalStateException, IllegalArgumentException{
-        if (isTerminated() && laboratory != null){ throw new IllegalStateException("Device is terminated, cannot accept laboratory that is not null.");}
-        if (!canHaveAsLaboratory(laboratory)) {throw new IllegalArgumentException("The given laboratory is not allowed for this device.");}
-        if (laboratory != null && !laboratory.canHaveAsDevice(this)) {throw new IllegalArgumentException("This device is not allowed for the given laboratory.");}
+    protected void setLaboratory(Laboratory laboratory) throws IllegalStateException, IllegalArgumentException {
+        if (!canHaveAsLaboratory(laboratory)) {
+            throw new IllegalArgumentException("The given laboratory is not allowed for this device.");
+        }
+        if (laboratory != null && !laboratory.canHaveAsDevice(this)) {
+            throw new IllegalArgumentException("This device is not allowed for the given laboratory.");
+        }
 
         // remember old lab
         Laboratory oldLaboratory = getLaboratory();
@@ -242,23 +248,21 @@ public abstract class Device extends StorageLocation {
     /**
      * A method for checking if a laboratory is valid for a device.
      *
-     * @note    Hier wordt enkel de INHOUD gecheckt (zie ook hasProperLaboratory())
-     *              --> als dit zou afhangen van de object properties, moet hier
-     *                  canHaveAsLaboratory() staan!
-     *              --> Weten we nu nog niet want nog niet uitgewerkt!
-     *
      * @param   laboratory
      *          The laboratory to check for this device
      *
      * @return  True if the device is terminated and the laboratory is null
      *          or if the device is not terminated and the laboratory is not null.
-     *          | result == ( (isTerminated() && laboratory == null) &&
+     *          | result == ( (isTerminated() && laboratory == null) ||
      *          |   (!isTerminated() && laboratory != null) )
      */
     @Raw
     public boolean canHaveAsLaboratory(Laboratory laboratory) {
-        if (isTerminated()) return (laboratory == null);
-        return laboratory != null;
+        if (isTerminated()) {
+            return (laboratory == null);
+        } else {
+            return laboratory != null;
+        }
     }
 
     /**
@@ -268,24 +272,14 @@ public abstract class Device extends StorageLocation {
      *              1. de consistentie van de relatie gecheckt (bidirectioneel)
      *              2. de inhoud gecheckt (isValidLaboratory(getLaboratory()))
      *
-     * @return  False if the laboratory is not valid laboratory.
-     *          | if !canHaveAsLaboratory(getLaboratory())
-     *          | then result == false
-     * @return  False if the laboratory does not have this device as a device.
-     *          | if !getLaboratory().hasAsDevice(this)
-     *          | then result == false
-     * @return  True otherwise.
-     *          | if canHaveAsLaboratory(getLaboratory()) && getLaboratory().hasAsDevice(this)
-     *          | then result == true
+     * @return  True if and only if the laboratory is a valid laboratory for this
+     *          device and the laboratory has this device as a device in the list of devices.
+     *          | result == (canHaveAsLaboratory(getLaboratory())
+     *          |   && getLaboratory().hasAsDevice(this))
      */
     public boolean hasProperLaboratory() {
-        if (!canHaveAsLaboratory(getLaboratory())) {
-            return false;
-        }
-        if (!getLaboratory().hasAsDevice(this)) {
-            return false;
-        }
-        return true;
+        return (canHaveAsLaboratory(getLaboratory())
+                && getLaboratory().hasAsDevice(this));
     }
 
 
@@ -298,16 +292,20 @@ public abstract class Device extends StorageLocation {
      * An abstract method for executing the device instructions.
      *
      * @throws  IllegalStateException
-     *          The device is not present in a valid laboratory or the device is terminated.
-     *          | ( isTerminated() || !hasProperLaboratory() )
+     *          The device is terminated.
+     *          | isTerminated()
+     * @throws  IllegalStateException
+     *          The device is empty.
+     *          | isEmpty()
      */
     public void executeOperation() throws IllegalStateException {
-        if (isTerminated() || !hasProperLaboratory()) {
+        if (isTerminated()) {
             throw new IllegalStateException("The device can't be used, since the laboratory is not valid!");
         }
         if (isEmpty()) {
             throw new IllegalStateException("There are no items in the device!");
         }
+        // subclasses should override this method
     }
 
 
@@ -316,11 +314,15 @@ public abstract class Device extends StorageLocation {
      * DESTRUCTION
      **********************************************************/
 
+    /**
+     * A variable for keeping track of whether the device is terminated.
+     */
     private boolean isTerminated = false;
 
     /**
      * Return whether the device is terminated.
      */
+    @Basic
     public boolean isTerminated() {
         return isTerminated;
     }
@@ -328,9 +330,9 @@ public abstract class Device extends StorageLocation {
     /**
      * A method for terminating a device.
      *
-     * @post    If the device is not already terminated
+     * @post    If the device is not already terminated,
      *          the device becomes terminated
-     *          | if !isTerminated()
+     *          | if (!isTerminated())
      *          | then new.isTerminated() == true
      * @effect  The laboratory of the device is set to null.
      *          | setLaboratory(null)
@@ -344,7 +346,7 @@ public abstract class Device extends StorageLocation {
             throw new IllegalStateException("Device is already terminated!");
         }
         isTerminated = true;
-        setLaboratory(null);
+        setLaboratory(null);    // the order in which these are done is important!
     }
 
 }
