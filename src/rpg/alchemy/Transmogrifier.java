@@ -10,14 +10,18 @@ public class Transmogrifier extends Device{
 	 **********************************************************/
 
 	/**
-	 * A constructor for a transmogrifier device.
+	 * A constructor for a transmogrifier device with a given laboratory
+	 * and a maximum number of ingredients equal to 1.
+	 *
+	 * @param 	laboratory
+	 * 			The laboratory in which the transmogrifier is placed.
 	 *
 	 * @effect	A device with a maximum number of ingredients equal to 1 is created
-	 * 			| super(1)
+	 * 			| super(laboratory, 1)
 	 */
 	@Raw
-	public Transmogrifier() {
-		super(1);
+	public Transmogrifier(Laboratory laboratory) {
+		super(laboratory, 1);
 	}
 
 

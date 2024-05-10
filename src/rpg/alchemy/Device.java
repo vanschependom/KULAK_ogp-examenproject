@@ -1,11 +1,7 @@
 package rpg.alchemy;
 
-import be.kuleuven.cs.som.annotate.Basic;
-import be.kuleuven.cs.som.annotate.Immutable;
-import be.kuleuven.cs.som.annotate.Model;
-import be.kuleuven.cs.som.annotate.Raw;
-import rpg.State;
-import rpg.Unit;
+import be.kuleuven.cs.som.annotate.*;
+import rpg.*;
 import rpg.exceptions.DeviceNotYetUsedException;
 
 /**

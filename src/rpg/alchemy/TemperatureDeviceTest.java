@@ -14,33 +14,33 @@ public class TemperatureDeviceTest {
     @BeforeEach
     public void setUp() {
         laboratory = new Laboratory(30);
-        coolingBox = new CoolingBox(new Temperature(90, 0));
-        oven = new Oven(new Temperature(0, 120));
+        coolingBox = new CoolingBox(laboratory, new Temperature(90, 0));
+        oven = new Oven(laboratory, new Temperature(0, 120));
     }
 
     @Test
     public void constructorValid() {
-        CoolingBox coolingBox1 = new CoolingBox(new Temperature(90, 0));
+        CoolingBox coolingBox1 = new CoolingBox(laboratory, new Temperature(90, 0));
         assertTrue(new Temperature(90, 0).equals(coolingBox1.getTemperature()));
     }
 
     @Test
     public void constructorValid2() {
-        Oven oven1 = new Oven(new Temperature(0, 500));
+        Oven oven1 = new Oven(laboratory, new Temperature(0, 500));
         assertTrue(new Temperature(0, 500).equals(oven1.getTemperature()));
     }
 
     @Test
     public void constructorInvalid() {
         assertThrows(NullPointerException.class, () -> {
-            CoolingBox coolingBox1 = new CoolingBox(null);
+            CoolingBox coolingBox1 = new CoolingBox(laboratory, null);
         });
     }
 
     @Test
     public void constructorInvalid5() {
         assertThrows(IllegalArgumentException.class, () -> {
-            Oven oven1 = new Oven( null);
+            Oven oven1 = new Oven( laboratory, null);
         });
     }
 

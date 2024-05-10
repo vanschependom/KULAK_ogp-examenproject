@@ -3,8 +3,6 @@ package rpg.alchemy;
 import be.kuleuven.cs.som.annotate.*;
 import rpg.Unit;
 import rpg.exceptions.IngredientNotPresentException;
-
-import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -26,10 +24,8 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	capacity
 	 * 			The capacity of the laboratory, expressed in storerooms.
-	 *
 	 * @post	The capacity of the new laboratory is equal to the given capacity.
 	 * 			| new.getCapacity() == capacity
-	 *
 	 * @throws	IllegalArgumentException
 	 * 			The given capacity is not a valid capacity.
 	 * 			| !isValidCapacity(capacity)

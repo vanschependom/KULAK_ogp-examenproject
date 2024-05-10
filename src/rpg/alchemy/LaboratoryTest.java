@@ -36,16 +36,16 @@ public class LaboratoryTest {
 		// set up the cold temperature
 		coldTemperature = new Temperature(30, 0);
 		lab = new Laboratory(2); // lab with capacity of 2 storerooms
-		// not yet added devices
-		coolingBoxNotAdded = new CoolingBox(new Temperature(20, 0));
-		ovenNotAdded = new Oven(new Temperature(0, 1000));
-		transmogrifierNotAdded = new Transmogrifier();
-		kettleNotAdded = new Kettle();
-		// added devices
-		coolingBox = new CoolingBox(new Temperature(20, 0));
-		oven = new Oven(new Temperature(0, 1000));
-		transmogrifier = new Transmogrifier();
-		kettle = new Kettle();
+//		// not yet added devices
+//		coolingBoxNotAdded = new CoolingBox(lab, new Temperature(20, 0));
+//		ovenNotAdded = new Oven(lab, new Temperature(0, 1000));
+//		transmogrifierNotAdded = new Transmogrifier(lab);
+//		kettleNotAdded = new Kettle(lab);
+//		// added devices
+//		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+//		oven = new Oven(lab, new Temperature(0, 1000));
+//		transmogrifier = new Transmogrifier(lab);
+//		kettle = new Kettle(lab);
 	}
 
 	@Test
@@ -55,50 +55,44 @@ public class LaboratoryTest {
 	}
 
 	@Test
-	public void testAddDeviceLegal() {
-
-		lab.addAsDevice(coolingBox);
-		assertTrue(lab.hasDeviceOfType(coolingBox.getClass()));
-
-		lab.addAsDevice(oven);
-		assertTrue(lab.hasDeviceOfType(oven.getClass()));
-
-		lab.addAsDevice(transmogrifier);
-		assertTrue(lab.hasDeviceOfType(transmogrifier.getClass()));
-
-		lab.addAsDevice(kettle);
-		assertTrue(lab.hasDeviceOfType(kettle.getClass()));
-
+	public void testAddDevices_legal() {
+		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+		oven = new Oven(lab, new Temperature(0, 1000));
+		transmogrifier = new Transmogrifier(lab);
+		kettle = new Kettle(lab);
 	}
 
 	@Test
-	public void testAddDeviceAlreadyPresent1() {
-		lab.addAsDevice(coolingBox);
+	public void testAddDevices_typeAlreadyAdded() {
+		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+		// a cooling box is already added
 		assertThrows(IllegalArgumentException.class, () -> {
-			lab.addAsDevice(new CoolingBox(new Temperature(350, 0)));
+			new CoolingBox(lab, new Temperature(20, 0));
 		});
 	}
 
 	@Test
-	public void testAddDeviceAlreadyPresent2() {
-		lab.addAsDevice(coolingBox);
+	public void testAddDevices_typeAlreadyAdded2() {
+		oven = new Oven(lab, new Temperature(0, 1000));
+		// an oven is already added
 		assertThrows(IllegalArgumentException.class, () -> {
-			lab.addAsDevice(coolingBox);
+			new Oven(lab, new Temperature(0, 1000));
 		});
 	}
 
 	@Test
-	public void testAddDeviceAlreadyPresent3() {
-		lab.addAsDevice(transmogrifier);
+	public void testAddDevices_typeAlreadyAdded3() {
+		transmogrifier = new Transmogrifier(lab);
 		assertThrows(IllegalArgumentException.class, () -> {
-			lab.addAsDevice(new Transmogrifier());
+			new Transmogrifier(lab);
 		});
 	}
 
 	@Test
-	public void testAddDeviceNull() {
+	public void testAddDevices_typeAlreadyAdded4() {
+		kettle = new Kettle(lab);
 		assertThrows(IllegalArgumentException.class, () -> {
-			lab.addAsDevice(null);
+			new Kettle(lab);
 		});
 	}
 

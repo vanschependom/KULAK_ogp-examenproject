@@ -16,17 +16,31 @@ import java.util.*;
  */
 public class Kettle extends Device {
 
+	/**********************************************************
+	 * CONSTRUCTORS
+	 **********************************************************/
+
 	/**
-	 * A constructor for a kettle device.
+	 * A constructor for a kettle device with a given laboratory and
+	 * a maximum number of ingredients of Integer.MAX_VALUE.
+	 *
+	 * @param 	laboratory
+	 * 			The laboratory in which the kettle is placed.
 	 *
 	 * @effect	A kettle device with a maximum number of ingredients of
-	 * 			Integer.MAX_VALUE is created.
-	 * 			| super(Integer.MAX_VALUE)
+	 * 			Integer.MAX_VALUE and with the given laboratory is created.
+	 * 			| super(laboratory, Integer.MAX_VALUE)
 	 */
 	@Raw
-	public Kettle() {
-		super(Integer.MAX_VALUE);
+	public Kettle(Laboratory laboratory) {
+		super(laboratory, Integer.MAX_VALUE);
 	}
+
+
+
+	/**********************************************************
+	 * METHODS
+	 **********************************************************/
 
 	/**
 	 * Return the new name object for the new mixed ingredient, with a special name of null.
@@ -118,6 +132,12 @@ public class Kettle extends Device {
 		totalTemperature.mul(1/getNewSpoonAmount());
 		return totalTemperature;
 	}
+
+
+
+	/**********************************************************
+	 * OPERATION EXECUTION
+	 **********************************************************/
 
 	/**
 	 * A method for executing a kettle
