@@ -539,7 +539,6 @@ public class AlchemicIngredient {
      *          | new.isTerminated()
      */
     public void terminate() {
-        getTemperatureObject().terminate();
         isTerminated = true;
     }
 

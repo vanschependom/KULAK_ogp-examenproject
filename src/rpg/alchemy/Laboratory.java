@@ -102,6 +102,27 @@ public class Laboratory extends StorageLocation {
 	}
 
 	/**
+	 * A method that gives back the index of a given device.
+	 *
+	 * @param 	device
+	 * 			The device to get the index of.
+	 * @return  The given device is registered in this laboratory at the
+	 *          resulting position.
+	 *          | getDeviceAt(result) == device
+	 * @throws  IllegalArgumentException
+	 *          The given device is not in the laboratory
+	 *          | !hasAsDevice(device)
+	 */
+	public int getIndexOfDevice(Device device) {
+		if (!hasAsDevice(device)) { throw new IllegalArgumentException("The device is not present in this laboratory");}
+		for (int i = 0; i < getNbOfDevices(); i++) {
+			if (getDeviceAt(i) == device) return i;
+		}
+		// this should never happen
+		return -1;
+	}
+
+	/**
 	 * A method for checking if a laboratory contains two of the same types of devices.
 	 *
 	 * @return	True if and only if some type of device is present twice in this laboratory.
@@ -139,6 +160,28 @@ public class Laboratory extends StorageLocation {
 		}
 		for (int i=0; i<getNbOfDevices(); i++) {
 			if (getDeviceAt(i).getClass() == type) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check whether the given device is present in this laboratory.
+	 *
+	 * @param 	device
+	 *        	The device to check.
+	 * @return 	True if a device equal to the given item is registered at some
+	 *         	position in this laboratory;
+	 *         	false otherwise.
+	 *         	| result ==
+	 *         	|    for some I in 1..getNbOfDevices() :
+	 *         	| 	      (getDeviceAt(I) == device)
+	 */
+	public boolean hasAsDevice(Device device) {
+		if (device == null) return false;
+		for (int i=0; i<getNbOfDevices(); i++) {
+			if (getDeviceAt(i) == device) {
 				return true;
 			}
 		}
@@ -204,12 +247,32 @@ public class Laboratory extends StorageLocation {
 	 * 			The device to be added.
 	 * @post	TODO
 	 */
-	public void addAsDevice(Device device) {
+	protected void addAsDevice(Device device) {
 		if (!canHaveAsDevice(device)
 			|| hasDeviceOfType(device.getClass()) ) {
 			throw new IllegalArgumentException("Illegal device!");
 		}
 		devices.add(device);
+	}
+
+	/**
+	 * A method for removing a device out of this laboratory.
+	 *
+	 * @param 	device
+	 * 			The device to remove
+	 *
+	 * @post	The number of devices is decremented by 1.
+	 * 			| new.getNbOfDevices() + 1 == getNbOfDevices()
+	 * @post	The device at the index of the given device is
+	 * 			not equal to the given device
+	 * 			| device != new.getDeviceAt(getIndexOfDevice(device))
+	 */
+	@Raw
+	protected void removeAsDevice(Device device) {
+		if (!hasAsDevice(device)) {
+			throw new IllegalArgumentException("Illegal given device!");
+		}
+		devices.remove(device);
 	}
 
 
@@ -280,15 +343,21 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	name
 	 * 			The simple name to check.
-	 * @return	The index of the ingredient with the given simple name.
-	 * 			| TODO
+	 * @return  The given ingredient with this name is registered in this laboratory at the
+	 *          resulting position.
+	 *          | getIngredientAt(result).getSimpleName().equals(name)
+	 * @throws  IllegalArgumentException
+	 *          An ingredient with the given name is not in the laboratory.
+	 *          | !hasIngredientWithSimpleName(name)
 	 */
-	public int getIndexOfSimpleName(String name) {
+	public int getIndexOfSimpleName(String name) throws IllegalArgumentException {
+		if (!hasIngredientWithSimpleName(name)) {throw new IllegalArgumentException("There is no ingredient with the given name in this laboratory");}
 		for (int i=0; i<getNbOfIngredients(); i++) {
 			if (getIngredientAt(i).getSimpleName().equals(name)) {
 				return i;
 			}
 		}
+		// should never happen
 		return -1;
 	}
 
