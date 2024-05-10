@@ -346,8 +346,37 @@ public class Recipe {
         return new Recipe(getIngredients(), getOperations());
     }
 
+    /**********************************************************
+     * EQUALS
+     **********************************************************/
 
-
+    /**
+     * A method to check if two recipes are equal (based on their ingredients and operations).
+     *
+     * @return  If they don't have the amount of operations or
+     *          the same amount of ingredients return false.
+     *          | if (getNbOfIngredients() != other.getNbOfIngredients()
+     *          |       || getNbOfOperations() != other.getNbOfOperations())
+     *          | then result == false
+     * @return  TODO
+     */
+    public boolean equals(Recipe other) {
+        if (getNbOfIngredients() != other.getNbOfIngredients()
+                || getNbOfOperations() != other.getNbOfOperations()) {
+            return false;
+        }
+        for (int i=0; i < getNbOfIngredients(); i++) {
+            if (!getIngredientAt(i).equals(other.getIngredientAt(i))) {
+                return false;
+            }
+        }
+        for (int i=0; i < getNbOfOperations(); i++) {
+            if (!(getOperationAt(i) == other.getOperationAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**********************************************************
      * Termination

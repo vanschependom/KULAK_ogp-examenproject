@@ -12,6 +12,7 @@ import rpg.alchemy.Temperature;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RecipeBookTest {
 
@@ -55,8 +56,8 @@ public class RecipeBookTest {
         recipeList.add(recipe2);
         RecipeBook rb = new RecipeBook(recipeList);
         assertEquals(2, rb.getNbOfRecipes());
-        assertEquals(recipe1, rb.getRecipeAt(0));
-        assertEquals(recipe2, rb.getRecipeAt(1));
+        assertTrue(recipe1.equals(rb.getRecipeAt(0)));
+        assertTrue(recipe2.equals(rb.getRecipeAt(1)));
     }
 
     @Test
@@ -67,8 +68,8 @@ public class RecipeBookTest {
         recipeList.add(null);
         RecipeBook rb = new RecipeBook(recipeList);
         assertEquals(2, rb.getNbOfRecipes());
-        assertEquals(recipe1, rb.getRecipeAt(0));
-        assertEquals(recipe2, rb.getRecipeAt(1));
+        assertTrue(recipe1.equals(rb.getRecipeAt(0)));
+        assertTrue(recipe2.equals(rb.getRecipeAt(1)));
     }
 
     @Test
@@ -88,7 +89,7 @@ public class RecipeBookTest {
         RecipeBook rb = new RecipeBook();
         rb.addRecipe(recipe1);
         assertEquals(1, rb.getNbOfRecipes());
-        assertEquals(recipe1, rb.getRecipeAt(0));
+        assertTrue(recipe1.equals(rb.getRecipeAt(0)));
     }
 
     @Test
@@ -104,7 +105,7 @@ public class RecipeBookTest {
         rb.addRecipe(recipe1);
         rb.addRecipe(recipe1);
         assertEquals(1, rb.getNbOfRecipes());
-        assertEquals(recipe1, rb.getRecipeAt(0));
+        assertTrue(recipe1.equals(rb.getRecipeAt(0)));
     }
 
     @Test
@@ -145,7 +146,7 @@ public class RecipeBookTest {
         rb.addRecipe(recipe1);
         rb.removeRecipe(null);
         assertEquals(1, rb.getNbOfRecipes());
-        assertEquals(recipe1, rb.getRecipeAt(0));
+        assertTrue(recipe1.equals(rb.getRecipeAt(0)));
     }
 
 
