@@ -96,6 +96,17 @@ public class Temperature {
 		this(STANDARD_COLDNESS, STANDARD_HOTNESS);
 	}
 
+	/**
+	 * A constructor for creating a new Temperature object with
+	 * the given list of coldness and hotness
+	 *
+	 * @effect	A new temperature is created with the given hotness and coldness.
+	 * 			| this (temperature[0], temperature[1])
+	 */
+	public Temperature(long[] temperature) {
+		this(temperature[0], temperature[1]);
+	}
+
 
 
 	/**********************************************************

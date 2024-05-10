@@ -33,16 +33,10 @@ public abstract class Device extends StorageLocation {
      *          | new.getMaxNbOfIngredients() == maxNbOfIngredients
      * @effect  The device is added to the laboratory.
      *          | setLaboratory(laboratory)
-     *
-     * @throws  IllegalArgumentException
-     *          The laboratory is not allowed for this device.
      */
     @Raw
     public Device(Laboratory laboratory, int maxNbOfIngredients) throws IllegalArgumentException {
         super();
-        if(!canHaveAsLaboratory(laboratory)) {
-            throw new IllegalArgumentException("The given laboratory is not allowed");
-        }
         setLaboratory(laboratory);
         this.maxNbOfIngredients = maxNbOfIngredients; // final so no setter
     }
@@ -135,6 +129,9 @@ public abstract class Device extends StorageLocation {
      *
      * @param   ingredient
      *          The ingredient to add
+     *
+     * @effect  The ingredient is added to the device
+     *          | super.addAsIngredient(ingredient)
      *
      * @throws  IllegalStateException
      *          The maximum amount of ingredients has been reached

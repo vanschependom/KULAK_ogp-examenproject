@@ -174,10 +174,11 @@ public abstract class StorageLocation {
      * @param   ingredient
      *          The ingredient to add
      *
-     * @post    The ingredient is added to the storage location, on the last index
-     *          | new.getNbOfIngredients() == getNbOfIngredients() + 1 &&
-     *          | new.getIngredientAt(new.getNbOfIngredients()-1) == ingredient &&
-     *          | new.hasAsIngredient(ingredient)
+     * @post    The number of ingredients registered in this storage location is
+     *          incremented with 1.
+     *          | new.getNbOfIngredients() == getNbOfIngredients() + 1
+     * @post    The given ingredient is inserted at the last index.
+     *          | new.getIngredientAt(getNbOfIngredients()-1) == ingredient
      *
      * @throws  IllegalArgumentException
      *          The ingredient is not valid

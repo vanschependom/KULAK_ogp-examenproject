@@ -107,6 +107,26 @@ public class AlchemicIngredient {
      */
     @Raw
     public AlchemicIngredient(int amount, Unit unit, IngredientType type) {
+        this(amount, unit, new Temperature(type.getStandardTemperature()), type, type.getStandardState());
+    }
+
+    /**
+     * Initialize a new non-containerized alchemic ingredient with given amount, temperature, unit and type.
+     *
+     * @param   amount
+     *          The amount of the new alchemic ingredient.
+     * @param   unit
+     *          The unit of the new alchemic ingredient.
+     * @param   type
+     *          The type of the new alchemic ingredient.
+     *
+     * @effect  A new alchemic ingredient with given amount, unit, a copy of the standard temperature of the given type,
+     *          the given ingredient type and the standard state of that same ingredient type is initialized.
+     *          | this( amount, unit, new Temperature( type.getStandardTemperatureObject().getColdness(),
+     *          |   type.getStandardTemperatureObject().getHotness() ), type, type.getStandardState() )
+     */
+    @Raw
+    public AlchemicIngredient(int amount, Unit unit, Temperature temperature, IngredientType type) {
         this(amount, unit, new Temperature(type.getStandardTemperatureObject().getColdness(), type.getStandardTemperatureObject().getHotness()), type, type.getStandardState());
     }
 
