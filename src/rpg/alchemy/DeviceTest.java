@@ -121,6 +121,9 @@ public class DeviceTest {
 		});
 	}
 
+	// TODO test alle methodes
+	// kijk altijd lijn per lijn naar alle specificatie en test die ook op die manier
+
 }
 
 
