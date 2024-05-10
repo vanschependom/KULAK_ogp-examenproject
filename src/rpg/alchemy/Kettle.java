@@ -45,19 +45,17 @@ public class Kettle extends Device {
 	/**
 	 * Return the new name object for the new mixed ingredient, with a special name of null.
 	 * The simple name parts being all the simple name parts of the ingredients.
+	 *
+	 * @return  A new name object with all the simple name parts of the ingredients.
+	 * 			| TODO
 	 */
-	@Model @Basic
+	@Model
 	private Name getNewName() {
-		ArrayList<String> names = new ArrayList<>();
-
+		Set<String> names = new HashSet<>();
 		for (int i = 0; i < getNbOfIngredients(); i++) {
 			// we get all names of the ingredients
 			names.addAll(Arrays.asList(getIngredientAt(i).getType().getName().getSimpleNameParts()));
 		}
-		// we remove all duplicates, so that the same ingredientType but different Alchemic ingredient does not get repeated
-		Set<String> set = new HashSet<>(names);
-		names.clear();
-		names.addAll(set);
 		// we return a new name with all the names of the ingredients
 		return new Name(null, names.toArray(new String[0]));
 	}
@@ -67,14 +65,13 @@ public class Kettle extends Device {
 	 * Liquid is chosen over powder in an ex aequo.
 	 */ // TODO kan  dit hier basic genomen worden of moet hier heel wat specificatie bijkomen met meer uitleg
 	// TODO geldt eigenlijk voor elke new method
-	@Model @Basic
+	@Model
 	private State getNewState() {
 		int closestTemperatureIndex = 0;
 		long smallestDifferenceTemperature = Long.MAX_VALUE;
-
 		for (int i = 0; i < getNbOfIngredients(); i++) {
 			// We get the ingredient with a standard temperature closest to [0, 20]
-			long difference = getIngredientAt(i).getType().getStandardTemperatureObject().difference(new long[]{0, 20});
+			long difference = getIngredientAt(i).getType().standardTemperatureDifference(new long[]{0, 20});
 			if (difference < smallestDifferenceTemperature) {
 				smallestDifferenceTemperature = difference;
 				closestTemperatureIndex = i;
@@ -88,7 +85,7 @@ public class Kettle extends Device {
 	/**
 	 * Return the sum of all the spoon amounts of the ingredients
 	 */
-	@Model @Basic
+	@Model
 	private double getNewSpoonAmount() {
 		double totalSpoonAmount = 0;
 		for (int i = 0; i < getNbOfIngredients(); i++) {
@@ -107,11 +104,11 @@ public class Kettle extends Device {
 		Temperature smallestDifferenceTemperature = new Temperature(0, Temperature.getUpperbound());
 		long smallestDifference = smallestDifferenceTemperature.difference(new long[]{0, 20});
 		for (int i = 0; i < getNbOfIngredients(); i++) {
-			long difference = getIngredientAt(i).getType().getStandardTemperatureObject().difference(new long[]{0, 20});
+			long difference = getIngredientAt(i).getType().standardTemperatureDifference(new long[]{0, 20});
 			// We get the ingredient with a standard temperature closest to [0, 20]
 			if ( difference < smallestDifference || ( difference == smallestDifference &&
 					getIngredientAt(i).getHotness() > smallestDifferenceTemperature.getHotness() ) ) {
-				smallestDifferenceTemperature = getIngredientAt(i).getType().getStandardTemperatureObject();
+				smallestDifferenceTemperature = new Temperature(getIngredientAt(i).getType().getStandardTemperature());
 				smallestDifference = difference;
 			}
 		}

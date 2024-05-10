@@ -213,6 +213,19 @@ public class IngredientType {
 	}
 
 	/**
+	 * A method for calculating the difference between the given temperature and the standard
+	 * temperature of this ingredient type.
+	 *
+	 * @param 	temperature
+	 * 			The temperature to compare with the standard temperature.
+	 * @return	The difference between the given temperature and the standard temperature.
+	 * 			| result == getStandardTemperatureObject().difference(temperature)
+	 */
+	public long standardTemperatureDifference(long[] temperature) {
+		return getStandardTemperatureObject().difference(temperature);
+	}
+
+	/**
 	 * A method for checking whether the given temperature is a valid standard temperature.
 	 *
 	 * @return 	True if and only if the temperature is effective.
