@@ -21,6 +21,19 @@ public class Laboratory extends StorageLocation {
 	 * CONSTRUCTOR
 	 **********************************************************/
 
+	/**
+	 * A constructor for creating a new laboratory with a given capacity.
+	 *
+	 * @param 	capacity
+	 * 			The capacity of the laboratory, expressed in storerooms.
+	 *
+	 * @post	The capacity of the new laboratory is equal to the given capacity.
+	 * 			| new.getCapacity() == capacity
+	 *
+	 * @throws	IllegalArgumentException
+	 * 			The given capacity is not a valid capacity.
+	 * 			| !isValidCapacity(capacity)
+	 */
 	@Raw
 	public Laboratory(int capacity) {
 		if (!isValidCapacity(capacity)) {
@@ -28,6 +41,7 @@ public class Laboratory extends StorageLocation {
 		}
 		this.capacity = capacity;
 	}
+
 
 
 	/**********************************************************
@@ -46,7 +60,7 @@ public class Laboratory extends StorageLocation {
 	@Basic
 	@Immutable
 	public int getCapacity() {
-		return this.getCapacity();
+		return capacity;
 	}
 
 	/**
@@ -72,7 +86,7 @@ public class Laboratory extends StorageLocation {
 	/**
 	 * A variable for keeping track of the devices within this laboratory.
 	 */
-	private ArrayList<Device> devices = new ArrayList<>();
+	private final ArrayList<Device> devices = new ArrayList<>();
 
 	/**
 	 * Return the number of devices.
@@ -114,11 +128,14 @@ public class Laboratory extends StorageLocation {
 	 *          | !hasAsDevice(device)
 	 */
 	public int getIndexOfDevice(Device device) {
-		if (!hasAsDevice(device)) { throw new IllegalArgumentException("The device is not present in this laboratory");}
+		if (!hasAsDevice(device)) {
+			throw new IllegalArgumentException("The device is not present in this laboratory");
+		}
 		for (int i = 0; i < getNbOfDevices(); i++) {
 			if (getDeviceAt(i) == device) return i;
 		}
 		// this should never happen
+		assert false;
 		return -1;
 	}
 
@@ -152,12 +169,10 @@ public class Laboratory extends StorageLocation {
 	 * @throws	IllegalArgumentException
 	 * 			The given type is not a subtype of Device.
 	 * 			| !Device.class.isAssignableFrom(type)
+	 *
+	 * @note 	The provided type (of class Class) must extend the class Device.
 	 */
-	public boolean hasDeviceOfType(Class type) throws IllegalArgumentException {
-		// the type is not a subtype of Device
-		if (!Device.class.isAssignableFrom(type)) {
-			throw new IllegalArgumentException("The given type is not a subtype of Device!");
-		}
+	public boolean hasDeviceOfType(Class<? extends Device> type) throws IllegalArgumentException {
 		for (int i=0; i<getNbOfDevices(); i++) {
 			if (getDeviceAt(i).getClass() == type) {
 				return true;
@@ -171,9 +186,11 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	device
 	 *        	The device to check.
+	 * @return 	False if the given device is not effective.
+	 * 	   		| if (device == null)
+	 * 	   		| 	then result == false
 	 * @return 	True if a device equal to the given item is registered at some
-	 *         	position in this laboratory;
-	 *         	false otherwise.
+	 *         	position in this laboratory; false otherwise.
 	 *         	| result ==
 	 *         	|    for some I in 1..getNbOfDevices() :
 	 *         	| 	      (getDeviceAt(I) == device)
@@ -194,17 +211,16 @@ public class Laboratory extends StorageLocation {
 	 * @param 	type
 	 * 			The class of the device to get.
 	 * @return	The device of the given type.
-	 * 			| if (
-	 * 			| 	for some I in 0..getNbOfDevices()-1:
+	 * 			| if ( for some I in 0..getNbOfDevices()-1:
 	 * 			|		getDeviceAt(I).getClass() == type )
 	 * 			|	then result == getDeviceAt(I)
 	 * @throws	IllegalArgumentException
 	 * 			The given type is not a legal type for this laboratory.
 	 * 			| !hasDeviceOfType(type)
 	 */
-	public Device getDeviceOfType(Class type) throws IllegalArgumentException {
+	public Device getDeviceOfType(Class<? extends Device> type) throws IllegalArgumentException {
 		if (!hasDeviceOfType(type)) {
-			throw new IllegalArgumentException("Illegal type!");
+			throw new IllegalArgumentException("The given type is not present in this laboratory!");
 		}
 		for (int i=0; i<getNbOfDevices(); i++) {
 			if (getDeviceAt(i).getClass() == type) {
@@ -212,23 +228,34 @@ public class Laboratory extends StorageLocation {
 			}
 		}
 		// should never happen
+		assert false;
 		return null;
 	}
 
 	/**
 	 * A method for checking if a given device is a legal device for this laboratory.
 	 *
-	 * @return 	TODO
+	 * @return 	True if and only if the given device is not null and
+	 * 			the laboratory does not contain a device of the same type.
+	 * 			| result == (device != null)
+	 * 			|			&& (!hasTwiceSameTypeAs(device))
+	 * 			|			&& !device.isTerminated()
 	 */
 	public boolean canHaveAsDevice(Device device) {
-		return (device != null) && (!hasTwiceSameTypeAs(device));
+		return (device != null)
+				&& (!hasTwiceSameTypeAs(device))
+				&& !device.isTerminated();
 	}
 
 	/**
 	 * A method for checking whether the laboratory has proper devices inside of it;
 	 * thus this checks 1) the relation is correct 2) the contents are correct
 	 *
-	 * @return	TODO
+	 * @return  True if and only if this laboratory can have all its devices
+	 * 			at their respective indices.
+	 *          | result ==
+	 *          |   for each I in 0..getNbOfDevices() :
+	 *          |     canHaveAsDevice(getDeviceAt(I)) && getDeviceAt(I).getLaboratory() == this
 	 */
 	public boolean hasProperDevices() {
 		for (int i=0; i<getNbOfDevices()-1; i++) {
@@ -245,12 +272,33 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	device
 	 * 			The device to be added.
-	 * @post	TODO
+	 *
+	 * @post    The number of devices registered in this laboratory is
+	 *          incremented with 1.
+	 *          | new.getNbOfDevices() == getNbOfDevices() + 1
+	 * @post    The given item is inserted at the last index.
+	 *          | new.getDeviceAt(getNbOfDevices()-1) == device
+	 *
+	 * @throws	IllegalArgumentException
+	 * 			A device of this type is already present in this laboratory
+	 * 			| hasDeviceOfType(device.getClass())	.
+	 * @throws	IllegalArgumentException
+	 * 			This device is not allowed for this laboratory.
+	 * 			| !canHaveAsDevice(device)
+	 * @throws	IllegalStateException
+	 * 			The given device does not reference this laboratory as its parent.
+	 * 			| device.getLaboratory() != this
 	 */
 	protected void addAsDevice(Device device) {
-		if (!canHaveAsDevice(device)
-			|| hasDeviceOfType(device.getClass()) ) {
-			throw new IllegalArgumentException("Illegal device!");
+		if (hasDeviceOfType(device.getClass())) {
+			throw new IllegalArgumentException("A device if this type is already present in this laboratory.");
+		}
+		if (!canHaveAsDevice(device)) {
+			throw new IllegalArgumentException("This device is not allowed for this laboratory.");
+		}
+		// device is effective, so we can call getLaboratory()
+		if (device.getLaboratory() != this) {
+			throw new IllegalStateException("The given device does not yet reference this laboratory as its parent.");
 		}
 		devices.add(device);
 	}
@@ -261,18 +309,62 @@ public class Laboratory extends StorageLocation {
 	 * @param 	device
 	 * 			The device to remove
 	 *
-	 * @post	The number of devices is decremented by 1.
-	 * 			| new.getNbOfDevices() + 1 == getNbOfDevices()
-	 * @post	The device at the index of the given device is
-	 * 			not equal to the given device
-	 * 			| device != new.getDeviceAt(getIndexOfDevice(device))
+	 * @effect 	The given item is removed from the position it was registered at.
+	 *         	| removeItemAt(getIndexOf(item))
+	 *
+	 * @throws 	IllegalArgumentException
+	 *         	The given device is not in the laboratory
+	 *         	| !hasAsDevice(device)
+	 * @throws	IllegalStateException
+	 * 			The reference of the given (effective) device to its laboratory must already be broken down.
+	 * 			| (item != null) && item.getLaboratory() != this
 	 */
 	@Raw
-	protected void removeAsDevice(Device device) {
+	protected void removeAsDevice(Device device) throws IndexOutOfBoundsException, IllegalStateException, IllegalArgumentException {
 		if (!hasAsDevice(device)) {
 			throw new IllegalArgumentException("Illegal given device!");
 		}
-		devices.remove(device);
+		// device is certainly not null
+		if(device.getLaboratory() == this) {
+			throw new IllegalStateException("The given device still references this laboratory as its laboratory.");
+		}
+		try{
+			removeAsDeviceAt(getIndexOfDevice(device));
+		}catch(IndexOutOfBoundsException e){
+			// Should not happen!
+			assert false;
+		}
+	}
+
+	/**
+	 * Remove the given device at the given index from this laboratory.
+	 *
+	 * @param 	index
+	 *        	The index from the device to remove.
+	 *
+	 * @post  	The number of items has decreased by one
+	 *        	| new.getNbOfDevices() == getNbOfDevices() - 1
+	 * @post	This laboratory no longer has the device at the given index as a device
+	 * 			| !new.hasAsDevice(getDeviceAt(index))
+	 * @post  	All elements to the right of the removed device
+	 *        	are shifted left by 1 position.
+	 *        	| for each I in index+1..getNbOfDevices():
+	 *        	|   new.getDeviceAt(I-1) == getDeviceAt(I)
+	 *
+	 * @throws	IndexOutOfBoundsException
+	 *        	The given position is not positive or is equal to or exceeds the number
+	 *        	of devices registered in this laboratory.
+	 *        	| (index < 0) || (index >= getNbItems())
+	 */
+	private void removeAsDeviceAt(int index) throws IndexOutOfBoundsException {
+		if(index < 0 || index >= getNbOfDevices())
+			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+		try{
+			devices.remove(index);
+		}catch(IndexOutOfBoundsException e) {
+			// Should not happen.
+			assert false;
+		}
 	}
 
 
