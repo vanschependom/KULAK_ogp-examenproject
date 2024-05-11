@@ -143,7 +143,7 @@ public class Recipe {
      *          or the operation is not null and not add and the ingredient is null
      *          | result ==
      *          |   ( operation == Operation.ADD && ingredient != null && !ingredient.isTerminated()) ||
-     *          |   (operation != null && operation != Operation.ADD && ingredient == null) )
+     *          |   ( operation != null && operation != Operation.ADD && ingredient == null )
      */
     public boolean isValidInstruction(AlchemicIngredient ingredient, Operation operation) {
         return ((operation == Operation.ADD && ingredient != null && !ingredient.isTerminated()) ||
@@ -287,7 +287,7 @@ public class Recipe {
      */
     @Basic
     public AlchemicIngredient getIngredientAt(int index) {
-        if (index >= 0 && index < getNbOfIngredients()) return getIngredients().get(index); //TODO kopie maken
+        if (index >= 0 && index < getNbOfIngredients()) return getIngredients().get(index);
         return null;
     }
 
@@ -308,7 +308,7 @@ public class Recipe {
      */
     @Basic
     public Operation getOperationAt(int index) {
-        if (index >= 0 && index < getNbOfOperations()) return getOperations().get(index); // TODO kopie maken
+        if (index >= 0 && index < getNbOfOperations()) return getOperations().get(index);
         return null;
     }
 
@@ -341,7 +341,7 @@ public class Recipe {
      *          | result ==
      *          |   new Recipe(getIngredients(), getOperations())
      */
-    @Model
+    @Model @Override
     protected Recipe clone() {
         return new Recipe(getIngredients(), getOperations());
     }
@@ -353,25 +353,42 @@ public class Recipe {
     /**
      * A method to check if two recipes are equal (based on their ingredients and operations).
      *
+     * @param   other
+     *          The recipe you compare with.
      * @return  If they don't have the amount of operations or
      *          the same amount of ingredients return false.
      *          | if (getNbOfIngredients() != other.getNbOfIngredients()
      *          |       || getNbOfOperations() != other.getNbOfOperations())
      *          | then result == false
-     * @return  TODO
+     * @effect  If two ingredients at the same index aren't equal then return false.
+     *          | for each I in 0..getNbOfIngredients():
+     *          |   if (!getIngredientAt(I).equals(other.getIngredientAt(I)))
+     *          |       then result == false
+     * @return  If two operations at the same index aren't equal then return false.
+     *          | for each I in 0..getNbOfOperations():
+     *          |   if (!getOperationAt(I).equals(other.getOperationAt(I)))
+     *          |       then result == false
+     * @return  If all the ingredients and all the operation are equal then return true.
+     *          | for each I in 0..getNbOfOperations():
+     *          |   if (getIngredientAt(I).equals(other.getIngredientAt(I)) &&
+     *          |       getOperationAt(I).equals(other.getOperationAt(I)))
+     *          |   then result == true;
      */
     public boolean equals(Recipe other) {
+        // if there is a difference in the amount of ingredients or operations, return false
         if (getNbOfIngredients() != other.getNbOfIngredients()
                 || getNbOfOperations() != other.getNbOfOperations()) {
             return false;
         }
+        // iterate over the ingredients
         for (int i=0; i < getNbOfIngredients(); i++) {
             if (!getIngredientAt(i).equals(other.getIngredientAt(i))) {
                 return false;
             }
         }
+        // iterate over the operations
         for (int i=0; i < getNbOfOperations(); i++) {
-            if (!(getOperationAt(i) == other.getOperationAt(i))) {
+            if (!getOperationAt(i).equals(other.getOperationAt(i))) {
                 return false;
             }
         }
