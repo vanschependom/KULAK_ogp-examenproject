@@ -58,11 +58,4 @@ public class TemperatureDeviceTest {
         assertEquals(10, oven.getColdness());
         assertEquals(0, oven.getHotness());
     }
-
-    @Test
-    public void setTemperatureInvalid() {
-        assertThrows(NullPointerException.class, () -> {
-            oven.changeTemperatureTo(null);
-        });
-    }
 }

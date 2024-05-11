@@ -103,9 +103,9 @@ public class Laboratory extends StorageLocation {
 	 *         	| (index < 0) || (index > getNbItems()-1)
 	 */
 	@Basic
-	public Device getDeviceAt(int index) {
+	public <T extends Device> T getDeviceAt(int index) {
 		try {
-			return devices.get(index);
+			return (T) devices.get(index);
 		} catch (IndexOutOfBoundsException e) {
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
 		}
@@ -214,7 +214,7 @@ public class Laboratory extends StorageLocation {
 	 * 			The given type is not a legal type for this laboratory.
 	 * 			| !hasDeviceOfType(type)
 	 */
-	public Device getDeviceOfType(Class<? extends Device> type) throws IllegalArgumentException {
+	public <T extends Device> T getDeviceOfType(Class<T> type) throws IllegalArgumentException {
 		if (!hasDeviceOfType(type)) {
 			throw new IllegalArgumentException("The given type is not present in this laboratory!");
 		}
@@ -378,10 +378,18 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	index
 	 * 			The index of the ingredient to get.
-	 * @return 	TODO
+	 * @effect 	The ingredient is removed from the laboratory.
+	 * 			| removeAsIngredient(getIngredientAt(index))
+	 * @return 	A container with the ingredient at the given index.
+	 * 			| result.getContent().equals(getIngredientAt(index))
+	 * @throws	IndexOutOfBoundsException
+	 * 			The given index is not valid.
+	 * 			| index < 0 || index >= getNbOfIngredients()
 	 */
-	private IngredientContainer getAllOfIngredientAt(int index) {
-		// TODO check index
+	private IngredientContainer getAllOfIngredientAt(int index) throws IndexOutOfBoundsException {
+		if (index < 0 || index >= getNbOfIngredients()) {
+			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+		}
 		AlchemicIngredient ingredient = getIngredientAt(index);
 		removeAsIngredient(ingredient);
 		return new IngredientContainer(ingredient);
@@ -397,12 +405,29 @@ public class Laboratory extends StorageLocation {
 	 *          The amount to get.
 	 * @param   unit
 	 *          The unit of the amount.
+	 *
 	 * @return  TODO
+	 *
+	 * @throws	IndexOutOfBoundsException
+	 * 			The given index is not valid.
+	 * 			| index < 0 || index >= getNbOfIngredients()
+	 * @throws	IllegalArgumentException
+	 * 			The given amount is not strictly positive.
+	 * 			| amount <= 0
+	 * @throws	NullPointerException
+	 * 			The given unit is not effective.
+	 * 			| unit == null
 	 */
-	private IngredientContainer getAmountOfIngredientAt(int index, int amount, Unit unit) {
-		// TODO check index out of bounds
-		// 		check amount > 0
-		//		check unit != null
+	private IngredientContainer getAmountOfIngredientAt(int index, int amount, Unit unit) throws IndexOutOfBoundsException, IllegalArgumentException, NullPointerException {
+		if (index < 0 || index >= getNbOfIngredients()) {
+			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+		}
+		if (amount <= 0) {
+			throw new IllegalArgumentException("The amount must be strictly positive!");
+		}
+		if (unit == null) {
+			throw new NullPointerException("The unit is null!");
+		}
 		AlchemicIngredient ingredient = getIngredientAt(index);
 		double amountLeft = ingredient.getAmount() - amount*unit.getConversionFor(ingredient.getUnit());
 		if (amountLeft < 0) {
@@ -512,12 +537,16 @@ public class Laboratory extends StorageLocation {
 	 * @param 	container
 	 *          The container of which the contents should be added to the laboratory.
 	 *
-	 * @post	If there is another ingredient with the same (simple) name and there is a kettle, then use the kettle
-	 * 			to mix these two ingredient.
-	 * 			| TODO
-	 *
 	 * @effect	The ingredient in the container is set to its standard temperature.
-	 * 			| container = setToStandardTemperature(container)
+	 * 			| container = bringToStandardTemperature(container)
+	 * @effect	If there is another ingredient with the same (simple) name and there is a kettle, then use the kettle
+	 * 			to mix these two ingredient.
+	 * 			| if (hasIngredientWithSimpleName(container.getContent().getSimpleName()) && hasDeviceOfType(Kettle.class))
+	 * 			|	then getDeviceOfType(Kettle.class).addIngredients(container)
+	 * 			|		&& getDeviceOfType(Kettle.class).addIngredients(getAllOfIngredientAt(getIndexOfSimpleName(container.getContent().getSimpleName())))
+	 * 			|		&& getDeviceOfType(Kettle.class).executeOperation()
+	 * 			|		&& super.addIngredients(getDeviceOfType(Kettle.class).getResult())
+	 *
 	 *
 	 * @throws 	NullPointerException
 	 * 			The container is null.
@@ -541,12 +570,11 @@ public class Laboratory extends StorageLocation {
 		if (hasIngredientWithSimpleName(container.getContent().getSimpleName()) && !hasDeviceOfType(Kettle.class)) {
 			throw new IllegalStateException("There is already an ingredient with the same name in the lab, but there is no kettle in the lab!");
 		}
-		// set to standard temperature
-		container = setToStandardTemperature(container);
+		container = bringToStandardTemperature(container);
 		// mix with ingredients with same name
 		try {
 			int indexSameName = getIndexOfSimpleName(container.getContent().getSimpleName());
-			Device kettle = getDeviceOfType(Kettle.class);
+			Kettle kettle = getDeviceOfType(Kettle.class);
 			kettle.addIngredients(container);
 			kettle.addIngredients(getAllOfIngredientAt(indexSameName));
 			kettle.executeOperation();
@@ -566,14 +594,17 @@ public class Laboratory extends StorageLocation {
 	 * @return 	If the ingredient is warmer than its standard temperature and there is a cooling box then
 	 * 			use to cooling box to set the ingredient to its standard temperature.
 	 * 			| if (container.getContent().isHotterThanStandardTemperature() && hasDeviceOfType(CoolingBox.class))
-	 * 			| TODO
+	 * 			| 	then result.getTemperature()[0] == container.getContent().getStandardTemperature()[0]
+	 * 			|			&& result.getTemperature()[1] == container.getContent().getStandardTemperature()[1]
 	 * @return	If the ingredient is colder than its standard temperature and there is an oven then use
 	 * 			the oven to set the ingredient to its standard temperature.
 	 * 			| if (container.getContent().isColderThanStandardTemperature() && hasDeviceOfType(Oven.class))
-	 * 			| TODO
+	 * 			| 	then result.getTemperature()[0] == container.getContent().getStandardTemperature()[0]
+	 * 			|		&& result.getTemperature()[1] == container.getContent().getStandardTemperature()[1]
 	 * @return 	If the ingredient is already at standard temperature, then no modifications are made.
-	 * 			| if (container.getContent().getTemperatureObject() == container.getContent().getStandardTemperatureObject())
-	 * 			| then result.equals(container)
+	 * 			| if (container.getContent().getTemperature()[0] == container.getContent().getStandardTemperature()[0]
+	 * 			|		&& container.getContent().getTemperature()[1] == container.getContent().getStandardTemperature()[1])
+	 * 			| 	then result == container
 	 *
 	 * @throws 	IllegalStateException
 	 * 			The content needs to be heated and there isn't an oven.
@@ -583,7 +614,7 @@ public class Laboratory extends StorageLocation {
 	 * 			| container.getContent().isColderThanStandardTemperature() && !hasDeviceOfType(Oven.class)
 	 */
 	@Model
-	private IngredientContainer setToStandardTemperature(IngredientContainer container) throws IllegalStateException {
+	private IngredientContainer bringToStandardTemperature(IngredientContainer container) throws IllegalStateException {
 		if (container.getContent().isHotterThanStandardTemperature() && !hasDeviceOfType(CoolingBox.class)) {
 			throw new IllegalStateException("The content is hotter than standard temperature, but there is no cooling box in the lab!");
 		} else if (container.getContent().isColderThanStandardTemperature() && !hasDeviceOfType(Oven.class)) {
@@ -591,15 +622,15 @@ public class Laboratory extends StorageLocation {
 		}
 		if (container.getContent().isHotterThanStandardTemperature()) {
 			// too hot -> cool
-			CoolingBox coolingBox = (CoolingBox) getDeviceOfType(CoolingBox.class);
-			coolingBox.changeTemperatureTo(container.getContent().getType().getStandardTemperatureObject()); 	// standard temperature of the ingredient type
+			CoolingBox coolingBox = getDeviceOfType(CoolingBox.class);
+			coolingBox.changeTemperatureTo(container.getContent().getType().getStandardTemperature()); 	// standard temperature of the ingredient type
 			coolingBox.addIngredients(container);
 			coolingBox.executeOperation();						// cooling box is exact!
 			container = coolingBox.getResult();
 		} else if (container.getContent().isColderThanStandardTemperature()) {
 			// too cold -> heat
-			Oven oven = (Oven) getDeviceOfType(Oven.class);
-			oven.changeTemperatureTo(container.getContent().getType().getStandardTemperatureObject()); 		// standard temperature of the ingredient type
+			Oven oven = getDeviceOfType(Oven.class);
+			oven.changeTemperatureTo(container.getContent().getType().getStandardTemperature()); 		// standard temperature of the ingredient type
 			oven.addIngredients(container);
 			// oven is not exact! +- 5 degrees
 			do {

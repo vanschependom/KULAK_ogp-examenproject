@@ -135,13 +135,29 @@ public abstract class TemperatureDevice extends Device {
      *
      * @param   temperature
      *          The new temperature for the device.
-     * @effect  The current temperature of the device is terminated and the new temperature is set.
-     *          | getTemperature().terminate()
-     *          | && setTemperature(temperature)
+     * @effect  The new temperature is set, if the given temperature is valid.
+     *          | if (temperature != null) && (temperature.length == 2)
+     *          | then setTemperature(new Temperature(temperature))
      */
-    public void changeTemperatureTo(Temperature temperature) throws NullPointerException {
-        setTemperature(temperature);
-        getTemperature().terminate();
+    public void changeTemperatureTo(long[] temperature) {
+        if (temperature != null && temperature.length == 2) {
+            setTemperature(new Temperature(temperature));
+        }
+    }
+
+    /**
+     * A method to change the temperature of a temperature device.
+     *
+     * @param   temperature
+     *          The new temperature for the device.
+     * @effect  The new temperature is set, if the given temperature is valid.
+     *          | if (temperature != null)
+     *          |   then setTemperature(temperature)
+     */
+    public void changeTemperatureTo(Temperature temperature) {
+        if (temperature != null) {
+            setTemperature(temperature);
+        }
     }
 
 
