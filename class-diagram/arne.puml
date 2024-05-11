@@ -70,7 +70,7 @@ __methods__
  + removeIngredient(AlchemicIngredient):
  + getNbOfIngredients(): int
  + getIngredientAt(int): AlchemicIngredient
- + getIndexOf(AlchemicIngredient): int
+ + getIndexOfIngredient(AlchemicIngredient): int
 }
 
 class IngredientType {

@@ -31,9 +31,12 @@ public abstract class StorageLocation {
      *
      * @post    The new storage location has no ingredients.
      *          | new.getNbOfIngredients() == 0
+     * @post    The new storage location is not yet terminated.
+     *          | !new.isTerminated()
      */
+    @Raw
     public StorageLocation() {
-        //
+        super();
     }
 
 
@@ -57,7 +60,7 @@ public abstract class StorageLocation {
      *          | for each index in 0..getNbOfIngredients()-1:
      *          |   for each otherIndex in 0..getNbOfIngredients()-1:
      *          |       if index != otherIndex
-     *          |           then !getIngredientAt(index).equals(getIngredientAt(otherIndex)
+     *          |           then !getIngredientAt(index).equals(getIngredientAt(otherIndex))
      */
     private final ArrayList<AlchemicIngredient> ingredients = new ArrayList<>();
 
@@ -75,15 +78,15 @@ public abstract class StorageLocation {
      * A method for checking if the ingredients in a storage location are valid.
      *
      * @return  False if there is an ingredient that is not valid
-     *          | if ( for some ingredient in ingredients:
-     *          |       !canHaveAsIngredient(ingredient) )
+     *          | if ( for I in 0..getNbOfIngredients()-1:
+     *          |       !canHaveAsIngredient(getIngredientAt(I)) )
      *          |   then result == false
      *
      * @note    We don't close the specification yet!
      */
     public boolean hasProperIngredients() {
-        for (AlchemicIngredient ingredient : ingredients) {
-            if (!canHaveAsIngredient(ingredient)) {
+        for (int i=0; i<getNbOfIngredients(); i++) {
+            if (!canHaveAsIngredient(getIngredientAt(i))) {
                 return false;
             }
         }
@@ -95,7 +98,6 @@ public abstract class StorageLocation {
      *
      * @param   ingredient
      *          The ingredient to check
-     *
      * @return  True if and only if the ingredient is effective,
      *          not terminated and not already in the storage location
      *          | result == (ingredient != null
@@ -161,7 +163,7 @@ public abstract class StorageLocation {
     }
 
     /**
-     * Return the number of ingredients in container.
+     * Return the number of ingredients in this storage location.
      */
     @Basic
     public int getNbOfIngredients() {
@@ -204,17 +206,21 @@ public abstract class StorageLocation {
      *          The ingredient to remove.
      *
      * @effect  The ingredient is removed from the storage location.
-     *          | removeIngredientAt(getIndexOf(ingredient))
+     *          | removeIngredientAt(getIndexOfIngredient(ingredient))
      *
      * @throws  IngredientNotPresentException
      *          The ingredient is not present in the storage location.
      *          | !hasAsIngredient(ingredient)
+     * @throws  NullPointerException
+     *          The ingredient is null.
      */
-    protected void removeAsIngredient(AlchemicIngredient ingredient) throws IngredientNotPresentException {
+    protected void removeAsIngredient(AlchemicIngredient ingredient) throws IngredientNotPresentException, NullPointerException {
         try {
-            removeIngredientAt(getIndexOf(ingredient));
+            removeIngredientAt(getIndexOfIngredient(ingredient));
         } catch (IngredientNotPresentException e) {
             throw new IngredientNotPresentException();
+        } catch (NullPointerException e) {
+            throw new NullPointerException("Ingredient is null!");
         }
     }
 
@@ -235,7 +241,7 @@ public abstract class StorageLocation {
      *          The given ingredient is not present in the storage location.
      *          | !hasAsIngredient(ingredient)
      */
-    public int getIndexOf(AlchemicIngredient ingredient) throws NullPointerException, IngredientNotPresentException {
+    public int getIndexOfIngredient(AlchemicIngredient ingredient) throws NullPointerException, IngredientNotPresentException {
         if (ingredient == null) {
             throw new NullPointerException("Ingredient is null!");
         }
@@ -304,11 +310,11 @@ public abstract class StorageLocation {
      *          |   then new.getNbOfIngredients() == getNbOfIngredients() &&
      *          |        for some I in 0..getNbOfIngredients()-1:
      *          |           if getIngredientAt(I).equals(container.getContent())
-     *          |               then removeAsIngredient(getIngredientAt(I)) &&
+     *          |               then removeAsIngredient( getIngredientAt(I)) &&
      *          |                    addAsIngredient( new AlchemicIngredient(
      *          |                       getIngredientAt(I).getSpoonAmount() + container.getContent().getSpoonAmount(),
      *          |                       Unit.SPOON,
-     *          |                       new Temperature(getIngredientAt(I).getColdness(), getIngredientAt(I).getHotness()),
+     *          |                       new Temperature(getIngredientAt(I).getTemperature()),
      *          |                       getIngredientAt(I).getType(),
      *          |                       getIngredientAt(I).getState()
      *          |                   ) )
@@ -334,18 +340,18 @@ public abstract class StorageLocation {
         }
         try {
             // if the ingredient is already present, combine them
-            AlchemicIngredient alreadyInLocation = getIngredientAt(getIndexOf(container.getContent()));
+            AlchemicIngredient alreadyInLocation = getIngredientAt(getIndexOfIngredient(container.getContent()));
             AlchemicIngredient replacement = new AlchemicIngredient(
                     (int) (alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount()),
                     Unit.SPOON,
-                    new Temperature(alreadyInLocation.getColdness(), alreadyInLocation.getHotness()),
+                    new Temperature(alreadyInLocation.getTemperature()),
                     alreadyInLocation.getType(),
                     alreadyInLocation.getState());
             // delete the old ingredient
             removeAsIngredient(alreadyInLocation);
             // add the replacement
             addAsIngredient(replacement);
-            // terminate the old ingredient (and thus the temperature)
+            // terminate the old ingredient
             alreadyInLocation.terminate();
         } catch (IngredientNotPresentException e) {
             addAsIngredient(container.getContent());
@@ -354,6 +360,43 @@ public abstract class StorageLocation {
         container.getContent().setContainerized(false);
         // terminate the container
         container.terminate();
+    }
+
+
+
+    /**********************************************************
+     * DESTRUCTION
+     **********************************************************/
+
+    /**
+     * A variable for keeping track of whether the storage location is terminated.
+     */
+    private boolean isTerminated = false;
+
+    /**
+     * Return whether the storage location is terminated.
+     */
+    @Basic @Raw
+    public boolean isTerminated() {
+        return isTerminated;
+    }
+
+    /**
+     * A method for terminating this storage location.
+     *
+     * @post    If the storage location is not already terminated,
+     *          the storage location becomes terminated
+     *          | if (!isTerminated())
+     *          |   then new.isTerminated() == true
+     * @throws  IllegalStateException
+     *          The storage location is already terminated
+     *          | isTerminated()
+     */
+    public void terminate() {
+        if (isTerminated()) {
+            throw new IllegalStateException("Already terminated!");
+        }
+    	isTerminated = true;
     }
 
 }

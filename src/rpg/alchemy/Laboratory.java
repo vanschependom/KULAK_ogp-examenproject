@@ -236,8 +236,11 @@ public class Laboratory extends StorageLocation {
 	 * 			| result == (device != null)
 	 * 			|			&& (!hasTwiceSameTypeAs(device))
 	 * 			|			&& !device.isTerminated()
+	 *
+	 * @note 	The device can be raw, since this method is called from the setLaboratory() method of device,
+	 * 			which is in turn called from the constructor of device.
 	 */
-	public boolean canHaveAsDevice(Device device) {
+	public boolean canHaveAsDevice(@Raw Device device) {
 		return (device != null)
 				&& (!hasTwiceSameTypeAs(device))
 				&& !device.isTerminated();
@@ -306,7 +309,7 @@ public class Laboratory extends StorageLocation {
 	 * 			The device to remove
 	 *
 	 * @effect 	The given item is removed from the position it was registered at.
-	 *         	| removeItemAt(getIndexOf(item))
+	 *         	| removeItemAt(getIndexOfIngredient(item))
 	 *
 	 * @throws 	IllegalArgumentException
 	 *         	The given device is not in the laboratory

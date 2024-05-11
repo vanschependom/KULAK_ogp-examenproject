@@ -61,6 +61,8 @@ public class DeviceTest {
 		mixedLiquid = new AlchemicIngredient(10, Unit.VIAL, liquidTypeMixed);
 	}
 
+
+
 	/**********************************************************
 	 * CONSTRUCTORS
 	 **********************************************************/
@@ -93,6 +95,8 @@ public class DeviceTest {
 		});
 	}
 
+
+
 	/**********************************************************
 	 * INGREDIENTS
 	 **********************************************************/
@@ -117,7 +121,7 @@ public class DeviceTest {
 	public void testAddAsIngredient_illegal_maxCapacity() {
 		oven.addAsIngredient(powder);
 		assertThrows(IllegalStateException.class, () -> {
-			oven.addAsIngredient(powder);
+			oven.addAsIngredient(heatedPowder);
 		});
 	}
 
@@ -128,6 +132,8 @@ public class DeviceTest {
 			kettle.addAsIngredient(liquid);
 		});
 	}
+
+
 
 	/**********************************************************
 	 * LABORATORY
@@ -140,8 +146,10 @@ public class DeviceTest {
 		// The new lab is set to lab of the device
 		assertEquals(oven.getLaboratory(), newLab);
 		// The device is removed from old lab
+		assertFalse(lab.hasAsDevice(oven));
 		assertFalse(lab.hasDeviceOfType(Oven.class));
 		// The device is added to the new lab
+		assertTrue(newLab.hasAsDevice(oven));
 		assertTrue(newLab.hasDeviceOfType(Oven.class));
 	}
 
@@ -162,7 +170,7 @@ public class DeviceTest {
 	}
 
 	@Test
-	public void testMove_illegal_alreadySameDeviceInLab() {
+	public void testMove_illegal_sameLab() {
 		assertThrows(IllegalArgumentException.class, () -> {
 			oven.move(lab);
 		});
@@ -173,9 +181,14 @@ public class DeviceTest {
 		Laboratory newLab = new Laboratory(2);
 		Oven newOven = new Oven(newLab, new Temperature());
 		assertThrows(IllegalArgumentException.class, () -> {
-			newOven.move(lab);
+			newOven.move(lab); // an oven is already present in the lab
 		});
 	}
+
+	/**
+	 * @note	The move(.) method implicitly tests the setLaboratory(.) method.
+	 * 			--> setLaboratory(.) is a protected method, so we can't test it directly.
+ 	 */
 
 	@Test
 	public void testCanHaveAsLaboratory_legal() {
@@ -186,8 +199,6 @@ public class DeviceTest {
 
 	@Test
 	public void testCanHaveAsLaboratory_illegal_null() {
-		Laboratory newLab = new Laboratory(2);
-		oven.move(newLab);
 		assertFalse(oven.canHaveAsLaboratory(null));
 	}
 
@@ -211,7 +222,12 @@ public class DeviceTest {
 	public void testHasProperLaboratory_legal() {
 		assertTrue(oven.hasProperLaboratory());
 	}
-	// illegal cases van hasProperLaboratory testen gaat niet met public methodes
+
+	/**
+	 * @note We can't test illegal cases for hasProperLaboratory(.).
+	 */
+
+
 
 	/**********************************************************
 	 * OPERATION EXECUTION (we can test the general exceptions here)
@@ -235,6 +251,8 @@ public class DeviceTest {
 		});
 	}
 
+
+
 	/**********************************************************
 	 * DESTRUCTION
 	 **********************************************************/
@@ -247,7 +265,7 @@ public class DeviceTest {
 		// lab is set to null
 		assertNull(oven.getLaboratory());
 		// lab will not have device anymore
-		assertFalse(lab.hasDeviceOfType(Oven.class));
+		assertFalse(lab.hasAsDevice(oven));
 	}
 
 	@Test
@@ -258,9 +276,6 @@ public class DeviceTest {
 			oven.terminate();
 		});
 	}
-
-	// TODO test alle methodes
-	// kijk altijd lijn per lijn naar alle specificatie en test die ook op die manier
 
 }
 

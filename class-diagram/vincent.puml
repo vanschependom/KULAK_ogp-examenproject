@@ -145,7 +145,7 @@ abstract class StorageLocation {
 - storeIngredientsFromContainer(IngredientContainer) : void
 + getNbOfIngredients() : int
 + getIngredientAt(int) : AlchemicIngredient
-+ getIndexOf(AlchemicIngredient) : int
++ getIndexOfIngredient(AlchemicIngredient) : int
 ..class invariants..
 @invar hasProperIngredients()
 }
