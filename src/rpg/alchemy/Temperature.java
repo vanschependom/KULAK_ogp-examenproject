@@ -440,8 +440,8 @@ public class Temperature {
 	 */
 	protected void mul(double delta) {
 		if (delta > 0) {
-			setColdness((long)(delta * getColdness()));
-			setHotness((long)(delta * getHotness()));
+			setColdness((long) (delta * getColdness()));
+			setHotness((long) (delta * getHotness()));
 		}
 	}
 

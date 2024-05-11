@@ -115,9 +115,8 @@ public class Kettle extends Device {
 		return smallestDifferenceTemperature;
 	}
 
-	/**
-	 * Return the weighted average temperature of all the ingredients inside the kettle.
-	 */
+
+	/*
 	@Model @Basic
 	private Temperature getNewTemperature() {
 		Temperature totalTemperature = new Temperature(0, 0);
@@ -128,6 +127,38 @@ public class Kettle extends Device {
 		}
 		totalTemperature.mul(1/getNewSpoonAmount());
 		return totalTemperature;
+	}
+	 */
+
+	/**
+	 * Return the weighted average temperature of all the ingredients inside the kettle.
+	 *
+	 * @note 	The coldness and the hotness are calculated separately because otherwise in
+	 * 			the Temperature class there is a lot of rounding to integer values.
+	 */
+	@Model
+	private Temperature getNewTemperature() {
+		double totalColdness = 0;
+		double totalHotness = 0;
+		for (int i = 0; i < getNbOfIngredients(); i++) {
+			double spoonAmount = getIngredientAt(i).getSpoonAmount();
+			double currentColdness = getIngredientAt(i).getColdness() * spoonAmount;
+			double currentHotness = getIngredientAt(i).getHotness() * spoonAmount;
+			totalColdness += currentColdness;
+			totalHotness += currentHotness;
+		}
+		double difference = (totalHotness - totalColdness) / getNewSpoonAmount();
+		if (difference > Temperature.getUpperbound()) {
+			return new Temperature(0, Temperature.getUpperbound());
+		} else if (difference > 0) {
+			return new Temperature(0, (long) difference);
+		} else if (difference < -Temperature.getUpperbound()) {
+			return new Temperature(Temperature.getUpperbound(), 0);
+		} else if (difference < 0) {
+			return new Temperature((long) Math.abs(difference), 0);
+		} else {
+			return new Temperature(0,0);
+		}
 	}
 
 

@@ -103,10 +103,12 @@ public class KettleTest {
         assertEquals(State.LIQUID, result.getState());
         assertEquals(0,result.getType().getStandardTemperatureObject().getColdness());
         assertEquals(15, result.getType().getStandardTemperatureObject().getHotness());
-        // hotness is 8 to 9
-        // coldness is 190
-        // TODO zorg ervoor dat onderstaande werkt
-//        assertTrue(result.getColdness() == 181 || result.getColdness() == 182);
+        // total hotness = (tussen 195 en 205) * 10 = tussen 1950 en 2050
+        // total coldness = 200 * 42 * 5 = 42000
+        // lower bound = (42000 - 2050) / (42 * 5 + 10) = 181.59
+        // average temp = (42000 - 2000) / (42 * 5 + 10) = 181.81
+        // upperbound = (42000 - 1950) / (42 * 5 + 10) = 182.04
+        assertTrue(result.getColdness() == 181 || result.getColdness() == 182);
         assertEquals(0, result.getHotness());
         assertFalse(result.getType().isMixed());
     }
