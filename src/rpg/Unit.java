@@ -194,16 +194,17 @@ public enum Unit {
 	}
 
 	/**
-	 * A method for getting the maximum unit for a container.
+	 * A method for getting the maximum unit a container with contents of the given state can have.
 	 *
 	 * @param 	state
 	 * 			The state of the container.
-	 *
 	 * @pre 	The given state must be effective.
 	 * 			| state != null
-	 *
-	 * @return	The maximum unit (with biggest spoon equivalent) for a container.
-	 * 			TODO
+	 * @return	The maximum unit a container with contents of the given state can have.
+	 * 			| for each unit in Unit.values():
+	 * 			|	if (unit.isAllowedForContainer()
+	 * 			|		&& unit.hasAsAllowedState(state))
+	 * 			|			then unit.getSpoonEquivalent() < result.getSpoonEquivalent()
 	 */
 	public static Unit getMaxUnitForContainer(State state) {
 		Unit maxUnit = null;
@@ -218,30 +219,31 @@ public enum Unit {
 	}
 
 	/**
-	 * A method for getting the minimum unit for a result container.
+	 * A method for getting the minimum unit for a container to be able
+	 * to have the given ingredient as its content.
 	 *
-	 * @param 	ingr
+	 * @param 	ingredient
 	 * 			The alchemic ingredient that needs to be in a container.
-	 *
 	 * @pre 	The given ingredient must be effective
-	 * 			| ingr != null
-	 *
+	 * 			| ingredient != null
+	 * @pre 	The spoonAmount of the given ingredient must be less than or equal to the spoon equivalent
+	 * 			of the maximum unit for a container.
+	 * 			| ingredient.getSpoonAmount() <= getMaxUnitForContainer(ingredient.getState()).getSpoonEquivalent()
 	 * @return	The minimum unit for a container for the result.
-	 * 			TODO
+	 * 			| for each unit in Unit.values():
+	 * 			|	if (unit.isAllowedForContainer()
+	 * 			|		&& unit.hasAsAllowedState(ingredient.getState())
+	 * 			| 			then unit.getSpoonEquivalent() > result.getSpoonEquivalent()
 	 */
-	public static Unit getMinUnitForContainerWith(AlchemicIngredient ingr) {
-		Unit minUnit = getMaxUnitForContainer(ingr.getState());
+	public static Unit getMinUnitForContainerWith(AlchemicIngredient ingredient) {
+		Unit minUnit = getMaxUnitForContainer(ingredient.getState());
 		for (Unit u : Unit.values()) {
 			if (u.isAllowedForContainer()
-					&& u.hasAsAllowedState(ingr.getState())
+					&& u.hasAsAllowedState(ingredient.getState())
 					&& u.getSpoonEquivalent() < minUnit.getSpoonEquivalent()
-					&& u.getSpoonEquivalent() >= ingr.getSpoonAmount() ) {
+					&& u.getSpoonEquivalent() >= ingredient.getSpoonAmount() ) {
 				minUnit = u;
 			}
-		}
-		if (minUnit.getSpoonEquivalent() < ingr.getSpoonAmount()) {
-			throw new IllegalArgumentException("The given result is too large for any container!");
-			// TODO deze class is nominaal, dus geen expection smijten ???
 		}
 		return minUnit;
 	}
