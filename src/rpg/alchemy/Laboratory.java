@@ -506,40 +506,43 @@ public class Laboratory extends StorageLocation {
 		return getStoredAmount() + container.getContent().getStoreroomAmount() > getCapacity();
 	}
 
+	/**
+	 * A method to add ingredients to a laboratory given a container.
+	 *
+	 * @param 	container
+	 *          The container of which the contents should be added to the laboratory.
+	 *
+	 * @post	If there is another ingredient with the same (simple) name and there is a kettle, then use the kettle
+	 * 			to mix these two ingredient.
+	 * 			| TODO
+	 *
+	 * @effect	The ingredient in the container is set to its standard temperature.
+	 * 			| container = setToStandardTemperature(container)
+	 *
+	 * @throws 	NullPointerException
+	 * 			The container is null.
+	 * 			| container == null
+	 * @throws 	IllegalArgumentException
+	 * 			The container exceeds the capacity.
+	 * 			| exceedsCapacity(container)
+	 * @throws 	IllegalStateException
+	 * 			The content needs to be mixed with another ingredient with the same name but there isn't a kettle.
+	 * 			| hasIngredientWithSimpleName(container.getContent().getSimpleName()) && !hasDeviceOfType(Kettle.class)
+	 */
 	@Override
 	public void addIngredients(IngredientContainer container) throws NullPointerException, IllegalArgumentException, IllegalStateException {
+		// throw exceptions
 		if (container == null) {
 			throw new NullPointerException("The container is null!");
 		}
 		if (exceedsCapacity(container)) {
 			throw new IllegalArgumentException("The content of the container is too large to fit inside this lab!");
 		}
-		if (container.getContent().isHotterThanStandardTemperature() && !hasDeviceOfType(CoolingBox.class)) {
-				throw new IllegalStateException("The content is hotter than standard temperature, but there is no cooling box in the lab!");
-		} else if (container.getContent().isColderThanStandardTemperature() && !hasDeviceOfType(Oven.class)) {
-				throw new IllegalStateException("The content is colder than standard temperature, but there is no oven in the lab!");
-		}
 		if (hasIngredientWithSimpleName(container.getContent().getSimpleName()) && !hasDeviceOfType(Kettle.class)) {
 			throw new IllegalStateException("There is already an ingredient with the same name in the lab, but there is no kettle in the lab!");
 		}
-		if (container.getContent().isHotterThanStandardTemperature()) {
-			// warmer -> koel af
-			CoolingBox coolingBox = (CoolingBox) getDeviceOfType(CoolingBox.class);
-			coolingBox.changeTemperatureTo(new Temperature()); 	// standard temperature
-			coolingBox.addIngredients(container);
-			coolingBox.executeOperation();						// cooling box is exact!
-			container = coolingBox.getResult();
-		} else if (container.getContent().isColderThanStandardTemperature()) {
-			// kouder -> warm op
-			Oven oven = (Oven) getDeviceOfType(Oven.class);
-			oven.changeTemperatureTo(new Temperature()); 		// standard temperature
-			oven.addIngredients(container);
-			// oven is not exact! +- 5 degrees
-			do {
-				oven.executeOperation();
-			} while (oven.getIngredientAt(0).isColderThanStandardTemperature() || oven.getIngredientAt(0).isHotterThanStandardTemperature());
-			container = oven.getResult();
-		}
+		// set to standard temperature
+		container = setToStandardTemperature(container);
 		// mix with ingredients with same name
 		try {
 			int indexSameName = getIndexOfSimpleName(container.getContent().getSimpleName());
@@ -554,5 +557,57 @@ public class Laboratory extends StorageLocation {
 		super.addIngredients(container);
 	}
 
+	/**
+	 * A help method to set the ingredient of a container to its standard temperature.
+	 *
+	 * @param 	container
+	 * 			The container of which the ingredient will be set to its standard temperature.
+	 *
+	 * @return 	If the ingredient is warmer than its standard temperature and there is a cooling box then
+	 * 			use to cooling box to set the ingredient to its standard temperature.
+	 * 			| if (container.getContent().isHotterThanStandardTemperature() && hasDeviceOfType(CoolingBox.class))
+	 * 			| TODO
+	 * @return	If the ingredient is colder than its standard temperature and there is an oven then use
+	 * 			the oven to set the ingredient to its standard temperature.
+	 * 			| if (container.getContent().isColderThanStandardTemperature() && hasDeviceOfType(Oven.class))
+	 * 			| TODO
+	 * @return 	If the ingredient is already at standard temperature, then no modifications are made.
+	 * 			| if (container.getContent().getTemperatureObject() == container.getContent().getStandardTemperatureObject())
+	 * 			| then result.equals(container)
+	 *
+	 * @throws 	IllegalStateException
+	 * 			The content needs to be heated and there isn't an oven.
+	 * 			| container.getContent().isHotterThanStandardTemperature() && !hasDeviceOfType(CoolingBox.class)
+	 * @throws 	IllegalStateException
+	 * 			The content needs to be cooled but there isn't a cooling box.
+	 * 			| container.getContent().isColderThanStandardTemperature() && !hasDeviceOfType(Oven.class)
+	 */
+	@Model
+	private IngredientContainer setToStandardTemperature(IngredientContainer container) throws IllegalStateException {
+		if (container.getContent().isHotterThanStandardTemperature() && !hasDeviceOfType(CoolingBox.class)) {
+			throw new IllegalStateException("The content is hotter than standard temperature, but there is no cooling box in the lab!");
+		} else if (container.getContent().isColderThanStandardTemperature() && !hasDeviceOfType(Oven.class)) {
+			throw new IllegalStateException("The content is colder than standard temperature, but there is no oven in the lab!");
+		}
+		if (container.getContent().isHotterThanStandardTemperature()) {
+			// too hot -> cool
+			CoolingBox coolingBox = (CoolingBox) getDeviceOfType(CoolingBox.class);
+			coolingBox.changeTemperatureTo(container.getContent().getType().getStandardTemperatureObject()); 	// standard temperature of the ingredient type
+			coolingBox.addIngredients(container);
+			coolingBox.executeOperation();						// cooling box is exact!
+			container = coolingBox.getResult();
+		} else if (container.getContent().isColderThanStandardTemperature()) {
+			// too cold -> heat
+			Oven oven = (Oven) getDeviceOfType(Oven.class);
+			oven.changeTemperatureTo(container.getContent().getType().getStandardTemperatureObject()); 		// standard temperature of the ingredient type
+			oven.addIngredients(container);
+			// oven is not exact! +- 5 degrees
+			do {
+				oven.executeOperation();
+			} while (oven.getIngredientAt(0).isColderThanStandardTemperature() || oven.getIngredientAt(0).isHotterThanStandardTemperature());
+			container = oven.getResult();
+		}
+		return container;
+	}
 
 }
