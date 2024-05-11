@@ -51,7 +51,7 @@ public enum Unit {
 	/**
 	 * A boolean to check if the unit is allowed to be the unit for a container.
 	 */
-	private final boolean allowedForContainer;
+	private final boolean isAllowedForContainer;
 
 
 
@@ -66,7 +66,7 @@ public enum Unit {
 	 *			The spoon equivalent value of the new unit.
 	 * @param 	allowedStates
 	 *			The list of allowed states which the new unit can be used for.
-	 * @param 	allowedForContainer
+	 * @param 	isAllowedForContainer
 	 * 			A boolean to check if the unit is allowed to be the unit for a container.
 	 *
 	 * @pre		The given spoon equivalent must be a positive number.
@@ -77,18 +77,18 @@ public enum Unit {
 	 * 			|	state != null
 	 *
 	 * @post	The spoon equivalent of the new unit is set to the given spoon equivalent.
-	 * 			| new.getSpoonEquivalent().equals(spoonEquivalent)
+	 * 			| new.getSpoonEquivalent() == spoonEquivalent
 	 * @post	The list of allowed states of the new unit is set to the given list of allowed states.
-	 * 			| new.getAllowedStates().equals(allowedStates)
+	 * 			| new.getAllowedStates() == allowedStates
 	 * @post	The new unit is allowed to be the unit for a container if
-	 * 			and only if the boolean allowedForContainer is true.
-	 * 			| new.isAllowedForContainer() == allowedForContainer
+	 * 			and only if the boolean isAllowedForContainer is true.
+	 * 			| new.isAllowedForContainer() == isAllowedForContainer
 	 */
 	@Model
-	private Unit(double spoonEquivalent, State[] allowedStates, boolean allowedForContainer) {
+	private Unit(double spoonEquivalent, State[] allowedStates, boolean isAllowedForContainer) {
 		this.spoonEquivalent = spoonEquivalent;
 		this.allowedStates = allowedStates;
-		this.allowedForContainer = allowedForContainer;
+		this.isAllowedForContainer = isAllowedForContainer;
 	}
 
 
@@ -105,8 +105,13 @@ public enum Unit {
 		return spoonEquivalent;
 	}
 
+	/**
+	 * A method for returning the equivalent of this unit in storerooms.
+	 * @return	The equivalent of this unit in storerooms.
+	 * 			| result == getConversionFor(Unit.STOREROOM)
+	 */
 	public double getStoreroomEquivalent() {
-		return getConversionFor(STOREROOM);
+		return getConversionFor(Unit.STOREROOM);
 	}
 
 	/**
@@ -120,8 +125,7 @@ public enum Unit {
 	/**
 	 * Return the private list of allowed states of this unit.
 	 */
-	@Model
-	private State[] getPrivateAllowedStates() {
+	private State[] getAllowedStatesObject() {
 		return allowedStates;
 	}
 
@@ -135,7 +139,7 @@ public enum Unit {
 	 * 			|	allowedState == state )
 	 */
 	public boolean hasAsAllowedState(State state) {
-		for (State allowedState : getPrivateAllowedStates()) {
+		for (State allowedState : getAllowedStatesObject()) {
 			if (state == allowedState) {
 				return true;
 			}
@@ -154,14 +158,14 @@ public enum Unit {
 	 * @return	True if and only if the given effective unit has an allowed state which is also an allowed
 	 *			state of this unit.
 	 * 			| if ( (unit != null)
-	 * 			|	then result == (for some allowedState in getPrivateAllowedStates():
+	 * 			|	then result == (for some allowedState in getAllowedStates():
 	 * 			|			unit.hasAsAllowedState(allowedState))
 	 */
 	public boolean conversionAllowed(Unit unit) {
 		if (unit == null) {
 			return false;
 		}
-		for (State allowedState : getPrivateAllowedStates()) {
+		for (State allowedState : getAllowedStatesObject()) {
 			if (unit.hasAsAllowedState(allowedState)) {
 				return true;
 			}
@@ -174,10 +178,10 @@ public enum Unit {
 	 *
 	 * @param 	unit
 	 * 			The unit you want to convert to.
-	 *
+	 * @pre 	The given unit must be effective.
+	 * 			| unit != null
 	 * @pre		The conversion must be allowed.
 	 * 			| conversionAllowed(unit)
-	 *
 	 * @return 	The conversion factor between this unit and the given unit.
 	 * 			| result == this.getSpoonEquivalent() / unit.getSpoonEquivalent()
 	 */
@@ -188,9 +192,9 @@ public enum Unit {
 	/**
 	 * Return whether this unit is allowed to be the unit for a container.
 	 */
-	@Basic
+	@Basic @Immutable
 	public boolean isAllowedForContainer() {
-		return allowedForContainer;
+		return isAllowedForContainer;
 	}
 
 	/**
@@ -205,8 +209,10 @@ public enum Unit {
 	 * 			|	if (unit.isAllowedForContainer()
 	 * 			|		&& unit.hasAsAllowedState(state))
 	 * 			|			then unit.getSpoonEquivalent() < result.getSpoonEquivalent()
+	 * @note	Called from getResult(), which is Raw.
 	 */
-	public static Unit getMaxUnitForContainer(State state) {
+	@Raw
+	public static Unit getMaxUnitForContainerWithState(State state) {
 		Unit maxUnit = null;
 		for (Unit unit : Unit.values()) {
 			if (unit.isAllowedForContainer() && unit.hasAsAllowedState(state)) {
@@ -228,15 +234,15 @@ public enum Unit {
 	 * 			| ingredient != null
 	 * @pre 	The spoonAmount of the given ingredient must be less than or equal to the spoon equivalent
 	 * 			of the maximum unit for a container.
-	 * 			| ingredient.getSpoonAmount() <= getMaxUnitForContainer(ingredient.getState()).getSpoonEquivalent()
+	 * 			| ingredient.getSpoonAmount() <= getMaxUnitForContainerWithState(ingredient.getState()).getSpoonEquivalent()
 	 * @return	The minimum unit for a container for the result.
 	 * 			| for each unit in Unit.values():
 	 * 			|	if (unit.isAllowedForContainer()
 	 * 			|		&& unit.hasAsAllowedState(ingredient.getState())
 	 * 			| 			then unit.getSpoonEquivalent() > result.getSpoonEquivalent()
 	 */
-	public static Unit getMinUnitForContainerWith(AlchemicIngredient ingredient) {
-		Unit minUnit = getMaxUnitForContainer(ingredient.getState());
+	public static Unit getMinUnitForContainerWithIngredient(AlchemicIngredient ingredient) {
+		Unit minUnit = getMaxUnitForContainerWithState(ingredient.getState());
 		for (Unit u : Unit.values()) {
 			if (u.isAllowedForContainer()
 					&& u.hasAsAllowedState(ingredient.getState())

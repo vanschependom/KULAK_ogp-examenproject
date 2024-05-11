@@ -356,8 +356,9 @@ public abstract class StorageLocation {
         } catch (IngredientNotPresentException e) {
             addAsIngredient(container.getContent());
         }
-        // set containerized to false
-        container.getContent().setContainerized(false);
+        // TODO verwijder onderstaande code
+//        // set containerized to false
+//        container.getContent().setContainerized(false);
         // terminate the container
         container.terminate();
     }

@@ -58,10 +58,11 @@ public class AlchemicIngredient {
      * @post    If the given temperature is a valid temperature, the temperature is set to
      *          the given temperature.
      *          | if (isValidTemperature(temperature))
-     *          | then new.getTemperatureObject() == temperature
+     *          |   then new.getTemperatureObject() == temperature
+     *          TODO navragen of bovenstaande mag
      * @post    If the given state is a valid state, the state is set to the given state.
      *          | if (isValidState(state))
-     *          | then new.getState() == state
+     *          |   then new.getState() == state
      *
      * @throws  IllegalStateException
      *          The given state is not valid.
@@ -69,6 +70,7 @@ public class AlchemicIngredient {
      */
     @Raw
     public AlchemicIngredient(int amount, Unit unit, Temperature temperature, IngredientType type, State state) throws IllegalStateException {
+        super();
         if (!isValidState(state)) {
             throw new IllegalStateException("The given state is not valid!");
         }
@@ -100,10 +102,11 @@ public class AlchemicIngredient {
      * @param   type
      *          The type of the new alchemic ingredient.
      *
+     * TODO vragen of precondities mee moeten worden overgenomen
+     *
      * @effect  A new alchemic ingredient with given amount, unit, a copy of the standard temperature of the given type,
      *          the given ingredient type and the standard state of that same ingredient type is initialized.
-     *          | this( amount, unit, new Temperature( type.getStandardTemperatureObject().getColdness(),
-     *          |   type.getStandardTemperatureObject().getHotness() ), type, type.getStandardState() )
+     *          | this( amount, unit, new Temperature(type.getStandardTemperature()), type, type.getStandardState() )
      */
     @Raw
     public AlchemicIngredient(int amount, Unit unit, IngredientType type) {
@@ -120,14 +123,15 @@ public class AlchemicIngredient {
      * @param   type
      *          The type of the new alchemic ingredient.
      *
+     * TODO vragen of precondities mee moeten worden overgenomen
+     *
      * @effect  A new alchemic ingredient with given amount, unit, a copy of the standard temperature of the given type,
      *          the given ingredient type and the standard state of that same ingredient type is initialized.
-     *          | this( amount, unit, new Temperature( type.getStandardTemperatureObject().getColdness(),
-     *          |   type.getStandardTemperatureObject().getHotness() ), type, type.getStandardState() )
+     *          | this( amount, unit, new Temperature(type.getStandardTemperature()), type, type.getStandardState() )
      */
     @Raw
     public AlchemicIngredient(int amount, Unit unit, Temperature temperature, IngredientType type) {
-        this(amount, unit, new Temperature(type.getStandardTemperatureObject().getColdness(), type.getStandardTemperatureObject().getHotness()), type, type.getStandardState());
+        this(amount, unit, new Temperature(type.getStandardTemperature()), type, type.getStandardState());
     }
 
 
@@ -135,10 +139,13 @@ public class AlchemicIngredient {
     /**********************************************************
      * AMOUNT and UNIT - NOMINAL PROGRAMMING
      *
-     * @note    de unit en amount moeten altijd legal zijn
-     *          wanneer een methode/constructor wordt aangeroepen
+     * @note    unit and amount must always be legal, because
+     *          of the imposed @pre conditions. (nominal)
      **********************************************************/
 
+    /**
+     * A variable for keeping track of the amount of the ingredient.
+     */
     private final int amount;
 
     /**
@@ -166,6 +173,7 @@ public class AlchemicIngredient {
      * @return  The amount of this alchemic ingredient in storerooms.
      *          | result == amount * getUnit().getStoreroomEquivalent()
      */
+    @Immutable
     public double getStoreroomAmount() {
         return amount * getUnit().getStoreroomEquivalent();
     }
@@ -183,15 +191,20 @@ public class AlchemicIngredient {
 
     /**
      * A method to check whether the given amount is a valid amount for an alchemic ingredient.
+     *
      * @param 	amount
      * 			The amount to check
      * @return	True if and only if the amount is positive.
      * 			| result == (amount >= 0)
      */
+    @Raw
     public boolean isValidAmount(double amount) {
         return amount >= 0;
     }
 
+    /**
+     * A variable for keeping track of the unit of the ingredient.
+     */
     private final Unit unit;
 
     /**
@@ -204,6 +217,7 @@ public class AlchemicIngredient {
 
     /**
      * A method to check whether the given unit is a valid unit for an alchemic ingredient.
+     *
      * @param 	unit
      * 			The unit to check
      * @return	True if and only if the unit is effective, and the unit
@@ -211,6 +225,7 @@ public class AlchemicIngredient {
      * 			| result == ( (unit != null)
      * 		    |   && List.of(unit.getAllowedStates()).contains(getState()) )
      */
+    @Raw
     public boolean canHaveAsUnit(Unit unit) {
         return (unit != null) &&
                 List.of(unit.getAllowedStates()).contains(getState());
@@ -229,6 +244,8 @@ public class AlchemicIngredient {
 
     /**
      * A getter for the standard temperature object of the ingredient type.
+     *
+     * @note    Not to be used by other classes!
      */
     @Model
     protected Temperature getTemperatureObject() {
@@ -270,6 +287,8 @@ public class AlchemicIngredient {
 
     /**
      * A getter for the temperature of the ingredient.
+     *
+     * @note    This is public, in contrast to the getter for the temperature object.
      */
     @Basic
     public long[] getTemperature() {
@@ -284,6 +303,7 @@ public class AlchemicIngredient {
      * @effect  The ingredient is heated if it is not terminated.
      *          | if (!isTerminated())
      *          | then getTemperatureObject().heat(amount)
+     *
      * @note    Temperatures are implemented totally, so we don't throw an exception
      *          if any illegal cases come up (e.g. terminated ingredient, negative amounts, etc.)
      */
@@ -301,7 +321,9 @@ public class AlchemicIngredient {
      * @effect  The ingredient is cooled if it is not terminated.
      *          | if (!isTerminated())
      *          | then getTemperatureObject().cool(amount)
-     * @note    Same as for heating.
+     *
+     * @note    Temperatures are implemented totally, so we don't throw an exception
+     *          if any illegal cases come up (e.g. terminated ingredient, negative amounts, etc.)
      */
     protected void cool(long amount) {
         if (!isTerminated()) {
@@ -335,6 +357,9 @@ public class AlchemicIngredient {
      * TYPE - TOTAL PROGRAMMING
      **********************************************************/
 
+    /**
+     * A variable for keeping track of the type of the ingredient.
+     */
     private final IngredientType type;
 
     /**
@@ -364,6 +389,9 @@ public class AlchemicIngredient {
      * STATE
      **********************************************************/
 
+    /**
+     * A variable for keeping track of the state of the ingredient.
+     */
     private final State state;
 
     /**
@@ -393,6 +421,9 @@ public class AlchemicIngredient {
      * CONTAINERIZED
      **********************************************************/
 
+    /**
+     * A variable for keeping track of whether the ingredient is containerized.
+     */
     private boolean isContainerized = false;
 
     /**
@@ -415,6 +446,7 @@ public class AlchemicIngredient {
      * @throws  IllegalStateException
      *          The ingredient is terminated.
      */
+    @Raw
     protected void setContainerized(boolean containerized) throws IllegalStateException {
         if (isTerminated()) {
             throw new IllegalStateException("The ingredient is terminated!");
@@ -545,7 +577,7 @@ public class AlchemicIngredient {
     /**
      * A method to check whether the ingredient is terminated.
      */
-    @Basic @Immutable
+    @Basic @Immutable @Raw
     public boolean isTerminated() {
         return isTerminated;
     }

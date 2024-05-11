@@ -35,6 +35,9 @@ public class IngredientContainer {
      * @post    The content of this new container is equal to the given content (an ingredient).
      *          | new.getContent() == content
      *
+     * @effect  The content is set to containerized.
+     *          | content.setContainerized(true)
+     *
      * @throws  IllegalArgumentException
      *          The given capacity is not valid.
      *          | !isValidCapacity(capacity)
@@ -51,10 +54,11 @@ public class IngredientContainer {
             this.capacity = capacity;           // final variable
         }
         if (!canHaveAsContent(content)){
-            throw new IllegalArgumentException("The given content is not legal!");
+            throw new IllegalArgumentException("The given content is not legal for a container with the given capacity!");
         } else {
             this.content = content;           // final variable
         }
+        content.setContainerized(true);
     }
 
     /**
@@ -64,10 +68,10 @@ public class IngredientContainer {
      * @param   content
      *          The content of the new container (an ingredient).
      * @effect  A new container is created with the minimum unit for the container based on the content.
-     *          | this(Unit.getMinUnitForContainerWith(content), content)
+     *          | this(Unit.getMinUnitForContainerWithIngredient(content), content)
      */
     public IngredientContainer(AlchemicIngredient content) throws IllegalArgumentException {
-        this(Unit.getMinUnitForContainerWith(content), content);
+        this(Unit.getMinUnitForContainerWithIngredient(content), content);
     }
 
 
@@ -104,13 +108,15 @@ public class IngredientContainer {
      *                      && ( getCapacity().hasAsAllowedState(content.getState()) )
      *                      && ( !content.isTerminated())
      */
+    @Raw
     public boolean canHaveAsContent(AlchemicIngredient content) {
         if (content == null) {
             return true;
         } else {
             return (content.getSpoonAmount() <= getCapacity().getSpoonEquivalent())
                     && ( getCapacity().hasAsAllowedState(content.getState()) )
-                    && ( !content.isTerminated());
+                    && ( !content.isTerminated())
+                    && ( !content.isContainerized());
         }
     }
 
@@ -140,7 +146,7 @@ public class IngredientContainer {
      * @return  True if and only if the capacity is not null and is allowed for a container.
      *          | result == (capacity != null && capacity.isAllowedForContainer())
      */
-    @Model
+    @Model @Raw
     private static boolean isValidCapacity(Unit capacity) {
         return capacity != null && capacity.isAllowedForContainer();
     }
@@ -166,12 +172,23 @@ public class IngredientContainer {
 
     /**
      * Terminates the container.
+     *
+     * @post    The container is terminated.
+     *          | new.isTerminated()
+     * @post    The content is set to null.
+     *          | new.getContent() == null
+     * @effect  The content is set to not containerized.
+     *          | content.setContainerized(false)
+     * @throws  IllegalStateException
+     *          The container is already terminated.
      */
-    public void terminate() {
-        if (!isTerminated()){
-            isTerminated = true;
-            content = null;
+    public void terminate() throws IllegalStateException {
+        if (isTerminated()){
+            throw new IllegalStateException("The container is already terminated!");
         }
+        content.setContainerized(false);
+        isTerminated = true;
+        content = null;
     }
 
 }

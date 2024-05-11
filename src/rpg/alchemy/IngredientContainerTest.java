@@ -6,7 +6,7 @@ import rpg.Unit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ContainerTest {
+public class IngredientContainerTest {
 
 	private AlchemicIngredient ingredient;
 	private IngredientType mixedIngrTypePowder;

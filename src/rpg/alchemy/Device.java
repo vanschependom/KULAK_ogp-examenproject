@@ -57,14 +57,14 @@ public abstract class Device extends StorageLocation {
      *          |   then result == null
      * @return  If the spoon amount of the result is more than the spoon equivalent of the maximum
      *          unit for a container with the state of the result, the excess goes to waste.
-     *          | if ( result.getSpoonAmount() > Unit.getMaxUnitForContainer(getIngredientAt(0).getState()).getSpoonEquivalent() )
-     *          |   then result.equals(new AlchemicIngredient(1, Unit.getMaxUnitForContainer(getIngredientAt(0)), new Temperature(getIngredientAt(0).getTemperature()),
+     *          | if ( result.getSpoonAmount() > Unit.getMaxUnitForContainerWithState(getIngredientAt(0).getState()).getSpoonEquivalent() )
+     *          |   then result.equals(new AlchemicIngredient(1, Unit.getMaxUnitForContainerWithState(getIngredientAt(0)), new Temperature(getIngredientAt(0).getTemperature()),
      *          |                       getIngredientAt(0).getType(), getIngredientAt(0).getState()))
      * @return  If the spoon amount of the result is not more than the spoon equivalent of the maximum
      *          unit for a container with the state of the result, return a new container with the minimum unit
      *          for the result, given the state and size of the result, containing the result.
-     *          | if ( result.getSpoonAmount() <= Unit.getMaxUnitForContainer(result.getState()).getSpoonEquivalent() )
-     *          |   then result.equals(new IngredientContainer(Unit.getMinUnitForContainerWith(getIngredientAt(0)), getIngredientAt(0))
+     *          | if ( result.getSpoonAmount() <= Unit.getMaxUnitForContainerWithState(result.getState()).getSpoonEquivalent() )
+     *          |   then result.equals(new IngredientContainer(Unit.getMinUnitForContainerWithIngredient(getIngredientAt(0)), getIngredientAt(0))
      *
      * @effect  The result is removed from the device.
      *          | removeIngredientAt(0)
@@ -92,15 +92,14 @@ public abstract class Device extends StorageLocation {
             return null;
         }
         AlchemicIngredient result = getIngredientAt(0);
-        Unit maxUnit = Unit.getMaxUnitForContainer(result.getState());      // get the maximum capacity for the state of the result
+        Unit maxUnit = Unit.getMaxUnitForContainerWithState(result.getState());      // get the maximum capacity for the state of the result
         if (result.getSpoonAmount() > maxUnit.getSpoonEquivalent()) {       // the result is more than this maximum capacity -> the excess goes to waste
             result = new AlchemicIngredient(1, maxUnit,
                     new Temperature(result.getTemperature()),               // create a new temperature with long[2] as argument
                     result.getType(), result.getState());
         }
         removeIngredientAt(0);          // remove the result
-        result.setContainerized(true);        // set containerized for the resulting ingredient
-        return new IngredientContainer(Unit.getMinUnitForContainerWith(result), result);
+        return new IngredientContainer(Unit.getMinUnitForContainerWithIngredient(result), result);
     }
 
 
