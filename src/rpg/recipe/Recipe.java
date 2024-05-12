@@ -365,15 +365,15 @@ public class Recipe {
      *          |       || getNbOfOperations() != other.getNbOfOperations())
      *          | then result == false
      * @effect  If two ingredients at the same index aren't equal then return false.
-     *          | for each I in 0..getNbOfIngredients():
+     *          | for each I in 0..getNbOfIngredients()-1:
      *          |   if (!getIngredientAt(I).equals(other.getIngredientAt(I)))
      *          |       then result == false
      * @return  If two operations at the same index aren't equal then return false.
-     *          | for each I in 0..getNbOfOperations():
+     *          | for each I in 0..getNbOfOperations()-1:
      *          |   if (!getOperationAt(I).equals(other.getOperationAt(I)))
      *          |       then result == false
      * @return  If all the ingredients and all the operation are equal then return true.
-     *          | for each I in 0..getNbOfOperations():
+     *          | for each I in 0..getNbOfOperations()-1:
      *          |   if (getIngredientAt(I).equals(other.getIngredientAt(I)) &&
      *          |       getOperationAt(I).equals(other.getOperationAt(I)))
      *          |   then result == true;

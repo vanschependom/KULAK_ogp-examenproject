@@ -253,7 +253,7 @@ public class Laboratory extends StorageLocation {
 	 * @return  True if and only if this laboratory can have all its devices
 	 * 			at their respective indices.
 	 *          | result ==
-	 *          |   for each I in 0..getNbOfDevices() :
+	 *          |   for each I in 0..getNbOfDevices()-1 :
 	 *          |     canHaveAsDevice(getDeviceAt(I)) && getDeviceAt(I).getLaboratory() == this
 	 */
 	public boolean hasProperDevices() {

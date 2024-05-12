@@ -48,6 +48,8 @@ public class Kettle extends Device {
 	 *
 	 * @return  A new name object with all the simple name parts of the ingredients
 	 * 			and a null special name.
+	 * 			| result == new Name(null, ( for each I in 0..getNbOfIngredients()-1:
+	 * 			|				       			getIngredientAt(I).getType().GetName().getSimpleNameParts() ))
 	 * 			| TODO dit navragen voor alle methoden
 	 */
 	@Model
@@ -62,10 +64,14 @@ public class Kettle extends Device {
 	}
 
 	/**
-	 * Return the state of the ingredient with a standard temperature closest to [0, 20].
-	 * Liquid is chosen over powder in an ex aequo.
-	 */ // TODO kan  dit hier basic genomen worden of moet hier heel wat specificatie bijkomen met meer uitleg
-	// TODO geldt eigenlijk voor elke new method
+	 * The new state of the result in this kettle.
+	 *
+	 * @return 	The state of the ingredient
+	 * 			in the kettle with the standard temperature
+	 * 			closest to [0, 20], liquid is chosen over powder.
+	 * 			| result ==
+	 *
+	 */
 	@Model
 	private State getNewState() {
 		int closestTemperatureIndex = 0;
@@ -84,7 +90,12 @@ public class Kettle extends Device {
 	}
 
 	/**
-	 * Return the sum of all the spoon amounts of the ingredients
+	 * A method that calculates the new spoon amount for the new ingredient.
+	 *
+	 * @return 	The sum of all the spoon amounts of the ingredients.
+	 * 			| result == getIngredients().stream()
+	 *          |   .mapToDouble(ingredient::getSpoonAmount)
+	 *          |   .sum() //TODO ik weet niet of dit klopt
 	 */
 	@Model
 	private double getNewSpoonAmount() {

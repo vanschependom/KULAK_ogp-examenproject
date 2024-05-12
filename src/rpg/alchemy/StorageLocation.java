@@ -171,6 +171,14 @@ public abstract class StorageLocation {
     }
 
     /**
+     * Return the ingredients of this laboratory.
+     */
+    @Basic
+    private ArrayList<AlchemicIngredient> getIngredients() {
+        return ingredients;
+    }
+
+    /**
      * A method for adding an ingredient to the storage location
      *
      * @param   ingredient
