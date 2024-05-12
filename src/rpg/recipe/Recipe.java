@@ -104,14 +104,18 @@ public class Recipe {
      *          | if (ingredients == null || operations == null)
      *          | then result == false
      * @return  False if one of the instructions is not valid.
-     *          | TODO
-     * @return  True if the amount of operations in operations
+     *          | result == ( for some I in 0..getNbOfOperations()-1:
+     *          |   if (getOperationAt(I) == Operation.ADD)
+     *          |   then !isValidInstruction(getIngredientAt(getOperations.subList(0, I).stream().filter(operation -> operation == Operation.ADD).count()), getOperationAt(I))
+     *          |   else
+     *          |   then !isValidInstruction(null, getOperationAt(I))
+     *          |   (I != J) && getDeviceAt(I).getClass() == getIngredientAt(J).getClass() )
+     * @return  Otherwise true if the amount of operations in operations
      *          which are equal to the add operation,
      *          is equal to the size of ingredients
-     *          | for each operation in getOperations():
-     *          |    if operation == Operation.ADD
-     *          |    then amountOfAdds++;
-     *          | result == (ingredients.size() == amountOfAdds) TODO dit klopt niet denk ik
+     *          | result == ( ingredients.size() ==
+     *          |   getOperations.stream().filter(operation -> operation == Operation.ADD).count() )
+     *
      */
     public boolean isValidInstructionSet(ArrayList<AlchemicIngredient> ingredients, ArrayList<Operation> operations) {
         if (ingredients == null || operations == null) {

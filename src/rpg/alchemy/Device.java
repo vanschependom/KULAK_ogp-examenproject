@@ -77,10 +77,7 @@ public abstract class Device extends StorageLocation {
      * @throws  IllegalStateException
      *          The device is terminated.
      *          | isTerminated()
-     *
-     * @note    Called form setLaboratory(), so Raw!
      */
-    @Raw
     public IngredientContainer getResult() throws DeviceNotYetUsedException, IllegalStateException {
         if (isTerminated()) {
             throw new IllegalStateException("Device is terminated!");

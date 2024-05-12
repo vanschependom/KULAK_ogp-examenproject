@@ -406,33 +406,44 @@ public class Laboratory extends StorageLocation {
 	 * @param   unit
 	 *          The unit of the amount.
 	 *
-	 * @return  TODO
+	 * @pre     The given amount is strictly positive.
+	 * 	  		| amount > 0
+	 * @pre     The given amount is smaller than or equal to the amount of ingredient in the laboratory at the same unit
+	 * 	  		| amount*unit.getConversionFor(getIngredientAt(index).getUnit()) <= getIngredientAt(index).getAmount()
+	 * @pre		The given unit is effective.
+	 * 			| unit != null
+	 * @effect	A new ingredient, with its amount subtracted with the given amount at the same unit,
+	 * 			is added to the laboratory and the ingredient at given index is removed. TODO ik vind dit een slechte omschrijving
+	 * 			| ( addAsIngredient(new AlchemicIngredient(
+	 * 			|		(int) getIngredientAt(index).getAmount()
+	 * 			|			- amount*unit.getConversionFor(getIngredientAt(index).getUnit()),
+	 * 			|		getIngredientAt(index).getUnit(),
+	 * 			|		new Temperature(getIngredientAt(index).getTemperature()),
+	 * 			|		getIngredientAt(index).getType(),
+	 * 			|		getIngredientAt(index).getState()
+	 * 			| )) ) && removeAsIngredient(getIngredientAt(index))
+	 *
+	 * @return  The amount of a given unit of the ingredient at the given index
+	 * 			| result ==
+	 * 			| 	( new IngredientContainer(new AlchemicIngredient(
+	 * 			|	amount, unit,
+	 * 			|	new Temperature(getIngredientAt(index).getTemperature()),
+	 * 			|	getIngredientAt(index).getType(),
+	 * 			|	getIngredientAt(index).getState()
+	 * 			|	)) )
+	 *
 	 *
 	 * @throws	IndexOutOfBoundsException
 	 * 			The given index is not valid.
 	 * 			| index < 0 || index >= getNbOfIngredients()
-	 * @throws	IllegalArgumentException
-	 * 			The given amount is not strictly positive.
-	 * 			| amount <= 0
-	 * @throws	NullPointerException
-	 * 			The given unit is not effective.
-	 * 			| unit == null
 	 */
-	private IngredientContainer getAmountOfIngredientAt(int index, int amount, Unit unit) throws IndexOutOfBoundsException, IllegalArgumentException, NullPointerException {
+	@Raw
+	private IngredientContainer getAmountOfIngredientAt(int index, int amount, Unit unit) throws IndexOutOfBoundsException {
 		if (index < 0 || index >= getNbOfIngredients()) {
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
 		}
-		if (amount <= 0) {
-			throw new IllegalArgumentException("The amount must be strictly positive!");
-		}
-		if (unit == null) {
-			throw new NullPointerException("The unit is null!");
-		}
 		AlchemicIngredient ingredient = getIngredientAt(index);
 		double amountLeft = ingredient.getAmount() - amount*unit.getConversionFor(ingredient.getUnit());
-		if (amountLeft < 0) {
-			throw new IllegalArgumentException("Not enough of this ingredient in the storage location!");
-		}
 		if (amountLeft == 0) {
 			removeAsIngredient(ingredient);
 		} else {
@@ -440,7 +451,7 @@ public class Laboratory extends StorageLocation {
 			addAsIngredient(new AlchemicIngredient(
 					(int) amountLeft,  // afronding!
 					ingredient.getUnit(),
-					new Temperature(ingredient.getColdness(), ingredient.getHotness()),
+					new Temperature(ingredient.getTemperature()),
 					ingredient.getType(),
 					ingredient.getState()
 			));
@@ -448,7 +459,7 @@ public class Laboratory extends StorageLocation {
 		return new IngredientContainer(new AlchemicIngredient(
 				amount,
 				unit,
-				new Temperature(ingredient.getColdness(), ingredient.getHotness()),
+				new Temperature(ingredient.getTemperature()),
 				ingredient.getType(),
 				ingredient.getState()
 		));
@@ -459,7 +470,7 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	name
 	 * 			The simple name to check.
-	 * @return  The given ingredient with this name is registered in this laboratory at the
+	 * @return  An ingredient with the given simple name is registered in this laboratory at the
 	 *          resulting position.
 	 *          | getIngredientAt(result).getSimpleName().equals(name)
 	 * @throws  IllegalArgumentException
@@ -467,7 +478,7 @@ public class Laboratory extends StorageLocation {
 	 *          | !hasIngredientWithSimpleName(name)
 	 */
 	public int getIndexOfSimpleName(String name) throws IllegalArgumentException {
-		if (!hasIngredientWithSimpleName(name)) {throw new IllegalArgumentException("There is no ingredient with the given name in this laboratory");}
+		if (!hasIngredientWithSimpleName(name)) {throw new IllegalArgumentException("There is no ingredient with the given simple name in this laboratory");}
 		for (int i=0; i<getNbOfIngredients(); i++) {
 			if (getIngredientAt(i).getSimpleName().equals(name)) {
 				return i;
@@ -482,10 +493,17 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	name
 	 * 			The special name to check.
-	 * @return	The index of the ingredient with the given simple name.
-	 * 			| TODO
+	 * @return  An ingredient with the given special name is registered in this laboratory at the
+	 *          resulting position.
+	 *          | getIngredientAt(result).getSpecialName().equals(name)
+	 * @throws  IllegalArgumentException
+	 *          There is no ingredient with the given special name.
+	 *          | !hasIngredientWithSpecialName(name)
 	 */
-	public int getIndexOfSpecialName(String name) {
+	public int getIndexOfSpecialName(String name) throws IllegalArgumentException {
+		if (!hasIngredientWithSpecialName(name)) {
+			throw new IllegalArgumentException("There is no ingredient with the special given name in this laboratory");
+		}
 		for (int i=0; i<getNbOfIngredients(); i++) {
 			if (getIngredientAt(i).getSpecialName().equals(name)) {
 				return i;

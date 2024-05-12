@@ -296,6 +296,26 @@ public abstract class StorageLocation {
     }
 
     /**
+     * A method for checking if a storage location contains an ingredient with a given special name.
+     *
+     * @param   name
+     *          The special name of the ingredient to check
+     *
+     * @return  True if and only if the storage location
+     *          contains an ingredient with the given special name
+     *          | result == ( for some I in 0..getNbOfIngredients()-1:
+     *          |   name.equals(getIngredientAt(i).getSpecialName()) )
+     */
+    public boolean hasIngredientWithSpecialName(String name) {
+        for (int i=0; i < getNbOfIngredients(); i++) {
+            if (name.equals(getIngredientAt(i).getSpecialName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * A method for adding a container to the storage location, unpacking
      * the contents of the container and adding them to the ingredients ArrayList.
      *
@@ -356,9 +376,6 @@ public abstract class StorageLocation {
         } catch (IngredientNotPresentException e) {
             addAsIngredient(container.getContent());
         }
-        // TODO verwijder onderstaande code
-//        // set containerized to false
-//        container.getContent().setContainerized(false);
         // terminate the container
         container.terminate();
     }

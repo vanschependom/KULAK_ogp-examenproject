@@ -46,8 +46,9 @@ public class Kettle extends Device {
 	 * Return the new name object for the new mixed ingredient, with a special name of null.
 	 * The simple name parts being all the simple name parts of the ingredients.
 	 *
-	 * @return  A new name object with all the simple name parts of the ingredients.
-	 * 			| TODO
+	 * @return  A new name object with all the simple name parts of the ingredients
+	 * 			and a null special name.
+	 * 			| TODO dit navragen voor alle methoden
 	 */
 	@Model
 	private Name getNewName() {
@@ -114,21 +115,6 @@ public class Kettle extends Device {
 		}
 		return smallestDifferenceTemperature;
 	}
-
-
-	/*
-	@Model @Basic
-	private Temperature getNewTemperature() {
-		Temperature totalTemperature = new Temperature(0, 0);
-		for (int i = 0; i < getNbOfIngredients(); i++) {
-			Temperature tempToAdd = new Temperature(getIngredientAt(i).getColdness(), getIngredientAt(i).getHotness());
-			tempToAdd.mul(getIngredientAt(i).getSpoonAmount());
-			totalTemperature = Temperature.add(tempToAdd, totalTemperature);
-		}
-		totalTemperature.mul(1/getNewSpoonAmount());
-		return totalTemperature;
-	}
-	 */
 
 	/**
 	 * Return the weighted average temperature of all the ingredients inside the kettle.
