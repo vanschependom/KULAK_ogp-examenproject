@@ -418,7 +418,7 @@ public abstract class StorageLocation {
      *          The storage location is already terminated
      *          | isTerminated()
      */
-    public void terminate() {
+    public void terminate() throws IllegalStateException {
         if (isTerminated()) {
             throw new IllegalStateException("Already terminated!");
         }

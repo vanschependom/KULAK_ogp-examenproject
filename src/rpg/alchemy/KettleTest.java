@@ -7,6 +7,15 @@ import rpg.Unit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * A JUnit 5 test class for testing the public methods of the Kettle class.
+ *
+ * @author  Vincent Van Schependom
+ * @author 	Arne Claerhout
+ * @author	Flor De Meulemeester
+ *
+ * @version 1.0
+ */
 public class KettleTest {
 
     private Laboratory lab;

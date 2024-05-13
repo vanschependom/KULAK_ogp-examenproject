@@ -597,10 +597,10 @@ public class Laboratory extends StorageLocation {
 			kettle.addIngredients(getAllOfIngredientAt(indexSameName));
 			kettle.executeOperation();
 			container = kettle.getResult();
-		} catch (IngredientNotPresentException e) {
-			// no ingredient with same name
+		} catch (IngredientNotPresentException | IllegalArgumentException e) {
+			// no ingredient with the same name
 		}
-		super.addIngredients(container);
+        super.addIngredients(container);
 	}
 
 	/**
