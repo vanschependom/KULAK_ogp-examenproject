@@ -600,7 +600,7 @@ public class Laboratory extends StorageLocation {
 		} catch (IngredientNotPresentException | IllegalArgumentException e) {
 			// no ingredient with the same name
 		}
-        super.addIngredients(container);
+		super.addIngredients(container);
 	}
 
 	/**
