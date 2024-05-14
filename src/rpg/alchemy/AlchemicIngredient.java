@@ -439,16 +439,15 @@ public class AlchemicIngredient {
      *
      * @param   containerized
      *          The new containerized state for the ingredient.
-     * @post    The containerized state of the ingredient is set to the given containerized state,
-     *          if the ingredient is not terminated.
-     *          | if (!isTerminated())
-     *          | then new.isContainerized() == containerized
+     * @post    The containerized state of the ingredient is set to the given containerized state
+     *          | new.isContainerized() == containerized
      * @throws  IllegalStateException
-     *          The ingredient is terminated.
+     *          The ingredient is terminated and it is to be containerized.
+     *          | isTerminated() && containerized
      */
     @Raw
     protected void setContainerized(boolean containerized) throws IllegalStateException {
-        if (isTerminated()) {
+        if (isTerminated() && containerized) {
             throw new IllegalStateException("The ingredient is terminated!");
         }
         isContainerized = containerized;

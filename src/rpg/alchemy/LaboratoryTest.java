@@ -96,4 +96,29 @@ public class LaboratoryTest {
 		});
 	}
 
+	@Test
+	public void testGetIndexOfDevice() {
+		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+		oven = new Oven(lab, new Temperature(0, 1000));
+		transmogrifier = new Transmogrifier(lab);
+		kettle = new Kettle(lab);
+		assertEquals(0, lab.getIndexOfDevice(coolingBox));
+		assertEquals(1, lab.getIndexOfDevice(oven));
+		assertEquals(2, lab.getIndexOfDevice(transmogrifier));
+		assertEquals(3, lab.getIndexOfDevice(kettle));
+	}
+
+	@Test
+	public void testHasDeviceTypeOf() {
+		Laboratory otherlab = new Laboratory(2);
+		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+		oven = new Oven(lab, new Temperature(0, 1000));
+		transmogrifier = new Transmogrifier(otherlab);
+		kettle = new Kettle(lab);
+		assertTrue(lab.hasDeviceOfType(coolingBox.getClass()));
+		assertTrue(lab.hasDeviceOfType(oven.getClass()));
+		assertFalse(lab.hasDeviceOfType(transmogrifier.getClass()));
+		assertTrue(lab.hasDeviceOfType(kettle.getClass()));
+	}
+
 }

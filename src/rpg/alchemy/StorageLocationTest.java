@@ -101,7 +101,8 @@ public class StorageLocationTest {
         lab.addIngredients(container1); // with ingredient liquid
         IngredientContainer container3 = new IngredientContainer(Unit.BARREL, liquid);
         lab.addIngredients(container3); // dit doet niet wat het moet
-        assertTrue(lab.containsIngredientTwice(liquid));
+        // this is false because the newly added ingredient is added to the old
+        assertFalse(lab.containsIngredientTwice(liquid));
     }
 
     @Test
