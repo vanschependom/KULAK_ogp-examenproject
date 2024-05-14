@@ -143,6 +143,15 @@ public class KettleTest {
     }
 
     @Test
+    public void executeOperation_onlyOneIngredient() {
+        kettle.addIngredients(container1);
+        assertEquals(1,kettle.getNbOfIngredients());
+        kettle.executeOperation();
+        // nothing happens
+        assertEquals(1,kettle.getNbOfIngredients());
+    }
+
+    @Test
     public void executeOperationInvalid() {
         assertThrows(IllegalStateException.class, () -> {
             kettle.executeOperation();

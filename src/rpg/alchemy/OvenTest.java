@@ -67,6 +67,17 @@ public class OvenTest {
     }
 
     @Test
+    public void executeOperation_alreadyAboveTemperature() {
+        IngredientType type = new IngredientType(new Name(null, "Milk"), State.LIQUID, new Temperature(0, 500), false);
+        AlchemicIngredient ingredient = new AlchemicIngredient(10, Unit.SPOON, type);
+        IngredientContainer container = new IngredientContainer(Unit.BARREL, ingredient);
+        oven.addIngredients(container);
+        assertEquals(500, ingredient.getHotness());
+        oven.executeOperation();
+        assertEquals(500,ingredient.getHotness());
+    }
+
+    @Test
     public void executeOperationInvalid() {
         assertThrows(IllegalStateException.class, () -> {
             oven.executeOperation();

@@ -44,10 +44,8 @@ public class AlchemicIngredientTest {
 	/**
 	 * CONSTRUCTOR
 	 */
-
 	@Test
 	public void testConstructor_mostExtended_illegalUnit() {
-
 		// no exception is thrown because we implemented this nominally
 		ingredient = new AlchemicIngredient(10, Unit.BOTTLE, standardTemperature, mixedIngrTypePowder, State.POWDER);
 		assertFalse(ingredient.canHaveAsUnit(Unit.BOTTLE));
@@ -55,7 +53,13 @@ public class AlchemicIngredientTest {
 		assertEquals(Unit.BOTTLE, ingredient.getUnit());
 		assertEquals(mixedIngrTypePowder, ingredient.getType());
 		assertEquals(State.POWDER, ingredient.getState());
+	}
 
+	@Test
+	public void testConstructor_illegalState() {
+		assertThrows(IllegalStateException.class, () -> {
+			ingredient = new AlchemicIngredient(10, Unit.BOTTLE, standardTemperature, mixedIngrTypePowder, null);
+		});
 	}
 
 	@Test
@@ -139,6 +143,9 @@ public class AlchemicIngredientTest {
 		assertEquals("Heated Water", ingredient.getFullName());
 	}
 
+	/**
+	 * EQUALS
+	 */
 	@Test
 	public void testEquals1() {
 		AlchemicIngredient ingredient1 = new AlchemicIngredient(30, Unit.PINCH, standardTemperature, mixedIngrTypePowder, State.POWDER);

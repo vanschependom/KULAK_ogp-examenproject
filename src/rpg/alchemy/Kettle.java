@@ -109,7 +109,7 @@ public class Kettle extends Device {
 
 	/**
 	 * Return The standard temperature which is closest to [0, 20],
-	 * if the difference is the same, the hottest standard temperature is chosen
+	 * if the difference is the same, the hottest standard temperature is chosen.
 	 */
 	@Model
 	private Temperature getNewStandardTemperature() {
@@ -131,7 +131,8 @@ public class Kettle extends Device {
 	 * Return the weighted average temperature of all the ingredients inside the kettle.
 	 *
 	 * @note 	The coldness and the hotness are calculated separately because otherwise in
-	 * 			the Temperature class there is a lot of rounding to integer values.
+	 * 			the Temperature class there is a lot of rounding to integer values and then
+	 * 			the result would be inaccurate.
 	 */
 	@Model
 	private Temperature getNewTemperature() {
@@ -167,12 +168,12 @@ public class Kettle extends Device {
 	/**
 	 * A method for executing a kettle
 	 *
-	 * @effect  Executes the operation from device
+	 * @effect  Executes the operation from device.
 	 *          | super.executeOperation()
 	 *
 	 * @post	All ingredients are deleted and a new ingredient is created with
 	 * 			a new combined name, a weighted average temperature, a new state, a new standard temperature
-	 * 			and a new amount
+	 * 			and a new amount.
 	 * 			| ( addAsIngredient(new AlchemicIngredient((int) newSpoonAmount, Unit.SPOON, newTemperature,
 	 * 			|	new IngredientType(newName, newState, newStandardTemperature, true), newState)) ) &&
 	 * 			| ( for each I in 0..getNbOfIngredients()-2:
@@ -189,12 +190,12 @@ public class Kettle extends Device {
 		Temperature newTemperature = getNewTemperature();
 		Temperature newStandardTemperature = getNewStandardTemperature();
 
-		// delete all ingredients
+		// Delete all ingredients
 		while (getNbOfIngredients() > 0) {
 			removeAsIngredient(getIngredientAt(0));
 		}
 
-		// create the new ingredient(type) and add to the kettle
+		// Create the new ingredient(type) and add to the kettle
 		IngredientType newType = new IngredientType(newName, newState, newStandardTemperature, newName.isMixed());
 		addAsIngredient(new AlchemicIngredient((int) newSpoonAmount, Unit.SPOON, newTemperature, newType, newState));
 	}

@@ -58,6 +58,17 @@ public class CoolingBoxTest {
     }
 
     @Test
+    public void executeOperation_alreadyUnderneathTemperature() {
+        IngredientType type = new IngredientType(new Name(null, "Milk"), State.LIQUID, new Temperature(50, 0), false);
+        AlchemicIngredient ingredient = new AlchemicIngredient(10, Unit.SPOON, type);
+        IngredientContainer container = new IngredientContainer(Unit.BARREL, ingredient);
+        coolingBox.addIngredients(container);
+        assertEquals(50, ingredient.getColdness());
+        coolingBox.executeOperation();
+        assertEquals(50,ingredient.getColdness());
+    }
+
+    @Test
     public void executeOperationInvalid() {
         assertThrows(IllegalStateException.class, () -> {
             coolingBox.executeOperation();
