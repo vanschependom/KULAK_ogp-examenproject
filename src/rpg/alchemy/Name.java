@@ -51,9 +51,8 @@ public class Name {
 	 * @param 	simpleNameParts
 	 * 			The simple name parts of the name.
 	 *
-	 * @post	If the simple name parts are legal, the simple name parts are set to the given simple name parts.
-	 * 			| if (isValidSimpleNameParts(simpleNameParts))
-	 * 			| then new.getSimpleNameParts() == simpleNameParts
+	 * @post	The simple name parts are set to the given simple name parts.
+	 * 			| Arrays.equals(new.getSimpleNameParts(), simpleNameParts)
 	 * @effect	The special name of the new name is set to the given special name.
 	 * 			| setSpecialName(specialName)
 	 *
@@ -90,10 +89,10 @@ public class Name {
 	private final String[] simpleNameParts;
 
 	/**
-	 * A getter for the simple name parts of the name.
+	 * A method for getting the simple name parts of this name.
 	 */
-	@Model
-	protected String[] getSimpleNameParts() {
+	@Basic @Immutable
+	public String[] getSimpleNameParts() {
 		return simpleNameParts;
 	}
 
@@ -102,19 +101,19 @@ public class Name {
 	 *
 	 * @return	The first name part if the name is not mixed
 	 * 			| if (!isMixed())
-	 * 			| then result == getSimpleNameParts()[0]
+	 * 			| 	then result == getSimpleNameParts()[0]
 	 * @return	The first name part followed by "mixed with" and the second name part if the name is mixed
 	 * 			and the length of the simple name parts is 2.
 	 * 			| if (isMixed() && getSimpleNameParts().length == 2)
-	 * 			| then result == (getSimpleNameParts()[0] + " mixed with " + getSimpleNameParts()[1])
+	 * 			| 	then result == (getSimpleNameParts()[0] + " mixed with " + getSimpleNameParts()[1])
 	 * @return	The first name part followed by "mixed with" and the other name parts separated by commas
 	 * 			and the last name part preceded by "and" if the length of the simple name parts
 	 * 			is greater than 2.
 	 * 			| if (isMixed() && getSimpleNameParts().length > 2)
 	 * 			|	then result == ( getSimpleNameParts()[0] + " mixed with " +
-	 * 			|	getSimpleNameParts()[1] + ", " + ... + " and " + getSimpleNameParts()[n] )
+	 * 			|		getSimpleNameParts()[1] + ", " + ... + " and " + getSimpleNameParts()[getSimpleNameParts().length-1] )
 	 */
-	@Basic @Immutable
+	@Immutable
 	public String getSimpleName() {
 		if (!isMixed()) {
 			return simpleNameParts[0];
@@ -183,7 +182,7 @@ public class Name {
 	 * @post	If the name is mixed and the given special name is not null and valid,
 	 * 			the special name is set to the given special name.
 	 * 			| if (isMixed() && isValidName(specialName) && specialName != null)
-	 * 			| then new.getSpecialName() == specialName
+	 * 			| 	then new.getSpecialName().equals(specialName)
 	 *
 	 * @throws	IllegalStateException
 	 * 			The name is not mixed and the given special name is not null.
@@ -213,17 +212,14 @@ public class Name {
 	 * A method for checking whether the name is mixed.
 	 *
 	 * @return	True if the name consists of multiple simple name parts; false otherwise.
-	 * 			| result == getSimpleName().contains("mixed with")
-	 *
-	 * @note	We must specify this specification in terms of public inspectors, e.g. getSimpleName().
-	 * 			We can't use simpleParts.length > 1, because simpleParts is private.
+	 * 			| result == getSimpleNameParts().length > 1
 	 */
 	public boolean isMixed() {
-		return simpleNameParts.length > 1;
+		return getSimpleNameParts().length > 1;
 	}
 
 	/**
-	 * A method for checking wheter a given name is a valid name for an ingredient type.
+	 * A method for checking whether a given name is a valid name for an ingredient type.
 	 *
 	 * @param 	name
 	 * 			The name to check.
@@ -262,9 +258,11 @@ public class Name {
 	 * 			|		|| str.toLowerCase().contains("cooled") )
 	 */
 	public static boolean containsIllegalWords(String str) {
-		return (str.toLowerCase().contains("mixed") || str.toLowerCase().contains("with")
+		return (str.toLowerCase().contains("mixed")
+				|| str.toLowerCase().contains("with")
 				|| str.toLowerCase().contains("and")
-				|| str.toLowerCase().contains("heated") || str.toLowerCase().contains("cooled"));
+				|| str.toLowerCase().contains("heated")
+				|| str.toLowerCase().contains("cooled"));
 	}
 
 	/**
@@ -281,8 +279,7 @@ public class Name {
 	 * 			which is not correctly cased or which has a length shorter than 2.
 	 * 			| if (parts.length > 1) then
 	 * 			| 	result == ( for some part in parts:
-	 * 			|		!isCorrectlyCased(part)
-	 * 			|		|| part.length() < 2 )
+	 * 			|		!isCorrectlyCased(part) || part.length() < 2 )
 	 */
 	public static boolean containsIllegalPart(String[] parts) {
 		// only one part
@@ -326,10 +323,10 @@ public class Name {
 	 * 			The string to check.
 	 * @return	False if the first letter is not uppercase or a legal symbol.
 	 * 			| if (!Character.isUpperCase(str.charAt(0)) && !isLegalSymbol(str.charAt(0)))
-	 * 			| then result == false
+	 * 			| 	then result == false
 	 * @return	False if at least one letter is uppercase.
 	 * 			| if (for some i in 1..str.length()-1: Character.isUpperCase(str.charAt(i)))
-	 * 			| then result == false
+	 * 			| 	then result == false
 	 */
 	public static boolean isCorrectlyCased(String str) {
 		// the first letter must be uppercase or a legal symbol
@@ -351,7 +348,7 @@ public class Name {
 	 * @param 	symbol
 	 * 			The symbol to check.
 	 * @return	True if the symbol is contained in the allowed name symbols.
-	 * 			| result == ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1
+	 * 			| result == (ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1)
 	 */
 	private static boolean isLegalSymbol(char symbol) {
 		return ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1;

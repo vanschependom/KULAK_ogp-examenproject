@@ -27,7 +27,7 @@ public class Oven extends TemperatureDevice {
 	 * @param 	temperature
 	 *			The temperature for this oven to heat to.
 	 *
-	 * @effect 	A temperature device with given temperature and laboratory is created
+	 * @effect 	A temperature device with given temperature and laboratory is created.
 	 * 	 		| super(laboratory, temperature)
 	 */
 	@Raw
@@ -44,14 +44,14 @@ public class Oven extends TemperatureDevice {
 	/**
 	 * A method that executes the operation of the oven device.
 	 *
-	 * @effect  Executes operation from temperature device
+	 * @effect  Executes operation from temperature device.
 	 *          | super.executeOperation()
 	 *
 	 * @post	If the temperature of the oven is not colder than the temperature of the ingredient,
 	 * 			the ingredient is heated to the temperature of the oven (with a deviation of 5).
 	 * 			| if !getTemperature().isColderThan(getIngredientAt(0).getTemperature())
-	 * 			|	then getIngredientAt(0).getHotness() == getTemperature().getHotness() &&
-	 * 			|		 getIngredientAt(0).getColdness() == getTemperature().getColdness()
+	 * 			|	then (( getIngredientAt(0).getHotness() - getTemperature().getHotness() ) <= 5 )
+	 * 			|		&& (( getIngredientAt(0).getColdness() - getTemperature().getColdness() ) <= 5 )
 	 */
 	@Override
 	public void executeOperation() throws IllegalStateException {

@@ -62,7 +62,7 @@ public class IngredientContainer {
     }
 
     /**
-     * A method for creating a new container with a given content and the minimum unit
+     * A constructor for creating a new container with a given content and the minimum unit
      * for the container based on this content.
      *
      * @param   content
@@ -83,12 +83,12 @@ public class IngredientContainer {
     /**
      * A variable containing the content (ingredient) that is stored in the container.
      */
-    private AlchemicIngredient content;
+    private final AlchemicIngredient content;
 
     /**
      * A method for getting the content of the container.
      */
-    @Model
+    @Model @Basic @Immutable
     protected AlchemicIngredient getContent() {
         return content;
     }
@@ -100,13 +100,14 @@ public class IngredientContainer {
      *          The content that you want to check
      * @return  If the content is a null pointer, return true.
      *          | if (content == null)
-     *          | then result == true
-     * @return  If the amount of the content is less or equal than the capacity and
+     *          |   then result == true
+     * @return  If the amount of the effective content is less or equal than the capacity and
      *          if the capacity and the content share the same state and if the ingredient
      *          isn't terminated then return true, otherwise return false.
-     *          | result == (content.getSpoonAmount() <= getCapacity().getSpoonEquivalent())
-     *                      && ( getCapacity().hasAsAllowedState(content.getState()) )
-     *                      && ( !content.isTerminated())
+     *          | if (content != null) then
+     *          |   result == (content.getSpoonAmount() <= getCapacity().getSpoonEquivalent())
+     *          |            && ( getCapacity().hasAsAllowedState(content.getState()) )
+     *          |            && ( !content.isTerminated())
      */
     @Raw
     public boolean canHaveAsContent(AlchemicIngredient content) {
@@ -119,7 +120,6 @@ public class IngredientContainer {
                     && ( !content.isContainerized());
         }
     }
-
 
 
 
@@ -175,8 +175,6 @@ public class IngredientContainer {
      *
      * @post    The container is terminated.
      *          | new.isTerminated()
-     * @post    The content is set to null.
-     *          | new.getContent() == null
      * @effect  The content is set to not containerized.
      *          | content.setContainerized(false)
      * @throws  IllegalStateException
@@ -188,7 +186,25 @@ public class IngredientContainer {
         }
         content.setContainerized(false);
         isTerminated = true;
-        content = null;
+    }
+
+
+    /**********************************************************
+     * EQUALS
+     **********************************************************/
+
+    /**
+     * A method for checking if this container is equal to another container.
+     *
+     * @param   other
+     *          The other container to compare with.
+     * @return  True if and only if the capacity and the content of the two containers are equal.
+     *          | result == (getCapacity() == other.getCapacity())
+     *          |              && (getContent().equals(other.getContent()))
+     */
+    public boolean equals(IngredientContainer other) {
+        return getCapacity() == other.getCapacity()
+                && getContent().equals(other.getContent());
     }
 
 }

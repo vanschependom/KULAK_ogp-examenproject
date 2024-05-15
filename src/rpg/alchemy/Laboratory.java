@@ -23,15 +23,17 @@ public class Laboratory extends StorageLocation {
 	 * A constructor for creating a new laboratory with a given capacity.
 	 *
 	 * @param 	capacity
-	 * 			The capacity of the laboratory, expressed in storerooms.
+	 * 			The capacity of the laboratory, expressed in a certain number of storerooms.
+	 *
 	 * @post	The capacity of the new laboratory is equal to the given capacity.
 	 * 			| new.getCapacity() == capacity
+	 *
 	 * @throws	IllegalArgumentException
 	 * 			The given capacity is not a valid capacity.
 	 * 			| !isValidCapacity(capacity)
 	 */
 	@Raw
-	public Laboratory(int capacity) {
+	public Laboratory(int capacity) throws IllegalArgumentException {
 		if (!isValidCapacity(capacity)) {
 			throw new IllegalArgumentException("The given capacity is not a valid capacity!");
 		}
@@ -53,8 +55,7 @@ public class Laboratory extends StorageLocation {
 	/**
 	 * A getter for the capacity of this laboratory.
 	 */
-	@Basic
-	@Immutable
+	@Basic @Immutable
 	public int getCapacity() {
 		return capacity;
 	}
@@ -254,7 +255,8 @@ public class Laboratory extends StorageLocation {
 	 * 			at their respective indices.
 	 *          | result ==
 	 *          |   for each I in 0..getNbOfDevices()-1 :
-	 *          |     canHaveAsDevice(getDeviceAt(I)) && getDeviceAt(I).getLaboratory() == this
+	 *          |     canHaveAsDevice(getDeviceAt(I))
+	 *          |		&& getDeviceAt(I).getLaboratory() == this
 	 */
 	public boolean hasProperDevices() {
 		for (int i=0; i<getNbOfDevices()-1; i++) {
@@ -321,15 +323,15 @@ public class Laboratory extends StorageLocation {
 	@Raw
 	protected void removeAsDevice(Device device) throws IndexOutOfBoundsException, IllegalStateException, IllegalArgumentException {
 		if (!hasAsDevice(device)) {
-			throw new IllegalArgumentException("Illegal given device!");
+			throw new IllegalArgumentException("Device is not present in this laboratory!");
 		}
 		// device is certainly not null
 		if(device.getLaboratory() == this) {
 			throw new IllegalStateException("The given device still references this laboratory as its laboratory.");
 		}
-		try{
+		try {
 			removeAsDeviceAt(getIndexOfDevice(device));
-		}catch(IndexOutOfBoundsException e){
+		} catch(IndexOutOfBoundsException e) {
 			// Should not happen!
 			assert false;
 		}
@@ -356,8 +358,9 @@ public class Laboratory extends StorageLocation {
 	 *        	| (index < 0) || (index >= getNbItems())
 	 */
 	private void removeAsDeviceAt(int index) throws IndexOutOfBoundsException {
-		if(index < 0 || index >= getNbOfDevices())
+		if (index < 0 || index >= getNbOfDevices()) {
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+		}
 		try{
 			devices.remove(index);
 		}catch(IndexOutOfBoundsException e) {
@@ -386,7 +389,7 @@ public class Laboratory extends StorageLocation {
 	 * 			The given index is not valid.
 	 * 			| index < 0 || index >= getNbOfIngredients()
 	 */
-	private IngredientContainer getAllOfIngredientAt(int index) throws IndexOutOfBoundsException {
+	public IngredientContainer getAllOfIngredientAt(int index) throws IndexOutOfBoundsException {
 		if (index < 0 || index >= getNbOfIngredients()) {
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
 		}
@@ -412,42 +415,40 @@ public class Laboratory extends StorageLocation {
 	 * 	  		| amount*unit.getConversionFor(getIngredientAt(index).getUnit()) <= getIngredientAt(index).getAmount()
 	 * @pre		The given unit is effective.
 	 * 			| unit != null
+	 *
 	 * @effect	A new ingredient, with its amount subtracted with the given amount at the same unit,
-	 * 			is added to the laboratory and the ingredient at given index is removed. TODO ik vind dit een slechte omschrijving
-	 * 			| ( addAsIngredient(new AlchemicIngredient(
+	 * 			is added to the laboratory and the ingredient at given index is removed.
+	 * 			| addAsIngredient(new AlchemicIngredient(
 	 * 			|		(int) getIngredientAt(index).getAmount()
 	 * 			|			- amount*unit.getConversionFor(getIngredientAt(index).getUnit()),
 	 * 			|		getIngredientAt(index).getUnit(),
 	 * 			|		new Temperature(getIngredientAt(index).getTemperature()),
 	 * 			|		getIngredientAt(index).getType(),
 	 * 			|		getIngredientAt(index).getState()
-	 * 			| )) ) && removeAsIngredient(getIngredientAt(index))
+	 * 			| ))
+	 * 			| && removeAsIngredient(getIngredientAt(index))
 	 *
 	 * @return  The amount of a given unit of the ingredient at the given index
 	 * 			| result ==
-	 * 			| 	( new IngredientContainer(new AlchemicIngredient(
-	 * 			|	amount, unit,
-	 * 			|	new Temperature(getIngredientAt(index).getTemperature()),
-	 * 			|	getIngredientAt(index).getType(),
-	 * 			|	getIngredientAt(index).getState()
-	 * 			|	)) )
-	 *
+	 * 			| 	new IngredientContainer(new AlchemicIngredient(
+	 * 			|								amount, unit,
+	 * 			|								new Temperature(getIngredientAt(index).getTemperature()),
+	 * 			|								getIngredientAt(index).getType(),
+	 * 			|								getIngredientAt(index).getState() )
 	 *
 	 * @throws	IndexOutOfBoundsException
 	 * 			The given index is not valid.
 	 * 			| index < 0 || index >= getNbOfIngredients()
 	 */
 	@Raw
-	private IngredientContainer getAmountOfIngredientAt(int index, int amount, Unit unit) throws IndexOutOfBoundsException {
+	public IngredientContainer getAmountOfIngredientAt(int index, int amount, Unit unit) throws IndexOutOfBoundsException {
 		if (index < 0 || index >= getNbOfIngredients()) {
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
 		}
 		AlchemicIngredient ingredient = getIngredientAt(index);
 		double amountLeft = ingredient.getAmount() - amount*unit.getConversionFor(ingredient.getUnit());
-		if (amountLeft == 0) {
-			removeAsIngredient(ingredient);
-		} else {
-			removeAsIngredient(ingredient);
+		removeAsIngredient(ingredient);
+		if (amountLeft != 0) {
 			addAsIngredient(new AlchemicIngredient(
 					(int) amountLeft,  // afronding!
 					ingredient.getUnit(),
@@ -480,7 +481,7 @@ public class Laboratory extends StorageLocation {
 	public int getIndexOfSimpleName(String name) throws IllegalArgumentException {
 		if (!hasIngredientWithSimpleName(name)) {throw new IllegalArgumentException("There is no ingredient with the given simple name in this laboratory");}
 		for (int i=0; i<getNbOfIngredients(); i++) {
-			if (getIngredientAt(i).getSimpleName().equals(name)) {
+			if (name.equals(getIngredientAt(i).getSimpleName())) {
 				return i;
 			}
 		}
@@ -505,7 +506,7 @@ public class Laboratory extends StorageLocation {
 			throw new IllegalArgumentException("There is no ingredient with the special given name in this laboratory");
 		}
 		for (int i=0; i<getNbOfIngredients(); i++) {
-			if (getIngredientAt(i).getSpecialName().equals(name)) {
+			if (name.equals(getIngredientAt(i).getSpecialName())) {
 				return i;
 			}
 		}
@@ -517,12 +518,11 @@ public class Laboratory extends StorageLocation {
 	 * expressed in storerooms.
 	 *
 	 * @return	The total size of ingredients stored in this laboratory in storerooms.
-	 * 			| result == sum( for I in 0..getNbOfDevices()-1:
-	 * 			|		getDeviceAt(I).getStoreroomAmount() )
+	 * 			| result == sum( {for I in 0..getNbOfIngredients()-1: getIngredientAt(I).getStoreroomAmount()} )
 	 */
 	public double getStoredAmount() {
 		double amount = 0;
-		for (int i=0; i<getNbOfIngredients(); i++) {
+		for (int i = 0; i < getNbOfIngredients(); i++) {
 			amount += getIngredientAt(i).getStoreroomAmount();
 		}
 		return amount;
@@ -556,7 +556,7 @@ public class Laboratory extends StorageLocation {
 	 *          The container of which the contents should be added to the laboratory.
 	 *
 	 * @effect	The ingredient in the container is set to its standard temperature.
-	 * 			| container = bringToStandardTemperature(container)
+	 * 			| container.equals(bringToStandardTemperature(container))
 	 * @effect	If there is another ingredient with the same (simple) name and there is a kettle, then use the kettle
 	 * 			to mix these two ingredient.
 	 * 			| if (hasIngredientWithSimpleName(container.getContent().getSimpleName()) && hasDeviceOfType(Kettle.class))
@@ -564,7 +564,6 @@ public class Laboratory extends StorageLocation {
 	 * 			|		&& getDeviceOfType(Kettle.class).addIngredients(getAllOfIngredientAt(getIndexOfSimpleName(container.getContent().getSimpleName())))
 	 * 			|		&& getDeviceOfType(Kettle.class).executeOperation()
 	 * 			|		&& super.addIngredients(getDeviceOfType(Kettle.class).getResult())
-	 *
 	 *
 	 * @throws 	NullPointerException
 	 * 			The container is null.

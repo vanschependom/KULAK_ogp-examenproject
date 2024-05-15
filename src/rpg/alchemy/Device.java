@@ -31,6 +31,9 @@ public abstract class Device extends StorageLocation {
      *
      * @post    The max number of ingredients is set to maxNbOfIngredients
      *          | new.getMaxNbOfIngredients() == maxNbOfIngredients
+     *
+     * @effect  A new storage location is created.
+     *          | super()
      * @effect  The device is added to the laboratory.
      *          | setLaboratory(laboratory)
      */
@@ -185,8 +188,9 @@ public abstract class Device extends StorageLocation {
      *
      * @post    The laboratory of this device is set to the given laboratory
      *          | new.getLaboratory() == laboratory
-     * @effect  The device is removed from its old laboratory
-     *          | getLaboratory().removeAsDevice(this)
+     * @effect  The device is removed from its old laboratory, if the old laboratory is effective
+     *          | if getLaboratory() != null
+     *          |   getLaboratory().removeAsDevice(this)
      * @effect  The device is added to the new laboratory
      *          | laboratory.addAsDevice(this)
      *
@@ -196,6 +200,9 @@ public abstract class Device extends StorageLocation {
      * @throws  IllegalArgumentException
      *          The laboratory is effective, but cannot have this device as one of its devices.
      *          | laboratory != null && !laboratory.canHaveAsDevice(this)
+     *
+     * @note    This method is responsible for managing the bidirectional relationship
+     *          between the device and the laboratory.
      */
     @Raw @Model
     protected void setLaboratory(Laboratory laboratory) throws IllegalStateException, IllegalArgumentException {
@@ -220,7 +227,9 @@ public abstract class Device extends StorageLocation {
         }
 
         // add device to new lab
-        if (laboratory != null) {laboratory.addAsDevice(this);}
+        if (laboratory != null) {
+            laboratory.addAsDevice(this);
+        }
     }
 
     /**
@@ -283,7 +292,7 @@ public abstract class Device extends StorageLocation {
      */
     public void executeOperation() throws IllegalStateException {
         if (isTerminated()) {
-            throw new IllegalStateException("The device can't be used, since the laboratory is not valid!");
+            throw new IllegalStateException("The device can't be used, since the device is terminated!");
         }
         if (isEmpty()) {
             throw new IllegalStateException("There are no items in the device!");

@@ -33,9 +33,11 @@ public abstract class StorageLocation {
      *          | new.getNbOfIngredients() == 0
      * @post    The new storage location is not yet terminated.
      *          | !new.isTerminated()
+     * @throws  IllegalArgumentException [can]
+     *          | ? true
      */
     @Raw
-    public StorageLocation() {
+    public StorageLocation() throws IllegalArgumentException {
         super();
     }
 

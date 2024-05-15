@@ -106,7 +106,7 @@ public class Recipe {
      * @return  False if one of the instructions is not valid.
      *          | result == ( for some I in 0..getNbOfOperations()-1:
      *          |   if (getOperationAt(I) == Operation.ADD)
-     *          |   then !isValidInstruction(getIngredientAt(getOperations.subList(0, I).stream().filter(operation -> operation == Operation.ADD).count()), getOperationAt(I))
+     *          |       then !isValidInstruction( getIngredientAt(getOperations.subList(0, I).stream().filter(operation -> operation == Operation.ADD).count()), getOperationAt(I) )
      *          |   else
      *          |   then !isValidInstruction(null, getOperationAt(I))
      *          |   (I != J) && getDeviceAt(I).getClass() == getIngredientAt(J).getClass() )

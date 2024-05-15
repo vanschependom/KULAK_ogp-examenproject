@@ -169,4 +169,11 @@ public class AlchemicIngredientTest {
 		assertFalse(ingredient1.equals(ingredient2));
 	}
 
+	@Test
+	public void testSetSpecialName() {
+		AlchemicIngredient i = new AlchemicIngredient(30, Unit.PINCH, standardTemperature, mixedIngrTypePowder, State.POWDER);
+		i.setSpecialName("This Is The Special Name");
+		assertEquals(i.getSpecialName(), "This Is The Special Name");
+	}
+
 }

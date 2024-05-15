@@ -43,14 +43,8 @@ public class Kettle extends Device {
 	 **********************************************************/
 
 	/**
-	 * Return the new name object for the new mixed ingredient, with a special name of null.
+	 * A method that returns the new name object for the new mixed ingredient, with a special name of null.
 	 * The simple name parts being all the simple name parts of the ingredients.
-	 *
-	 * @return  A new name object with all the simple name parts of the ingredients
-	 * 			and a null special name.
-	 * 			| result == new Name(null, ( for each I in 0..getNbOfIngredients()-1:
-	 * 			|				       			getIngredientAt(I).getType().GetName().getSimpleNameParts() ))
-	 * 			| TODO dit navragen voor alle methoden
 	 */
 	@Model
 	private Name getNewName() {
@@ -64,13 +58,9 @@ public class Kettle extends Device {
 	}
 
 	/**
-	 * The new state of the result in this kettle.
-	 *
-	 * @return 	The state of the ingredient
-	 * 			in the kettle with the standard temperature
-	 * 			closest to [0, 20], liquid is chosen over powder.
-	 * 			| result ==
-	 *
+	 * A method that returns the state of the ingredient
+	 * in the kettle with the standard temperature
+	 * closest to [0, 20], liquid is chosen over powder.
 	 */
 	@Model
 	private State getNewState() {
@@ -108,7 +98,7 @@ public class Kettle extends Device {
 	}
 
 	/**
-	 * Return The standard temperature which is closest to [0, 20],
+	 * A method that returns the standard temperature which is closest to [0, 20],
 	 * if the difference is the same, the hottest standard temperature is chosen.
 	 */
 	@Model
@@ -128,7 +118,8 @@ public class Kettle extends Device {
 	}
 
 	/**
-	 * Return the weighted average temperature of all the ingredients inside the kettle.
+	 * A method that returns a new temperature object with the weighted average temperature
+	 * of all the ingredients inside the kettle.
 	 *
 	 * @note 	The coldness and the hotness are calculated separately because otherwise in
 	 * 			the Temperature class there is a lot of rounding to integer values and then
@@ -146,6 +137,17 @@ public class Kettle extends Device {
 			totalHotness += currentHotness;
 		}
 		double difference = (totalHotness - totalColdness) / getNewSpoonAmount();
+		return makeNewTemperature(difference);
+	}
+
+	/**
+	 * A method that creates and returns a new temperature object given an integer
+	 * that represents the difference with [0, 0].
+	 *
+	 * @param 	difference
+	 *			The difference of the new temperature with [0, 0].
+	 */
+	private Temperature makeNewTemperature(double difference) {
 		if (difference > Temperature.getUpperbound()) {
 			return new Temperature(0, Temperature.getUpperbound());
 		} else if (difference > 0) {
@@ -158,8 +160,6 @@ public class Kettle extends Device {
 			return new Temperature(0,0);
 		}
 	}
-
-
 
 	/**********************************************************
 	 * OPERATION EXECUTION

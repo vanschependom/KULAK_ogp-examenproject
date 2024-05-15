@@ -97,6 +97,92 @@ public class LaboratoryTest {
 	}
 
 	@Test
+	public void testAddDevices_IllegalCase() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			lab.addAsDevice(null);
+		});
+	}
+
+	@Test
+	public void testAddDevices_IllegalCase2() {
+		Laboratory otherlab = new Laboratory(2);
+		coolingBox = new CoolingBox(otherlab, new Temperature(20, 0));
+		assertThrows(IllegalStateException.class, () -> {
+			lab.addAsDevice(coolingBox);
+		});
+	}
+
+	@Test
+	public void testRemoveAsDevice_IllegalCase() {
+		Laboratory otherlab = new Laboratory(2);
+		coolingBox = new CoolingBox(otherlab, new Temperature(20, 0));
+		assertThrows(IllegalArgumentException.class, () -> {
+			lab.removeAsDevice(coolingBox);
+		});
+	}
+
+	@Test
+	public void testRemoveAsDevice_IllegalCase2() {
+		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+		assertThrows(IllegalStateException.class, () -> {
+			lab.removeAsDevice(coolingBox);
+		});
+	}
+
+	@Test
+	public void testGetAllOfIngredientAt() {
+		IngredientType type = new IngredientType(new Name(null, "Name"), State.POWDER, new Temperature(0, 20), false);
+		IngredientType type2 = new IngredientType(new Name(null, "Namezef"), State.POWDER, new Temperature(0, 20), false);
+		AlchemicIngredient ingredient1 = new AlchemicIngredient(2, Unit.SPOON, type);
+		AlchemicIngredient ingredient2 = new AlchemicIngredient(15, Unit.SPOON, type2);
+		IngredientContainer container1 = new IngredientContainer(ingredient1);
+		IngredientContainer container2 = new IngredientContainer(ingredient2);
+		lab.addIngredients(container1);
+		lab.addIngredients(container2);
+		assertTrue(ingredient1.equals(lab.getAllOfIngredientAt(0).getContent()));
+		assertEquals(1, lab.getNbOfIngredients());
+		assertTrue(ingredient2.equals(lab.getIngredientAt(0)));
+	}
+
+	@Test
+	public void testGetAllOfIngredientAt_IllegalCase() {
+		assertThrows(IndexOutOfBoundsException.class, () -> {
+			lab.getAllOfIngredientAt(-1);
+		});
+		assertThrows(IndexOutOfBoundsException.class, () -> {
+			lab.getAllOfIngredientAt(2);
+		});
+	}
+
+	@Test
+	public void testGetAmountOfIngredientAt() {
+		IngredientType type = new IngredientType(new Name(null, "Name"), State.POWDER, new Temperature(0, 20), false);
+		IngredientType type2 = new IngredientType(new Name(null, "Nameze"), State.POWDER, new Temperature(0, 20), false);
+		AlchemicIngredient ingredient1 = new AlchemicIngredient(2, Unit.SPOON, type);
+		AlchemicIngredient ingredient2 = new AlchemicIngredient(15, Unit.SPOON, type2);
+		IngredientContainer container1 = new IngredientContainer(ingredient1);
+		IngredientContainer container2 = new IngredientContainer(ingredient2);
+		lab.addIngredients(container1);
+		lab.addIngredients(container2);
+		AlchemicIngredient ingredient = lab.getAmountOfIngredientAt(1, 12, Unit.SPOON).getContent();
+		assertTrue(new AlchemicIngredient(1, Unit.SPOON, type).equals(lab.getAmountOfIngredientAt(0, 1, Unit.SPOON).getContent()));
+		assertTrue(new AlchemicIngredient(12, Unit.SPOON, type2).equals(ingredient));
+		assertEquals(1, lab.getIngredientAt(0).getSpoonAmount());
+		assertTrue(new AlchemicIngredient(3, Unit.SPOON, type2).equals(lab.getIngredientAt(1)));
+		assertEquals(2, lab.getNbOfIngredients());
+	}
+
+	@Test
+	public void testGetAmountOfIngredientAt_IllegalCase() {
+		assertThrows(IndexOutOfBoundsException.class, () -> {
+			lab.getAllOfIngredientAt(4);
+		});
+		assertThrows(IndexOutOfBoundsException.class, () -> {
+			lab.getAllOfIngredientAt(-3);
+		});
+	}
+
+	@Test
 	public void testGetIndexOfDevice() {
 		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
 		oven = new Oven(lab, new Temperature(0, 1000));
@@ -109,16 +195,192 @@ public class LaboratoryTest {
 	}
 
 	@Test
+	public void testGetIndexOfDevice_Illegal() {
+		Laboratory otherlab = new Laboratory(2);
+		coolingBox = new CoolingBox(otherlab, new Temperature(20, 0));
+		assertThrows(IllegalArgumentException.class, () -> {
+			lab.getIndexOfDevice(coolingBox);
+		});
+
+	}
+
+	@Test
+	public void testGetIndexOfDevice_Illegal2() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			lab.getIndexOfDevice(null);
+		});
+
+	}
+
+	@Test
+	public void testGetDeviceOfType_Illegal() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			lab.getIndexOfDevice(null);
+		});
+	}
+
+	@Test
+	public void testGetDeviceOfType_Illegal2() {
+		Laboratory otherlab = new Laboratory(2);
+		coolingBox = new CoolingBox(otherlab, new Temperature(20, 0));
+		assertThrows(IllegalArgumentException.class, () -> {
+			lab.getIndexOfDevice(coolingBox);
+		});
+	}
+
+	@Test
 	public void testHasDeviceTypeOf() {
 		Laboratory otherlab = new Laboratory(2);
 		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
 		oven = new Oven(lab, new Temperature(0, 1000));
 		transmogrifier = new Transmogrifier(otherlab);
 		kettle = new Kettle(lab);
-		assertTrue(lab.hasDeviceOfType(coolingBox.getClass()));
+		assertTrue(lab.hasDeviceOfType(CoolingBox.class));
 		assertTrue(lab.hasDeviceOfType(oven.getClass()));
 		assertFalse(lab.hasDeviceOfType(transmogrifier.getClass()));
 		assertTrue(lab.hasDeviceOfType(kettle.getClass()));
+	}
+
+	@Test
+	public void testGetIndexOfSimpleName() {
+		IngredientType type = new IngredientType(new Name(null, "Name"), State.POWDER, new Temperature(0, 20), false);
+		IngredientType type2 = new IngredientType(new Name(null, "Name Hemlk"), State.POWDER, new Temperature(0, 20), false);
+		AlchemicIngredient ingredient1 = new AlchemicIngredient(2, Unit.SPOON, type);
+		AlchemicIngredient ingredient2 = new AlchemicIngredient(15, Unit.SPOON, type2);
+		IngredientContainer container1 = new IngredientContainer(ingredient1);
+		IngredientContainer container2 = new IngredientContainer(ingredient2);
+		lab.addIngredients(container1);
+		lab.addIngredients(container2);
+		assertEquals(0, lab.getIndexOfSimpleName("Name"));
+		assertEquals(1, lab.getIndexOfSimpleName("Name Hemlo"));
+	}
+
+	@Test
+	public void testGetIndexOfSimpleName_IllegalCase() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			assertEquals(0, lab.getIndexOfSimpleName("Name Hello"));
+		});
+	}
+
+	@Test
+	public void testGetIndexOfSpecialName() {
+		IngredientType type = new IngredientType(new Name(null, "Name"), State.POWDER, new Temperature(0, 20), false);
+		IngredientType type2 = new IngredientType(new Name(null, "Name Namez"), State.POWDER, new Temperature(0, 20), false);
+		IngredientType type3 = new IngredientType(new Name("Mazout", "Beer", "Cola"), State.LIQUID, new Temperature(10, 0), true);
+		AlchemicIngredient ingredient1 = new AlchemicIngredient(2, Unit.SPOON, type);
+		AlchemicIngredient ingredient2 = new AlchemicIngredient(15, Unit.SPOON, type2);
+		AlchemicIngredient ingredient3 = new AlchemicIngredient(8, Unit.JUG, type3);
+		IngredientContainer container1 = new IngredientContainer(ingredient1);
+		IngredientContainer container2 = new IngredientContainer(ingredient2);
+		IngredientContainer container3 = new IngredientContainer(ingredient3);
+		lab.addIngredients(container1);
+		lab.addIngredients(container2);
+		lab.addIngredients(container3);
+		assertEquals(2, lab.getIndexOfSpecialName("Mazout"));
+	}
+
+	@Test
+	public void testGetIndexOfSpecialName_IllegalCase() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			assertEquals(0, lab.getIndexOfSpecialName("Name Name"));
+		});
+	}
+
+	@Test
+	public void testExceedsCapacity() {
+		Laboratory otherLab = new Laboratory(1);
+		new Kettle(otherLab);
+		IngredientType type = new IngredientType(new Name(null, "Name"), State.POWDER, new Temperature(0, 20), false);
+		AlchemicIngredient ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		IngredientContainer container1 = new IngredientContainer(ingredient1);
+		assertFalse(otherLab.exceedsCapacity(container1));
+		otherLab.addIngredients(container1);
+		type = new IngredientType(new Name(null, "Nameezg"), State.POWDER, new Temperature(0, 20), false);
+		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		container1 = new IngredientContainer(ingredient1);
+		assertFalse(otherLab.exceedsCapacity(container1));
+		otherLab.addIngredients(container1);
+		type = new IngredientType(new Name(null, "Nameazrvnoiaerv"), State.POWDER, new Temperature(0, 20), false);
+		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		container1 = new IngredientContainer(ingredient1);
+		assertFalse(otherLab.exceedsCapacity(container1));
+		otherLab.addIngredients(container1);
+		type = new IngredientType(new Name(null, "Nameajernva"), State.POWDER, new Temperature(0, 20), false);
+		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		container1 = new IngredientContainer(ingredient1);
+		assertFalse(otherLab.exceedsCapacity(container1));
+		otherLab.addIngredients(container1);
+		type = new IngredientType(new Name(null, "Nameaeerjnjaerv"), State.POWDER, new Temperature(0, 20), false);
+		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		container1 = new IngredientContainer(ingredient1);
+		assertFalse(otherLab.exceedsCapacity(container1));
+		otherLab.addIngredients(container1);
+		type = new IngredientType(new Name(null, "Nameaerlrjkfn"), State.POWDER, new Temperature(0, 20), false);
+		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		container1 = new IngredientContainer(ingredient1);
+		assertTrue(otherLab.exceedsCapacity(container1));
+	}
+
+	@Test
+	public void testAddIngredients_IllegalCase() {
+		Laboratory otherLab = new Laboratory(1);
+		new Kettle(otherLab);
+		IngredientType type = new IngredientType(new Name(null, "Name"), State.POWDER, new Temperature(0, 20), false);
+		AlchemicIngredient ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		IngredientContainer container1 = new IngredientContainer(ingredient1);
+		otherLab.addIngredients(container1);
+		type = new IngredientType(new Name(null, "Nameezg"), State.POWDER, new Temperature(0, 20), false);
+		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		container1 = new IngredientContainer(ingredient1);
+		otherLab.addIngredients(container1);
+		type = new IngredientType(new Name(null, "Nameazrvnoiaerv"), State.POWDER, new Temperature(0, 20), false);
+		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		container1 = new IngredientContainer(ingredient1);
+		otherLab.addIngredients(container1);
+		type = new IngredientType(new Name(null, "Nameajernva"), State.POWDER, new Temperature(0, 20), false);
+		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		container1 = new IngredientContainer(ingredient1);
+		otherLab.addIngredients(container1);
+		type = new IngredientType(new Name(null, "Nameaeerjnjaerv"), State.POWDER, new Temperature(0, 20), false);
+		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		container1 = new IngredientContainer(ingredient1);
+		otherLab.addIngredients(container1);
+		type = new IngredientType(new Name(null, "Nameaerlrjkfn"), State.POWDER, new Temperature(0, 20), false);
+		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		container1 = new IngredientContainer(ingredient1);
+		IngredientContainer finalContainer = container1;
+		assertThrows(IllegalArgumentException.class, () -> {
+			otherLab.addIngredients(finalContainer);
+		});
+	}
+
+	@Test
+	public void testAddIngredients_IllegalCase2() {
+		Laboratory laboratory = new Laboratory(2);
+		IngredientType type = new IngredientType(new Name(null, "Name"), State.POWDER, new Temperature(0, 20), false);
+		AlchemicIngredient ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		IngredientContainer container1 = new IngredientContainer(ingredient1);
+		laboratory.addIngredients(container1);
+		 type = new IngredientType(new Name(null, "Name"), State.POWDER, new Temperature(0, 20), false);
+		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
+		container1 = new IngredientContainer(ingredient1);
+		IngredientContainer finalContainer = container1;
+		assertThrows(IllegalStateException.class, () -> {
+			laboratory.addIngredients(finalContainer);
+		});
+	}
+
+
+
+	@Test
+	public void testHasProperDevices() {
+		Laboratory otherlab = new Laboratory(2);
+		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+		oven = new Oven(lab, new Temperature(0, 1000));
+		transmogrifier = new Transmogrifier(otherlab);
+		kettle = new Kettle(lab);
+		assertTrue(lab.hasProperDevices());
+		assertTrue(otherlab.hasProperDevices());
 	}
 
 }

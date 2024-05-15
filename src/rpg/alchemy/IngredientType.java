@@ -8,11 +8,13 @@ import rpg.*;
  * A class representing an alchemic ingredient type.
  *
  * @invar	The name of an ingredient type must always be valid.
- * 			| isValidName(getNameObject())
+ * 			| isValidName(getName())
  * @invar 	The state of an ingredient type must always be valid.
  * 			| isValidState(getStandardState())
  * @invar	The standard temperature of an ingredient type must always be valid.
  * 			| isValidTemperature(getStandardTemperatureObject())
+ *
+ * @note 	This class is implemented with total programming.
  *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
@@ -55,7 +57,7 @@ public class IngredientType {
 	 * @post    If the given temperature is a valid standard temperature, the temperature
 	 * 			standard temperature is set to the given temperature.
 	 *          | if (isValidStandardTemperature(temperature))
-	 *          | then new.getStandardTemperatureObject() == temperature
+	 *          | 	then new.getStandardTemperatureObject() == temperature
 	 * @post	The mixed state of the new ingredient type is set to the given mixed state.
 	 * 			| new.isMixed() == isMixed
 	 *
@@ -73,7 +75,7 @@ public class IngredientType {
 			throw new IllegalStateException("Invalid state! State must be effective.");
 		}
 		if (!isValidStandardTemperature(standardTemperature)) {
-			this.standardTemperature = new Temperature();
+			this.standardTemperature = new Temperature(); // total programming
 		} else {
 			this.standardTemperature = standardTemperature;
 		}
@@ -101,6 +103,8 @@ public class IngredientType {
 		return isMixed;
 	}
 
+
+
 	/**********************************************************
 	 * NAME - DEFENSIVE
 	 **********************************************************/
@@ -126,7 +130,7 @@ public class IngredientType {
 	 * @post	If the given name is a valid name for an ingredient type, the name of the ingredient type
 	 * 			is set to the given name.
 	 * 			| if (canHaveAsName(name))
-	 * 			| then new.getName() == name
+	 * 			| 	then new.getName() == name
 	 * @throws	IllegalArgumentException
 	 * 			The given name is not a valid name for an ingredient type.
 	 * 			| !canHaveAsName(name)
@@ -146,7 +150,7 @@ public class IngredientType {
 	 * 			The name to check.
 	 * @return	True if and only if the name is effective and if the
 	 * 			mixed state of the name is equal to the mixed state of the ingredient type.
-	 * 			| result == (name != null && name.isMixed() == isMixed())
+	 * 			| result == ( name != null && name.isMixed() == isMixed() )
 	 */
 	@Raw
 	public boolean canHaveAsName(Name name) {
@@ -206,6 +210,12 @@ public class IngredientType {
 
 	/**
 	 * A getter for the standard temperature object of the ingredient type.
+	 *
+	 * @return	The result is a Temperature object with the coldness and hotness of
+	 * 			the standard temperature of the ingredient type.
+	 * 			| result.equals(
+	 * 			|	new Temperature(getStandardTemperature()[0],
+	 * 			|					getStandardTemperature()[1]) )
 	 */
 	@Model
 	protected Temperature getStandardTemperatureObject() {
@@ -217,7 +227,7 @@ public class IngredientType {
 	 * temperature of this ingredient type.
 	 *
 	 * @param 	temperature
-	 * 			The temperature to compare with the standard temperature.
+	 * 			The temperature array to compare with the standard temperature.
 	 * @return	The difference between the given temperature and the standard temperature.
 	 * 			| result == getStandardTemperatureObject().difference(temperature)
 	 */

@@ -64,15 +64,16 @@ public class Temperature {
 	 * 			The coldness to be set.
 	 * @effect	If the given temperature is valid, the hotness and coldness
 	 * 			are set to the given hotness and coldness
-	 * 			| if (isValidTemperature(hotness, coldness))
-	 * 			| then setHotness(hotness) && setColdness(coldness)
+	 * 			| if (isValidTemperature(coldness, hotness))
+	 * 			| 	then setHotness(hotness) && setColdness(coldness)
 	 * @effect	If the given temperature is not valid, the hotness and coldness
 	 * 			are set to the standard values.
-	 * 			| if (!isValidTemperature(hotness, coldness))
-	 * 			| then setHotness(STANDARD_HOTNESS) && setColdness(STANDARD_COLDNESS)
+	 * 			| if (!isValidTemperature(coldness, hotness))
+	 * 			| 	then setHotness(STANDARD_HOTNESS) && setColdness(STANDARD_COLDNESS)
 	 */
 	@Raw
 	public Temperature(long coldness, long hotness) {
+		super();
 		if (isValidTemperature(coldness, hotness)) {
 			// set to the provided temperature
 			setHotness(hotness);
@@ -101,7 +102,7 @@ public class Temperature {
 	 * the given list of coldness and hotness
 	 *
 	 * @effect	A new temperature is created with the given hotness and coldness.
-	 * 			| this (temperature[0], temperature[1])
+	 * 			| this(temperature[0], temperature[1])
 	 */
 	public Temperature(long[] temperature) {
 		this(temperature[0], temperature[1]);
@@ -140,10 +141,10 @@ public class Temperature {
 	 * 			The new hotness to be set
 	 * @post	If the hotness is bigger then the upperbound then the hotness is set to the upperbound.
 	 * 			| if (hotness > UPPERBOUND)
-	 * 			| then new.getHotness() == UPPERBOUND
+	 * 			| 	then new.getHotness() == UPPERBOUND
 	 * @post	If the hotness is positive and lower than the upperbound, the hotness is set to the given hotness.
 	 * 			| if (hotness >= 0 && hotness < UPPERBOUND)
-	 * 			| then new.getHotness() == hotness
+	 * 			| 	then new.getHotness() == hotness
 	 */
 	@Model
 	private void setHotness(long hotness) {
@@ -181,10 +182,10 @@ public class Temperature {
 	 * 			The new coldness to be set
 	 * @post	If the coldness is bigger the upperbound then the coldness is set to the upperbound.
 	 * 			| if (coldness >= UPPERBOUND)
-	 * 			| then new.getColdness() == UPPERBOUND
+	 * 			| 	then new.getColdness() == UPPERBOUND
 	 * @post	If the coldness is positive and lower than the upperbound, the coldness is set to the given coldness
 	 * 			| if (coldness >= 0 && coldness < UPPERBOUND)
-	 * 			| then new.getColdness() == coldness
+	 * 			| 	then new.getColdness() == coldness
 	 */
 	@Model @Raw
 	private void setColdness(long coldness) {
@@ -204,26 +205,26 @@ public class Temperature {
 	 * 			doesn't succeed the maximum value and the coldness is equal to zero,
 	 * 			the temperature is increased with the given amount.
 	 * 			| if (0 < amount && getHotness() + amount <= UPPERBOUND && getColdness() == 0)
-	 * 			| then new.getHotness() == getHotness() + amount
+	 * 			| 	then new.getHotness() == getHotness() + amount
 	 * @post	If the amount is positive and the current hotness, increased with the given amount,
 	 * 			does succeed the maximum value and the coldness is equal to zero,
 	 * 			the hotness is set to the maximum value.
 	 * 			| if (0 < amount && getHotness() + amount > UPPERBOUND && getColdness == 0)
-	 * 			| then new.getHotness() == UPPERBOUND
+	 * 			| 	then new.getHotness() == UPPERBOUND
 	 * @post	If the amount is positive, and the current coldness is not zero and the current coldness,
 	 * 			decreased with the given amount isn't negative, the coldness is decreased with the given amount.
 	 * 			| if (0 < amount && getColdness() != 0 && getColdness() - amount >= 0)
-	 * 			| then new.getColdness() == getColdness() - amount
+	 * 			| 	then new.getColdness() == getColdness() - amount
 	 * @post	If the amount is positive and the current coldness is not zero and the current coldness,
 	 * 			decreased with the given amount is negative, the coldness is set to zero and the hotness
 	 * 			is set to the difference.
 	 * 			| if (0 < amount && getColdness() != 0 && getColdness() - amount < 0)
-	 * 			| then new.getColdness() == 0 && new.getHotness() == -getColdness() + amount
+	 * 			| 	then new.getColdness() == 0 && new.getHotness() == -getColdness() + amount
 	 * @post	If the amount is positive and the current coldness is not zero and the current coldness,
 	 * 			decreased with the given amount is negative and the difference is bigger than the upperbound
 	 * 			then the coldness is set to zero and the hotness to the upperbound.
 	 * 			| if (0 < amount && getColdness() != 0 && getColdness() - amount < 0 && getColdness() - amount > UPPERBOUND)
-	 * 	 		| then new.getColdness() == 0 && new.getHotness() == UPPERBOUND
+	 * 	 		| 	then new.getColdness() == 0 && new.getHotness() == UPPERBOUND
 	 *
 	 * @note 	Because of the class invariants at least one, coldness or hotness, is always equal to zero.
 	 */
@@ -257,26 +258,26 @@ public class Temperature {
 	 * 			doesn't succeed the maximum value and the hotness is zero,
 	 * 			the coldness is increased with the given amount.
 	 * 			| if (0 < amount && getColdness() + amount <= UPPERBOUND && getHotness() == 0)
-	 * 			| then new.getColdness() == getColdness() + amount
+	 * 			| 	then new.getColdness() == getColdness() + amount
 	 * @post	If the amount is positive and the current coldness, increased with the given amount
 	 * 			does succeed the maximum value and the hotness the coldness is set to the maximum value.
 	 * 			| if (0 < amount && getColdness() + amount > UPPERBOUND && getHotness() == 0)
-	 * 			| then new.getColdness() == UPPERBOUND
+	 * 			| 	then new.getColdness() == UPPERBOUND
 	 * @post	If the amount is positive and the current hotness is not zero
 	 * 			and the current hotness, decreased with the given amount
 	 * 			isn't negative, the hotness is decreased with the given amount.
 	 * 			| if (0 < amount && getHotness() != 0 && getHotness() - amount >= 0)
-	 * 			| then new.getHotness() == getHotness() - amount
+	 * 			| 	then new.getHotness() == getHotness() - amount
 	 * @post	If the amount is positive and the current hotness is not zero
 	 * 			and the current hotness, decreased with the given amount
 	 * 			is negative, the hotness is set to zero and the coldness is set to the difference.
 	 * 			| if (0 < amount && getHotness() != 0 && getHotness() - amount < 0)
-	 * 			| then new.getHotness() == 0 && new.getColdness() == -getHotness() + amount
+	 * 			| 	then new.getHotness() == 0 && new.getColdness() == -getHotness() + amount
 	 * @post	If the amount is positive and the current hotness is not zero and the current hotness,
 	 * 			decreased with the given amount is negative and the difference is bigger then the upperbound
 	 * 			then the hotness is set to zero and the coldness is set to the upperbound.
 	 * 			| if (0 < amount && getHotness() != 0 && getHotness() - amount < 0 && getHotness() - amount > 10000)
-	 * 	 		| then new.getHotness() == 0 && new.getColdness() == UPPERBOUND
+	 * 	 		| 	then new.getHotness() == 0 && new.getColdness() == UPPERBOUND
 	 *
 	 * @note 	Because of the class invariants at least one, coldness or hotness, is always equal to zero.
 	 */
@@ -311,7 +312,7 @@ public class Temperature {
 	 * 			the other coldness is bigger than the own coldness.
 	 * 			| result ==
 	 * 			|	( other == null	|| getHotness() > other[1]
-	 * 			|		|| getColdness() < other[0] )
+	 * 			|					|| getColdness() < other[0] )
 	 */
 	public boolean isHotterThan(long[] other) {
 		return (other == null || getHotness() > other[1] || getColdness() < other[0]);
@@ -326,17 +327,20 @@ public class Temperature {
 	 * 			the other hotness is bigger than the own hotness.
 	 * 			| result ==
 	 * 			|	( other == null	|| getColdness() > other[0]
-	 * 			|		|| getHotness() < other[1] )
+	 * 			|					|| getHotness() < other[1] )
 	 */
 	public boolean isColderThan(long[] other) {
 		return (other == null || getColdness() > other[0] || getHotness() < other[1]);
 	}
 
 	/**
-	 * Return the absolute difference between temperatures
+	 * Return the absolute difference between temperatures.
 	 *
 	 * @param 	other
-	 * 			The other temperature to calculate the difference of
+	 * 			The other temperature to calculate the difference of.
+	 * @return	The sum of the absolute value of the difference of the coldness
+	 * 			and the absolute value of the difference of the hotness.
+	 * 			| result == abs(getColdness() - other[0]) + abs(getHotness() - other[1])
 	 */
 	public long difference(long[] other) {
 		return abs(getColdness() - other[0]) + abs(getHotness() - other[1]);
@@ -346,10 +350,10 @@ public class Temperature {
 	 * A method for getting both the hotness and the coldness of the temperature.
 	 *
 	 * @return	An array containing the coldness and the hotness of the temperature.
-	 * 			| ( result[0] == getColdness() ) && ( result[1] == getHotness() )
+	 * 			| result[0] == getColdness() && result[1] == getHotness()
 	 */
 	public long[] getTemperature() {
-		return new long[] {coldness, hotness};
+		return new long[] {getColdness(), getHotness()};
 	}
 
 	/**
@@ -384,11 +388,13 @@ public class Temperature {
 	 * 			The other temperature to compare to.
 	 * @return	True if and only if the other temperature is effective and the hotness and coldness
 	 * 			are equal.
-	 * 			| result == (other != null && getHotness() == other.getHotness() && getColdness() == other.getColdness())
+	 * 			| result == (other != null && getHotness() == other.getHotness()
+	 * 			| 						   && getColdness() == other.getColdness())
 	 */
 	public boolean equals(Temperature other) {
 		return other != null && getHotness() == other.getHotness() && getColdness() == other.getColdness();
 	}
+
 
 
 	/**********************************************************
@@ -406,17 +412,18 @@ public class Temperature {
 	 * @return	If the difference between the sum of the hotness and the sum of the coldness
 	 * 			is positive then return a new temperature with coldness zero and hotness the minimum of the difference and the upperbound.
 	 * 			| if (t1.getHotness() + t2.getHotness() > t1.getColdness() + t2.getColdness())
-	 * 			| 	result == new Temperature(0, min(t1.getHotness() + t2.getHotness() - t1.getColdness() + t2.getColdness(), UPPERBOUND))
+	 * 			| 	then result.equals( new Temperature(0, min(t1.getHotness() + t2.getHotness() - t1.getColdness() + t2.getColdness(), UPPERBOUND)) )
 	 * @return	If the difference between the sum of the hotness and the sum of the coldness
 	 * 			is negative then return a new temperature with coldness the minimum of the absolute value of the difference and the upperbound
 	 * 			and with hotness zero.
 	 * 			| if (t1.getHotness() + t2.getHotness() < t1.getColdness() + t2.getColdness())
-	 * 			| 	result == new Temperature(min(abs(t1.getHotness() + t2.getHotness() - t1.getColdness() + t2.getColdness()), UPPERBOUND), 0)
+	 * 			| 	then result.equals( new Temperature(min(abs(t1.getHotness() + t2.getHotness() - t1.getColdness() + t2.getColdness()), UPPERBOUND), 0) )
 	 * @return	If the difference between the sum of the hotness and the sum of the coldness is equal to zero
 	 * 			then return a new temperature with both hotness and coldness equal to zero.
 	 * 			| if (t1.getHotness() + t2.getHotness() == t1.getColdness() + t2.getColdness())
-	 * 			| 	result == new Temperature(0, 0)
+	 * 			| 	then result.equals( new Temperature(0, 0) )
 	 */
+	@Model
 	protected static Temperature add(Temperature t1, Temperature t2) {
 		long cold = t1.getColdness() + t2.getColdness();
 		long hot = t1.getHotness() + t2.getHotness();
@@ -433,11 +440,16 @@ public class Temperature {
 	/**
 	 * A method to multiply a temperature with a given factor delta.
 	 *
-	 * @effect	The coldness of the new temperature is set to the temperature multiplied with a factor delta
-	 * 			| new.getColdness = setColdness(delta * getColdness())
-	 * @effect	The hotness of the new temperature is multiplied with a factor delta.
-	 * 			| new.getHotness = setHotness(delta * getHotness())
+	 * @effect	The coldness of the new temperature is set to the current coldness multiplied with a factor delta,
+	 * 			if delta is greater than 0.
+	 * 			| if (delta > 0)
+	 * 			| 	new.getColdness = setColdness(delta * getColdness())
+	 * @effect	The hotness of the new temperature is set to the current hotness multiplied with a factor delta,
+	 * 			if delta is greater than 0.
+	 * 			| if (delta > 0)
+	 * 			| 	new.getHotness = setHotness(delta * getHotness())
 	 */
+	@Model
 	protected void mul(double delta) {
 		if (delta > 0) {
 			setColdness((long) (delta * getColdness()));
@@ -445,10 +457,10 @@ public class Temperature {
 		}
 	}
 
+
+
 	/**********************************************************
 	 * DESTRUCTOR
-	 *
-	 * @note only AlchemicIngredient can destroy a Temperature object
 	 **********************************************************/
 
 	/**
