@@ -49,6 +49,12 @@ public class LaboratoryTest {
 	}
 
 	@Test
+	public void testConstructor_legal() {
+		lab = new Laboratory(5);
+		assertEquals(5, lab.getCapacity());
+	}
+
+	@Test
 	public void testConstructor_illegal() {
 		assertThrows(IllegalArgumentException.class, () -> new Laboratory(0));
 		assertThrows(IllegalArgumentException.class, () -> new Laboratory(-1));
@@ -56,10 +62,19 @@ public class LaboratoryTest {
 
 	@Test
 	public void testAddDevices_legal() {
+		assertEquals(0, lab.getNbOfDevices());
 		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+		assertEquals(coolingBox, lab.getDeviceOfType(CoolingBox.class));
+		assertEquals(1, lab.getNbOfDevices());
 		oven = new Oven(lab, new Temperature(0, 1000));
+		assertEquals(2, lab.getNbOfDevices());
+		assertEquals(oven, lab.getDeviceOfType(Oven.class));
 		transmogrifier = new Transmogrifier(lab);
+		assertEquals(3, lab.getNbOfDevices());
+		assertEquals(transmogrifier, lab.getDeviceOfType(Transmogrifier.class));
 		kettle = new Kettle(lab);
+		assertEquals(4, lab.getNbOfDevices());
+		assertEquals(kettle, lab.getDeviceOfType(Kettle.class));
 	}
 
 	@Test
@@ -113,6 +128,29 @@ public class LaboratoryTest {
 	}
 
 	@Test
+	public void testGetDeviceAt_LegalCase() {
+		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+		oven = new Oven(lab, new Temperature(0, 1000));
+		transmogrifier = new Transmogrifier(lab);
+		kettle = new Kettle(lab);
+		assertEquals(coolingBox, lab.getDeviceAt(0));
+		assertEquals(oven, lab.getDeviceAt(1));
+		assertEquals(transmogrifier, lab.getDeviceAt(2));
+		assertEquals(kettle, lab.getDeviceAt(3));
+	}
+
+	@Test
+	public void testGetDeviceAt_Illegal() {
+		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+		oven = new Oven(lab, new Temperature(0, 1000));
+		transmogrifier = new Transmogrifier(lab);
+		kettle = new Kettle(lab);
+		assertThrows(IndexOutOfBoundsException.class, () -> {
+			lab.getDeviceAt(6);
+		});
+	}
+
+	@Test
 	public void testRemoveAsDevice_IllegalCase() {
 		Laboratory otherlab = new Laboratory(2);
 		coolingBox = new CoolingBox(otherlab, new Temperature(20, 0));
@@ -127,6 +165,36 @@ public class LaboratoryTest {
 		assertThrows(IllegalStateException.class, () -> {
 			lab.removeAsDevice(coolingBox);
 		});
+	}
+
+	@Test
+	public void testHasAsDevice_Legal1() {
+		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+		oven = new Oven(lab, new Temperature(0, 1000));
+		transmogrifier = new Transmogrifier(lab);
+		kettle = new Kettle(lab);
+		assertTrue(lab.hasAsDevice(coolingBox));
+		assertTrue(lab.hasAsDevice(oven));
+		assertTrue(lab.hasAsDevice(transmogrifier));
+		assertTrue(lab.hasAsDevice(kettle));
+	}
+
+	@Test
+	public void testHasAsDevice_Legal2() {
+		Laboratory otherLab = new Laboratory(2);
+		coolingBox = new CoolingBox(lab, new Temperature(20, 0));
+		oven = new Oven(lab, new Temperature(0, 1000));
+		transmogrifier = new Transmogrifier(otherLab);
+		kettle = new Kettle(otherLab);
+		assertTrue(lab.hasAsDevice(coolingBox));
+		assertTrue(lab.hasAsDevice(oven));
+		assertFalse(lab.hasAsDevice(transmogrifier));
+		assertFalse(lab.hasAsDevice(kettle));
+	}
+
+	@Test
+	public void testHasAsDevice_Illegal_null() {
+		assertFalse(lab.hasAsDevice(null));
 	}
 
 	@Test
@@ -213,9 +281,15 @@ public class LaboratoryTest {
 	}
 
 	@Test
+	public void testGetDeviceOfType_Legal() {
+		transmogrifier = new Transmogrifier(lab);
+		assertEquals(transmogrifier, lab.getDeviceOfType(Transmogrifier.class));
+	}
+
+	@Test
 	public void testGetDeviceOfType_Illegal() {
 		assertThrows(IllegalArgumentException.class, () -> {
-			lab.getIndexOfDevice(null);
+			lab.getDeviceOfType(null);
 		});
 	}
 
@@ -224,7 +298,7 @@ public class LaboratoryTest {
 		Laboratory otherlab = new Laboratory(2);
 		coolingBox = new CoolingBox(otherlab, new Temperature(20, 0));
 		assertThrows(IllegalArgumentException.class, () -> {
-			lab.getIndexOfDevice(coolingBox);
+			lab.getDeviceOfType(CoolingBox.class);
 		});
 	}
 
@@ -376,8 +450,6 @@ public class LaboratoryTest {
 			laboratory.addIngredients(finalContainer);
 		});
 	}
-
-
 
 	@Test
 	public void testHasProperDevices() {

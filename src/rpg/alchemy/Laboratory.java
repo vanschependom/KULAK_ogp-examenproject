@@ -98,13 +98,13 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	index
 	 *        	The index of the device to be returned.
-	 * @throws 	IllegalArgumentException
+	 * @throws 	IndexOutOfBoundsException
 	 *         	The given index is not positive or exceeds the number
 	 *         	of items registered in this directory minus 1.
 	 *         	| (index < 0) || (index > getNbItems()-1)
 	 */
 	@Basic
-	public <T extends Device> T getDeviceAt(int index) {
+	public <T extends Device> T getDeviceAt(int index) throws IndexOutOfBoundsException {
 		try {
 			return (T) devices.get(index);
 		} catch (IndexOutOfBoundsException e) {
@@ -357,13 +357,14 @@ public class Laboratory extends StorageLocation {
 	 *        	of devices registered in this laboratory.
 	 *        	| (index < 0) || (index >= getNbItems())
 	 */
+	@Model
 	private void removeAsDeviceAt(int index) throws IndexOutOfBoundsException {
 		if (index < 0 || index >= getNbOfDevices()) {
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
 		}
-		try{
+		try {
 			devices.remove(index);
-		}catch(IndexOutOfBoundsException e) {
+		} catch(IndexOutOfBoundsException e) {
 			// Should not happen.
 			assert false;
 		}
