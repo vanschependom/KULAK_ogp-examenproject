@@ -3,6 +3,9 @@ package rpg.alchemy;
 import be.kuleuven.cs.som.annotate.*;
 import rpg.Unit;
 import rpg.exceptions.IngredientNotPresentException;
+import rpg.recipe.Operation;
+import rpg.recipe.Recipe;
+
 import java.util.ArrayList;
 
 /**
@@ -657,6 +660,89 @@ public class Laboratory extends StorageLocation {
 			container = oven.getResult();
 		}
 		return container;
+	}
+
+	/**********************************************************
+	 * RECIPE EXECUTION
+	 **********************************************************/
+
+	/**
+	 * A method to execute a recipe in a laboratory an x amount of times.
+	 *
+	 * @param 	recipe
+	 * 			The recipe that you want to execute.
+	 * @param 	amount
+	 * 			The amount of times that you want to execute the recipe.
+	 *
+	 * @effect	TODO
+	 */
+	public void execute(Recipe recipe, int amount) {
+		for (int i=0; i < amount; i++) {
+			try {
+				executeSingleRecipe(recipe);
+			} catch (IllegalArgumentException e){
+				break;
+			}
+		}
+	}
+
+
+	/**
+	 * A method to execute a single recipe.
+	 *
+	 * @param 	recipe
+	 * 			The recipe that you want to execute.
+	 *
+	 * @post	TODO
+	 */
+	@Model
+	private void executeSingleRecipe(Recipe recipe) {
+		if (!hasEnoughIngredients(recipe)) {
+			throw new IllegalArgumentException("There aren't enough ingredient to execute the recipe.");
+		}
+
+		// TODO checken of deze devices er in zitten indien ze gebruikt moeten worden
+		Kettle kettle = getDeviceOfType(Kettle.class);
+		Oven oven = getDeviceOfType(Oven.class);
+		CoolingBox coolingBox = getDeviceOfType(CoolingBox.class);
+
+		AlchemicIngredient lastUsed = null;
+		int amountOfIngredrients = 0;
+
+		for (int i=0; i < recipe.getNbOfOperations(); i++){
+			Operation currentOperation = recipe.getOperationAt(i);
+			if (currentOperation == Operation.ADD) {
+				AlchemicIngredient nextIngredient = recipe.getIngredientAt(amountOfIngredrients);
+				amountOfIngredrients++;
+				IngredientContainer tempContainer = new IngredientContainer(Unit.getMaxUnitForContainerWithState(currentIngredient.getState()),currentIngredient);
+				kettle.addIngredients(tempContainer);
+				lastUsed = nextIngredient;
+			} else if (currentOperation == Operation.COOL) {
+				IngredientContainer tempContainer = new IngredientContainer(Unit.getMaxUnitForContainerWithState(lastUsed.getState()), lastUsed);
+				coolingBox.addIngredients(tempContainer);
+				coolingBox.changeTemperatureTo(Temperature.add(lastUsed.getTemperatureObject(), new Temperature(0,10)));
+				coolingBox.executeOperation();
+			} else if (currentOperation == Operation.HEAT) {
+				IngredientContainer tempContainer = new IngredientContainer(Unit.getMaxUnitForContainerWithState(lastUsed.getState()), lastUsed);
+				oven.addIngredients(tempContainer);
+				oven.changeTemperatureTo(Temperature.add(lastUsed.getTemperatureObject(), new Temperature(10,0)));
+				oven.executeOperation();
+			} else if (currentOperation == Operation.MIX) {
+				kettle.executeOperation();
+				lastUsed = kettle.getIngredientAt(0);
+			}
+		}
+	}
+
+
+	private boolean hasEnoughIngredients(Recipe recipe) {
+		for (int i = 0; i < recipe.getNbOfIngredients(); i++) {
+			if (!hasIngredientWithSimpleName(recipe.getIngredientAt(i).getSimpleName())) {
+				// TODO check ook nog hoeveelheid
+				return false;
+			}
+		}
+		return true;
 	}
 
 }
