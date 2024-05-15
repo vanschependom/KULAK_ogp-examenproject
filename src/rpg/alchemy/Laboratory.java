@@ -291,11 +291,11 @@ public class Laboratory extends StorageLocation {
 	 * 			| device.getLaboratory() != this
 	 */
 	protected void addAsDevice(Device device) {
-		if (hasDeviceOfType(device.getClass())) {
-			throw new IllegalArgumentException("A device if this type is already present in this laboratory.");
-		}
 		if (!canHaveAsDevice(device)) {
 			throw new IllegalArgumentException("This device is not allowed for this laboratory.");
+		}
+		if (hasDeviceOfType(device.getClass())) {
+			throw new IllegalArgumentException("A device if this type is already present in this laboratory.");
 		}
 		// device is effective, so we can call getLaboratory()
 		if (device.getLaboratory() != this) {
@@ -446,7 +446,7 @@ public class Laboratory extends StorageLocation {
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
 		}
 		AlchemicIngredient ingredient = getIngredientAt(index);
-		double amountLeft = ingredient.getAmount() - amount*unit.getConversionFor(ingredient.getUnit());
+		double amountLeft = ingredient.getAmount() - (amount*unit.getConversionFor(ingredient.getUnit()));
 		removeAsIngredient(ingredient);
 		if (amountLeft != 0) {
 			addAsIngredient(new AlchemicIngredient(

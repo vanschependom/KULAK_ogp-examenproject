@@ -167,18 +167,18 @@ public class LaboratoryTest {
 		AlchemicIngredient ingredient = lab.getAmountOfIngredientAt(1, 12, Unit.SPOON).getContent();
 		assertTrue(new AlchemicIngredient(1, Unit.SPOON, type).equals(lab.getAmountOfIngredientAt(0, 1, Unit.SPOON).getContent()));
 		assertTrue(new AlchemicIngredient(12, Unit.SPOON, type2).equals(ingredient));
-		assertEquals(1, lab.getIngredientAt(0).getSpoonAmount());
-		assertTrue(new AlchemicIngredient(3, Unit.SPOON, type2).equals(lab.getIngredientAt(1)));
+		assertTrue(new AlchemicIngredient(1, Unit.SPOON, type).equals(lab.getIngredientAt(1)));
+		assertTrue(new AlchemicIngredient(3, Unit.SPOON, type2).equals(lab.getIngredientAt(0)));
 		assertEquals(2, lab.getNbOfIngredients());
 	}
 
 	@Test
 	public void testGetAmountOfIngredientAt_IllegalCase() {
 		assertThrows(IndexOutOfBoundsException.class, () -> {
-			lab.getAllOfIngredientAt(4);
+			lab.getAmountOfIngredientAt(4, 6, Unit.SACK);
 		});
 		assertThrows(IndexOutOfBoundsException.class, () -> {
-			lab.getAllOfIngredientAt(-3);
+			lab.getAmountOfIngredientAt(-3, 3, Unit.BARREL);
 		});
 	}
 
@@ -252,7 +252,7 @@ public class LaboratoryTest {
 		lab.addIngredients(container1);
 		lab.addIngredients(container2);
 		assertEquals(0, lab.getIndexOfSimpleName("Name"));
-		assertEquals(1, lab.getIndexOfSimpleName("Name Hemlo"));
+		assertEquals(1, lab.getIndexOfSimpleName("Name Hemlk"));
 	}
 
 	@Test
@@ -319,6 +319,13 @@ public class LaboratoryTest {
 		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		container1 = new IngredientContainer(ingredient1);
 		assertTrue(otherLab.exceedsCapacity(container1));
+	}
+
+	@Test
+	public void testExceedsCapacity_IllegalCase() {
+		assertThrows(NullPointerException.class, () -> {
+			lab.exceedsCapacity(null);
+		});
 	}
 
 	@Test
