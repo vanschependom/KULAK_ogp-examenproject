@@ -668,43 +668,44 @@ public class Laboratory extends StorageLocation {
 
 	/**
 	 * A method to execute a recipe in a laboratory an x amount of times.
-	 *
-	 * @param 	recipe
-	 * 			The recipe that you want to execute.
-	 * @param 	amount
-	 * 			The amount of times that you want to execute the recipe.
-	 *
-	 * @effect	TODO
 	 */
 	public void execute(Recipe recipe, int amount) {
+		Kettle kettle = null;
+		Oven oven = null;
+		CoolingBox coolingBox = null;
+		if (!hasDeviceOfType(Kettle.class)) {
+			throw new IllegalArgumentException("Kettle niet aanwezig");
+			// TODO andere exceptions
+		} else {
+			kettle = getDeviceOfType(Kettle.class);
+		}
+		if (recipe.containsThisOperation(Operation.COOL) && !hasDeviceOfType(CoolingBox.class)) {
+			throw new IllegalArgumentException("Cooling Box niet aanwezig maar cool instructie is gegeven.");
+		} else {
+			oven = getDeviceOfType(Oven.class);
+		}
+		if (recipe.containsThisOperation(Operation.HEAT) && !hasDeviceOfType(Oven.class)) {
+			throw new IllegalArgumentException("Oven niet aanwezig maar heat instructie is gegeven.");
+		} else {
+			coolingBox = getDeviceOfType(CoolingBox.class);
+		}
 		for (int i=0; i < amount; i++) {
 			try {
-				executeSingleRecipe(recipe);
+				executeSingleRecipe(recipe, kettle, coolingBox, oven);
 			} catch (IllegalArgumentException e){
 				break;
 			}
 		}
 	}
 
-
 	/**
 	 * A method to execute a single recipe.
-	 *
-	 * @param 	recipe
-	 * 			The recipe that you want to execute.
-	 *
-	 * @post	TODO
 	 */
 	@Model
-	private void executeSingleRecipe(Recipe recipe) {
+	private void executeSingleRecipe(Recipe recipe, Kettle kettle, CoolingBox coolingBox, Oven oven) {
 		if (!hasEnoughIngredients(recipe)) {
 			throw new IllegalArgumentException("There aren't enough ingredient to execute the recipe.");
 		}
-
-		// TODO checken of deze devices er in zitten indien ze gebruikt moeten worden
-		Kettle kettle = getDeviceOfType(Kettle.class);
-		Oven oven = getDeviceOfType(Oven.class);
-		CoolingBox coolingBox = getDeviceOfType(CoolingBox.class);
 
 		AlchemicIngredient lastUsed = null;
 		int amountOfIngredrients = 0;
@@ -714,7 +715,7 @@ public class Laboratory extends StorageLocation {
 			if (currentOperation == Operation.ADD) {
 				AlchemicIngredient nextIngredient = recipe.getIngredientAt(amountOfIngredrients);
 				amountOfIngredrients++;
-				IngredientContainer tempContainer = new IngredientContainer(Unit.getMaxUnitForContainerWithState(currentIngredient.getState()),currentIngredient);
+				IngredientContainer tempContainer = new IngredientContainer(Unit.getMaxUnitForContainerWithState(nextIngredient.getState()), nextIngredient);
 				kettle.addIngredients(tempContainer);
 				lastUsed = nextIngredient;
 			} else if (currentOperation == Operation.COOL) {
@@ -734,7 +735,9 @@ public class Laboratory extends StorageLocation {
 		}
 	}
 
-
+	/**
+	 * Checks if there are enough ingredients to execute the recipe.
+	 */
 	private boolean hasEnoughIngredients(Recipe recipe) {
 		for (int i = 0; i < recipe.getNbOfIngredients(); i++) {
 			if (!hasIngredientWithSimpleName(recipe.getIngredientAt(i).getSimpleName())) {

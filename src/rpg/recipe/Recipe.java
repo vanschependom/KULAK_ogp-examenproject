@@ -333,6 +333,15 @@ public class Recipe {
     }
 
 
+    public boolean containsThisOperation(Operation operation) {
+        for (Operation o : getOperations()) {
+            if (o == operation) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**********************************************************
      * COPY
