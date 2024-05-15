@@ -23,7 +23,7 @@ public class Recipe {
     /**
      * A variable for keeping track of all ingredients of the recipe.
      *
-     * @invar   ingredients references an effective list
+     * @invar   ingredients references an effective list.
      *          | ingredients != null
      * @invar   Each ingredient in the list references an effective ingredient.
      *          | for each ingredient in ingredients:
@@ -37,7 +37,7 @@ public class Recipe {
     /**
      * A variable for keeping track of all instructions of the recipe.
      *
-     * @invar   operations references an effective list
+     * @invar   operations references an effective list.
      *          | operations != null
      * @invar   Each operation in the list references an effective operation.
      *          | for each operation in operations:
@@ -59,10 +59,10 @@ public class Recipe {
      * @param   operations
      *          The operation list for the recipe
      *
-     * @effect  The ingredient list of the recipe is set to ingredients if the instruction set is valid
+     * @effect  The ingredient list of the recipe is set to ingredients if the instruction set is valid.
      *          | if isValidInstructionSet(ingredients, operations)
      *          |   then setIngredients(ingredients)
-     * @effect  The operation list of the recipe is set to operations if the instruction set is valid
+     * @effect  The operation list of the recipe is set to operations if the instruction set is valid.
      *          | if isValidInstructionSet(ingredients, operations)
      *          |   then setOperations(operations)
      */
@@ -96,11 +96,11 @@ public class Recipe {
      * ingredients and operations is valid.
      *
      * @param   ingredients
-     *          The ingredients list to check
+     *          The ingredients list to check.
      * @param   operations
-     *          The operations list to check
+     *          The operations list to check.
      *
-     * @return  False if either ingredients or operations is a null reference
+     * @return  False if either ingredients or operations is a null reference.
      *          | if (ingredients == null || operations == null)
      *          | then result == false
      * @return  False if one of the instructions is not valid.
@@ -112,7 +112,7 @@ public class Recipe {
      *          |   (I != J) && getDeviceAt(I).getClass() == getIngredientAt(J).getClass() )
      * @return  Otherwise true if the amount of operations in operations
      *          which are equal to the add operation,
-     *          is equal to the size of ingredients
+     *          is equal to the size of ingredients.
      *          | result == ( ingredients.size() ==
      *          |   getOperations.stream().filter(operation -> operation == Operation.ADD).count() )
      *
@@ -138,13 +138,13 @@ public class Recipe {
      * A method for checking if a certain instruction is valid.
      *
      * @param   ingredient
-     *          The ingredient to check
+     *          The ingredient to check.
      * @param   operation
-     *          The operation to check
+     *          The operation to check.
      *
      * @return  True if and only if either the operation is an add operation
-     *          and the ingredient is not null and not terminated
-     *          or the operation is not null and not add and the ingredient is null
+     *          and the ingredient is not null and not terminated.
+     *          Or if the operation is not null, not an add operation and the ingredient is null.
      *          | result ==
      *          |   ( operation == Operation.ADD && ingredient != null && !ingredient.isTerminated()) ||
      *          |   ( operation != null && operation != Operation.ADD && ingredient == null )
@@ -155,7 +155,7 @@ public class Recipe {
     }
 
     /**
-     * A method for getting the ingredients
+     * A method for getting the ingredients.
      */
     @Model
     private ArrayList<AlchemicIngredient> getIngredients() {
@@ -163,7 +163,7 @@ public class Recipe {
     }
 
     /**
-     * A method for getting the operations
+     * A method for getting the operations.
      */
     @Model
     private ArrayList<Operation> getOperations() {
@@ -171,12 +171,12 @@ public class Recipe {
     }
 
     /**
-     * A method for setting the ingredients of a recipe
+     * A method for setting the ingredients of a recipe.
      *
      * @param   ingredients
-     *          The ingredients for the recipe
+     *          The ingredients for the recipe.
      *
-     * @post    The ingredients of the recipe are set to a copy of ingredients
+     * @post    The ingredients of the recipe are set to a copy of ingredients.
      *          | new.getIngredients().equals(ingredients)
      */
     @Model @Raw
@@ -185,12 +185,12 @@ public class Recipe {
     }
 
     /**
-     * A method for setting the operations of a recipe
+     * A method for setting the operations of a recipe.
      *
      * @param   operations
-     *          The operations for the recipe
+     *          The operations for the recipe.
      *
-     * @post    The operations of the recipe are set to a copy of operations
+     * @post    The operations of the recipe are set to a copy of operations.
      *          | new.getOperations().equals(operations)
      */
     @Model @Raw
@@ -199,10 +199,10 @@ public class Recipe {
     }
 
     /**
-     * A method for adding an ingredient to the ingredients of the recipe
+     * A method for adding an ingredient to the ingredients of the recipe.
      *
      * @param   ingredient
-     *          The ingredient to be added
+     *          The ingredient to be added.
      *
      * @post    The number of ingredients of this recipe is
      *          incremented with 1.
@@ -216,10 +216,10 @@ public class Recipe {
     }
 
     /**
-     * A method for adding an operation to the operations of the recipe
+     * A method for adding an operation to the operations of the recipe.
      *
      * @param   operation
-     *          The operation to be added
+     *          The operation to be added.
      *
      * @post    The number of operations of this recipe is
      *          incremented with 1.
@@ -233,21 +233,21 @@ public class Recipe {
     }
 
     /**
-     * A method for adding an instruction to a recipe
+     * A method for adding an instruction to a recipe.
      *
      * @param   ingredient
-     *          The ingredient to be added as part of the instruction
-     *          If the operation does not require an ingredient, null can be provided
+     *          The ingredient to be added as part of the instruction.
+     *          If the operation does not require an ingredient, null can be provided.
      * @param   operation
-     *          The operation to be added as part of the instruction
+     *          The operation to be added as part of the instruction.
      *
      * @effect  If the instruction is valid as a whole,
-     *          the operation is added to the recipe
+     *          the operation is added to the recipe.
      *          | if isValidInstruction(ingredient, operation)
      *          | then addOperation(ingredient)
      * @effect  If the instruction is valid as a whole
      *          and the ingredient is not a null-reference,
-     *          the ingredient is added to the recipe
+     *          the ingredient is added to the recipe.
      *          | if ( isValidInstruction(ingredient, operation)
      *          |           && ingredient != null )
      *          | then addIngredient(operation)
@@ -261,12 +261,12 @@ public class Recipe {
     }
 
     /**
-     * A method for adding an instruction to a recipe
+     * A method for adding an instruction to a recipe.
      *
      * @param   operation
-     *          The operation to be added as part of the instruction
+     *          The operation to be added as part of the instruction.
      *
-     * @effect  The operation with a null reference ingredient is added
+     * @effect  The operation with a null reference ingredient is added.
      *          | addInstruction(null, operation)
      */
     @Raw
@@ -275,17 +275,17 @@ public class Recipe {
     }
 
     /**
-     * A method for getting the ingredient at a certain index
+     * A method for getting the ingredient at a certain index.
      *
      * @param   index
-     *          The index of the ingredient
+     *          The index of the ingredient.
      *
      * @return  The ingredient at the given index if the index is positive
-     *          and the index is smaller than the length of ingredients
+     *          and the index is smaller than the length of ingredients.
      *          | if (index >= 0) && (index < getNbOfIngredients())
      *          | then result == getIngredients().get(index)
      * @return  null if the index is not valid
-     *          according to the limitations above
+     *          according to the limitations above.
      *          | if (index < 0) || (index >= getNbOfIngredients())
      *          | then result == null
      */
@@ -296,17 +296,17 @@ public class Recipe {
     }
 
     /**
-     * A method for getting the operation at a certain index
+     * A method for getting the operation at a certain index.
      *
      * @param   index
-     *          The index of the operation
+     *          The index of the operation.
      *
      * @return  The operation at the given index if the index is positive
-     *          and the index is smaller than the length of operations
+     *          and the index is smaller than the length of operations.
      *          | if (index >= 0) && (index < getNbOfOperations())
      *          | then result == getOperations().get(index)
      * @return  null if the index is not valid
-     *          according to the limitations above
+     *          according to the limitations above.
      *          | if (index < 0) || (index >= getNbOfOperations())
      *          | then result == null
      */
@@ -317,7 +317,7 @@ public class Recipe {
     }
 
     /**
-     * A method for getting the length of ingredients of a recipe
+     * A method for getting the length of ingredients of a recipe.
      */
     @Basic
     public int getNbOfIngredients() {
@@ -325,7 +325,7 @@ public class Recipe {
     }
 
     /**
-     * A method for getting the length of operations of a recipe
+     * A method for getting the length of operations of a recipe.
      */
     @Basic
     public int getNbOfOperations() {
@@ -339,9 +339,9 @@ public class Recipe {
      **********************************************************/
 
     /**
-     * A method for cloning a recipe
+     * A method for cloning a recipe.
      *
-     * @return  A copy of the original recipe
+     * @return  A copy of the original recipe.
      *          | result ==
      *          |   new Recipe(getIngredients(), getOperations())
      */
@@ -358,25 +358,24 @@ public class Recipe {
      * A method to check if two recipes are equal (based on their ingredients and operations).
      *
      * @param   other
-     *          The recipe you compare with.
-     * @return  If they don't have the amount of operations or
-     *          the same amount of ingredients return false.
-     *          | if (getNbOfIngredients() != other.getNbOfIngredients()
-     *          |       || getNbOfOperations() != other.getNbOfOperations())
+     *          The recipe to compare with.
+     * @return  If the recipes don't have the same amount of operations or
+     *          the same amount of ingredients, return false.
+     *          | if ( getNbOfIngredients() != other.getNbOfIngredients()
+     *          |       || getNbOfOperations() != other.getNbOfOperations() )
      *          | then result == false
-     * @effect  If two ingredients at the same index aren't equal then return false.
-     *          | for each I in 0..getNbOfIngredients()-1:
-     *          |   if (!getIngredientAt(I).equals(other.getIngredientAt(I)))
-     *          |       then result == false
-     * @return  If two operations at the same index aren't equal then return false.
-     *          | for each I in 0..getNbOfOperations()-1:
-     *          |   if (!getOperationAt(I).equals(other.getOperationAt(I)))
-     *          |       then result == false
-     * @return  If all the ingredients and all the operation are equal then return true.
-     *          | for each I in 0..getNbOfOperations()-1:
-     *          |   if (getIngredientAt(I).equals(other.getIngredientAt(I)) &&
-     *          |       getOperationAt(I).equals(other.getOperationAt(I)))
-     *          |   then result == true;
+     * @return  If not all the ingredients and all the operations are equal, return false.
+     *          | if ( ( for some I in 0..getNbOfOperations()-1:
+     *          |       ! getIngredientAt(I).equals(other.getIngredientAt(I)) ||
+     *          |       ! getOperationAt(I).equals(other.getOperationAt(I)))) )
+     *          |   then result == false
+     * @return  True otherwise.
+     *          | if ( (getNbOfIngredients() != other.getNbOfIngredients()
+     *          |       || getNbOfOperations() != other.getNbOfOperations()) &&
+     *          |       (for each I in 0..getNbOfOperations()-1:
+     *          |           getIngredientAt(I).equals(other.getIngredientAt(I)) &&
+     *          |           getOperationAt(I).equals(other.getOperationAt(I))) )
+     *          |   then result == true
      */
     public boolean equals(Recipe other) {
         // if there is a difference in the amount of ingredients or operations, return false
@@ -427,7 +426,7 @@ public class Recipe {
     }
 
     /**
-     * A method for terminating a recipe
+     * A method for terminating a recipe.
      *
      * @post    The recipe is terminated if it can be terminated.
      *          | if canBeTerminated()
