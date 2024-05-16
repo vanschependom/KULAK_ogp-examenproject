@@ -608,6 +608,7 @@ public class Laboratory extends StorageLocation {
 
 	/**
 	 * A help method to set the ingredient of a container to its standard temperature.
+	 * TODO aanpassen
 	 *
 	 * @param 	container
 	 * 			The container of which the ingredient will be set to its standard temperature.
@@ -636,23 +637,29 @@ public class Laboratory extends StorageLocation {
 	 */
 	@Model
 	private IngredientContainer bringToStandardTemperature(IngredientContainer container) throws IllegalStateException {
-		if (container.getContent().isHotterThanStandardTemperature() && !hasDeviceOfType(CoolingBox.class)) {
-			throw new IllegalStateException("The content is hotter than standard temperature, but there is no cooling box in the lab!");
-		} else if (container.getContent().isColderThanStandardTemperature() && !hasDeviceOfType(Oven.class)) {
-			throw new IllegalStateException("The content is colder than standard temperature, but there is no oven in the lab!");
+		return bringToTemperature(container, container.getContent().getType().getStandardTemperature());
+	}
+
+	// TODO
+	private IngredientContainer bringToTemperature(IngredientContainer container, long[] temperature) {
+		if (container.getContent().isHotterThan(temperature) && !hasDeviceOfType(CoolingBox.class)) {
+			throw new IllegalStateException("The content is hotter than the provided temperature, but there is no cooling box in the lab!");
+		} else if (container.getContent().isColderThan(temperature) && !hasDeviceOfType(Oven.class)) {
+			throw new IllegalStateException("The content is colder than the provided temperature, but there is no oven in the lab!");
 		}
-		while (container.getContent().isColderThanStandardTemperature() || container.getContent().isHotterThanStandardTemperature()) {
-			if (container.getContent().isHotterThanStandardTemperature()) {
+		// because the oven is not exact, we need to keep heating/cooling until the temperature is standard!
+		while (container.getContent().isColderThan(temperature) || container.getContent().isHotterThan(temperature)) {
+			if (container.getContent().isHotterThan(temperature)) {
 				// too hot -> cool
 				CoolingBox coolingBox = getDeviceOfType(CoolingBox.class);
-				coolingBox.changeTemperatureTo(container.getContent().getType().getStandardTemperature());    // standard temperature of the ingredient type
+				coolingBox.changeTemperatureTo(temperature);    // standard temperature of the ingredient type
 				coolingBox.addIngredients(container);
 				coolingBox.executeOperation();                        // cooling box is exact!
 				container = coolingBox.getResult();
 			} else {
 				// too cold -> heat
 				Oven oven = getDeviceOfType(Oven.class);
-				oven.changeTemperatureTo(container.getContent().getType().getStandardTemperature());        // standard temperature of the ingredient type
+				oven.changeTemperatureTo(temperature);        // standard temperature of the ingredient type
 				oven.addIngredients(container);
 				oven.executeOperation();
 				container = oven.getResult();
@@ -690,10 +697,13 @@ public class Laboratory extends StorageLocation {
 		} else {
 			coolingBox = getDeviceOfType(CoolingBox.class);
 		}
-		// execute the recipe
-		for (int i=0; i < multiplier; i++) {
+		// execute the recipe x times
+		int nbOfTimesExecuted = 0;
+		while(nbOfTimesExecuted < multiplier && hasEnoughIngredientsForRecipe(recipe)) {
 			executeSingleRecipe(recipe, kettle, coolingBox, oven);
+			nbOfTimesExecuted++;
 		}
+		// if there is not enough ingredients left, we stop
 	}
 
 	/**
@@ -701,32 +711,46 @@ public class Laboratory extends StorageLocation {
 	 */
 	@Model
 	private void executeSingleRecipe(Recipe recipe, Kettle kettle, CoolingBox coolingBox, Oven oven) {
-		if (!hasEnoughIngredientsForRecipe(recipe)) {
-			throw new IllegalArgumentException("There isn't enough ingredient to execute the recipe.");
-		}
-		AlchemicIngredient lastUsed = null;
-		int amountOfIngredients = 0;
+		
+		AlchemicIngredient previouslyAdded = null;
+		int ingrCounter = 0;
+
+		// iterate over the operations
 		for (int i=0; i < recipe.getNbOfOperations(); i++){
-			Operation currentOperation = recipe.getOperationAt(i);
-			if (currentOperation == Operation.ADD) {
-				AlchemicIngredient nextIngredient = recipe.getIngredientAt(amountOfIngredients);
-				amountOfIngredients++;
-				IngredientContainer tempContainer = new IngredientContainer(Unit.getMaxUnitForContainerWithState(nextIngredient.getState()), nextIngredient);
-				kettle.addIngredients(tempContainer);
-				lastUsed = nextIngredient;
-			} else if (currentOperation == Operation.COOL) {
-				IngredientContainer tempContainer = new IngredientContainer(Unit.getMaxUnitForContainerWithState(lastUsed.getState()), lastUsed);
-				coolingBox.addIngredients(tempContainer);
-				coolingBox.changeTemperatureTo(Temperature.add(lastUsed.getTemperatureObject(), new Temperature(0,10)));
-				coolingBox.executeOperation();
-			} else if (currentOperation == Operation.HEAT) {
-				IngredientContainer tempContainer = new IngredientContainer(Unit.getMaxUnitForContainerWithState(lastUsed.getState()), lastUsed);
-				oven.addIngredients(tempContainer);
-				oven.changeTemperatureTo(Temperature.add(lastUsed.getTemperatureObject(), new Temperature(10,0)));
-				oven.executeOperation();
-			} else if (currentOperation == Operation.MIX) {
+
+			Operation operation = recipe.getOperationAt(i);
+
+			if (operation == Operation.ADD) {
+				previouslyAdded = recipe.getIngredientAt(ingrCounter);
+				kettle.addIngredients(new IngredientContainer(previouslyAdded));
+			}
+			if (operation == Operation.HEAT) {
+				IngredientContainer result;
+				// the last operation was add
+				if (previouslyAdded != null) {
+					Temperature temperaturePlusTen = Temperature.add(new Temperature(kettle.getResult().getContent().getTemperature()), new Temperature(0, 10));
+					result = bringToTemperature(new IngredientContainer(previouslyAdded), temperaturePlusTen.getTemperature());
+				} else {
+					Temperature temperaturePlusTen = Temperature.add(new Temperature(kettle.getResult().getContent().getTemperature()), new Temperature(0, 10));
+					result = bringToTemperature(kettle.getResult(), temperaturePlusTen.getTemperature());
+				}
+				kettle.addIngredients(result);
+			}
+			if (operation == Operation.COOL) {
+				IngredientContainer result;
+				// the last operation was add
+				if (previouslyAdded != null) {
+					Temperature temperatureMinusTen = Temperature.add(new Temperature(kettle.getResult().getContent().getTemperature()), new Temperature(10, 0));
+					result = bringToTemperature(new IngredientContainer(previouslyAdded), temperatureMinusTen.getTemperature());
+				} else {
+					Temperature temperatureMinusTen = Temperature.add(new Temperature(kettle.getResult().getContent().getTemperature()), new Temperature(10, 0));
+					result = bringToTemperature(kettle.getResult(), temperatureMinusTen.getTemperature());
+				}
+				kettle.addIngredients(result);
+			}
+			if (operation == Operation.MIX) {
+				previouslyAdded = null;
 				kettle.executeOperation();
-				lastUsed = kettle.getIngredientAt(0);
 			}
 		}
 	}

@@ -236,6 +236,10 @@ public class Recipe {
             return false;
         }
         int nbOfAdds = 0;
+        // check if first operation is an add
+        if (getOperationAt(0) != Operation.ADD) {
+            return false;
+        }
         for (Operation operation : operations) {
             if (operation == Operation.ADD) {
                 if (!isValidInstruction(getIngredientAt(nbOfAdds), operation)) {

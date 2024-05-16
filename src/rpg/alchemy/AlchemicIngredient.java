@@ -328,23 +328,35 @@ public class AlchemicIngredient {
     }
 
     /**
+     * TODO
      * A method to check whether the ingredient is hotter than the standard temperature.
      *
      * @return  True if and only if the ingredient is hotter than the standard temperature.
      *          | result == getTemperatureObject().isHotterThan(getType().getStandardTemperature())
      */
     public boolean isHotterThanStandardTemperature() {
-        return getTemperatureObject().isHotterThan(getType().getStandardTemperature());
+        return isHotterThan(getType().getStandardTemperature());
+    }
+
+    // TODO
+    public boolean isHotterThan(long[] temperature) {
+        return getTemperatureObject().isHotterThan(temperature);
     }
 
     /**
+     * TODO
      * A method to check whether the ingredient is colder than the standard temperature.
      *
      * @return  True if and only if the ingredient is colder than the standard temperature.
      *          | result == getTemperatureObject().isColderThan(getType().getStandardTemperature())
      */
     public boolean isColderThanStandardTemperature() {
-        return getTemperatureObject().isColderThan(getType().getStandardTemperature());
+        return isColderThan(getType().getStandardTemperature());
+    }
+
+    // TODO
+    public boolean isColderThan(long[] temperature) {
+        return getTemperatureObject().isColderThan(temperature);
     }
 
 
