@@ -44,12 +44,15 @@ public class RecipeBook {
      *
      * @invar   recipes references an effective list
      *          | recipes != null
-     * @invar   Each element in the list references an effective item.
+     * @invar   Each element in the list must be a valid recipe.
      *          | for each recipe in recipes:
-     *          |   recipe != null
-     * @invar   Each element in the list references a non-terminated item.
-     *          | for each recipe in recipes:
-     *          | !recipe.isTerminated()
+     *          |   canHaveAsRecipe(recipe)
+     * @invar   Elements are deleted by setting them to null
+     *          | for some recipe in recipes:
+     *          |   recipe == null
+     * @invar   No two recipes are the same
+     *          | for each I in 0..getNbOfRecipes()-1:
+     *          |   !containsRecipeTwice(getRecipeAt(I))
      */
     private ArrayList<Recipe> recipes = new ArrayList<>();
 
@@ -101,20 +104,16 @@ public class RecipeBook {
      *          The recipe to be removed
      *
      * @post    If the recipe is present in the recipe book,
-     *          the number of recipes in the recipe book is
-     *          decremented with 1.
-     *          | if getRecipes().contains(recipe)
-     *          | then new.getNbOfRecipes() + 1 == getNbOfRecipes()
-     * @post    If the recipe is present in the recipe book,
-     *          all elements to the right of the removed recipe
-     *        	are shifted left by 1 position.
-     *          | for each index in getIndexOfRecipe(recipe)+1..getNbOfRecipes():
-     *       	|   new.getRecipeAt(index+1) == getRecipeAt(index)
+     *          the recipe at the index of the given recipe is set to null.
+     *          "The page is torn out".
+     *          | if hasAsRecipe()
+     *          |   then new.getRecipeAt(getIndexOfRecipe(recipe)) == null
      *
      */
     public void removeAsRecipe(Recipe recipe) {
         if (hasAsRecipe(recipe) ) {
-            recipes.remove(recipe);
+            // set the recipe to null, "the page is torn out"
+            recipes.set(getIndexOfRecipe(recipe), null);
         }
     }
 
@@ -169,8 +168,7 @@ public class RecipeBook {
     @Basic
     public Recipe getRecipeAt(int index) {
         if (index >= 0 && index < getNbOfRecipes()) {
-            // we make a copy so that the recipe can not be terminated while it is in the book
-            return recipes.get(index).clone();
+            return recipes.get(index);
         }
         return null;
     }
@@ -206,18 +204,24 @@ public class RecipeBook {
      * @param   recipe
      *          The recipe to check
      *
-     * @return  True if the recipe is not a null-reference,
-     *          the recipe is not terminated
-     *          and if the recipe is not already in the recipe book
-     *          | result ==
-     *          |   recipe != null && !recipe.isTerminated()
-     *          |   && !getRecipes().contains(recipe)
+     * @return  If the given recipe is null,
+     *          true is returned.
+     *          | if (recipe == null)
+     *          |   then result == true
+     * @return  If the given recipe is not null,
+     *          the result is true if and only if the recipe is not terminated
+     *          and the recipe is not present twice in the recipe book.
+     *          | if (recipe != null)
+     *          |   then result == !recipe.isTerminated() && !containsRecipeTwice(recipe)
      */
     @Raw
     public boolean canHaveAsRecipe(Recipe recipe) {
-        return recipe != null
-                && !recipe.isTerminated()
-                && !containsRecipeTwice(recipe);
+        if (recipe == null) {
+            return true;
+        } else {
+            return !recipe.isTerminated()
+                    && !containsRecipeTwice(recipe);
+        }
     }
 
     /**
