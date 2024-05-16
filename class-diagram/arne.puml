@@ -302,7 +302,7 @@ __variables__
  - isTerminated: boolean
 __methods__
  + RecipeBook(List<Recipe>)
- + addRecipe(Recipe):
+ + addAsRecipe(Recipe):
  + ripOutRecipePage(Recipe):
  + terminate():
 __checkers__

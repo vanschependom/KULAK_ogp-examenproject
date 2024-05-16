@@ -196,8 +196,8 @@ __attributes__
 __constructors__
 + Recipebook()
 __methods__
-+ addRecipe(Recipe recipe): void
-+ removeRecipe(Recipe recipe): void
++ addAsRecipe(Recipe recipe): void
++ removeAsRecipe(Recipe recipe): void
 }
 
 RecipeBook <-- "0..*" Recipe

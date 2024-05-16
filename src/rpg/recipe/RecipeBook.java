@@ -1,6 +1,7 @@
 package rpg.recipe;
 
 import be.kuleuven.cs.som.annotate.*;
+import rpg.alchemy.Device;
 
 import java.util.ArrayList;
 
@@ -8,8 +9,7 @@ import java.util.ArrayList;
  * A class representing a recipeBook
  *
  * @invar   The recipes of the recipe book are valid.
- *          | for each recipe in getRecipes():
- *          |   canHaveAsRecipe(recipe)
+ *          | hasProperRecipes()
  *
  * @note    We doen aan TOTAL programming
  *
@@ -19,6 +19,25 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public class RecipeBook {
+
+    /**********************************************************
+     * Constructors
+     **********************************************************/
+
+    /**
+     * A constructor for the RecipeBook class.
+     *
+     * @post    The new recipe book has no recipes.
+     */
+    public RecipeBook() {
+        super();
+    }
+
+
+
+    /**********************************************************
+     * Recipes
+     **********************************************************/
 
     /**
      * A variable for keeping track of all the recipes in the recipe book.
@@ -34,37 +53,23 @@ public class RecipeBook {
      */
     private ArrayList<Recipe> recipes = new ArrayList<>();
 
-    /**********************************************************
-     * Constructors
-     **********************************************************/
-
     /**
-     * A constructor for the RecipeBook class
+     * A method for checking whether the recipebook has proper recipes inside of it
      *
-     * @param   recipes
-     *          The new recipe list to be set
-     *
-     * @effect  Every recipe within an effective given recipes list
-     *          is added as recipe
-     *          | for each recipe in recipes:
-     *          |   addRecipe(recipe)
+     * @return  True if and only if this recipebook can have all its recipes
+     * 			at their respective indices.
+     *          | result ==
+     *          |   for each I in 0..getNbOfRecipes()-1 :
+     *          |     canHaveAsRecipe(getRecipeAt(I))
      */
-    public RecipeBook(ArrayList<Recipe> recipes) {
-        if (recipes != null) {
-            for (Recipe recipe : recipes) {
-                addRecipe(recipe);
+    @Raw
+    public boolean hasProperRecipes() {
+        for (Recipe recipe : recipes) {
+            if (!canHaveAsRecipe(recipe)) {
+                return false;
             }
         }
-    }
-
-    /**
-     * A constructor for the RecipeBook class
-     *
-     * @effect  A recipe book is created with a null-referenced parameter
-     *          | this(null);
-     */
-    public RecipeBook() {
-        this(null);
+        return true;
     }
 
     /**
@@ -77,14 +82,14 @@ public class RecipeBook {
      *          the number of recipes of this recipe book is
      *          incremented with 1.
      *          | if canHaveAsRecipe(recipe)
-     *          | then new.getNbOfRecipes() == getNbOfRecipes() + 1
+     *          |   then new.getNbOfRecipes() == getNbOfRecipes() + 1
      * @post    If the recipe is valid,
-     *          the given recipe is inserted at the given index.
-     *          | if canHaveAsRecipe(recipe)
-     *          | then new.getRecipeAt(getNbOfRecipes()-1) == recipe
+     *          the given recipe is inserted at the last index.
+     *          | if (canHaveAsRecipe(recipe) && !hasAsRecipe(recipe))
+     *          |   then new.getRecipeAt(getNbOfRecipes()-1) == recipe
      */
-    public void addRecipe(Recipe recipe) {
-        if (canHaveAsRecipe(recipe)) {
+    public void addAsRecipe(Recipe recipe) {
+        if (canHaveAsRecipe(recipe) && !hasAsRecipe(recipe)) {
             recipes.add(recipe);
         }
     }
@@ -95,9 +100,6 @@ public class RecipeBook {
      * @param   recipe
      *          The recipe to be removed
      *
-     * @return  True if and only if the recipe is actually removed
-     *          | result ==
-     *          |   new.getNbOfRecipes() + 1 == getNbOfRecipes()
      * @post    If the recipe is present in the recipe book,
      *          the number of recipes in the recipe book is
      *          decremented with 1.
@@ -110,12 +112,10 @@ public class RecipeBook {
      *       	|   new.getRecipeAt(index+1) == getRecipeAt(index)
      *
      */
-    public boolean removeRecipe(Recipe recipe) {
-        if (recipes.contains(recipe)) {
+    public void removeAsRecipe(Recipe recipe) {
+        if (hasAsRecipe(recipe) ) {
             recipes.remove(recipe);
-            return true;
         }
-        return false;
     }
 
     /**
@@ -127,6 +127,30 @@ public class RecipeBook {
     }
 
     /**
+     * Check whether the given recipe is present in this recipebook.
+     *
+     * @param 	recipe
+     *        	The recipe to check.
+     * @return 	False if the given recipe is not effective.
+     * 	   		| if (recipe == null)
+     * 	   		| 	then result == false
+     * @return 	True if a recipe equal to the given recipe is registered at some
+     *         	position in this laboratory; false otherwise.
+     *         	| result ==
+     *         	|    for some I in 1..getNbOfRecipes() :
+     *         	| 	      (getRecipeAt(I) == recipe)
+     */
+    public boolean hasAsRecipe(Recipe recipe) {
+        if (recipe == null) return false;
+        for (int i=0; i<getNbOfRecipes(); i++) {
+            if (getRecipeAt(i) == recipe) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * A method for getting the recipe at a given index
      *
      * @param   index
@@ -135,12 +159,12 @@ public class RecipeBook {
      *          of the recipes list,
      *          the copy of the recipe at that index is returned
      *          | if index >= 0 && index < getNbOfRecipes()
-     *          | then result == getRecipes().get(index).clone()
+     *          |   then TODO MAAK HIER EEN EQUALS VAN!
      * @return  If the given index is not within the boundaries
      *          of the recipes list,
      *          a null reference is returned
      *          | if (index < 0) || (index >= getNbOfRecipes())
-     *          | then result == null
+     *          |   then result == null
      */
     @Basic
     public Recipe getRecipeAt(int index) {
@@ -159,18 +183,19 @@ public class RecipeBook {
      *          The recipe to get the index of
      * @return  If the recipe is present in the recipe book
      *          the index of the recipe is returned
-     *          | if getRecipes().contains(recipe)
-     *          | then getRecipeAt(result) == recipe
-     * @return  If the recipe is not present,
-     *          negative one is returned
-     *          | if ! getRecipes().contains(recipe)
-     *          | then result == -1
+     *          | if hasAsRecipe(recipe)
+     *          |   then getRecipeAt(result) == recipe
+     * @return  Negative one is returned if the recipe is not present
+     *          | if !hasAsRecipe(recipe)
+     *          |   then result == -1
      */
     @Basic
     public int getIndexOfRecipe(Recipe recipe) {
-        if (recipes.contains(recipe)) {
-            return recipes.indexOf(recipe);
+        for (int i = 0; i < getNbOfRecipes(); i++) {
+            if (getRecipeAt(i) == recipe) return i;
         }
+        // this should never happen
+        assert false;
         return -1;
     }
 
@@ -188,16 +213,29 @@ public class RecipeBook {
      *          |   recipe != null && !recipe.isTerminated()
      *          |   && !getRecipes().contains(recipe)
      */
+    @Raw
     public boolean canHaveAsRecipe(Recipe recipe) {
-        return recipe != null && !recipe.isTerminated() && !getRecipes().contains(recipe);
+        return recipe != null
+                && !recipe.isTerminated()
+                && !containsRecipeTwice(recipe);
     }
 
     /**
-     * Return the recipe list
+     * A method for checking if a recipebook contains two of the same recipes.
+     *
+     * @return	True if and only if some recipe is present twice in this recipebook.
+     *          | result == ( for some I in 0..getNbOfRecipes()-1:
+     *          |   for some J in 0..getNbOfRecipes()-1:
+     *          |       (I != J) && getRecipeAt(I) == getRecipeAt(J) )
      */
-    @Model
-    private ArrayList<Recipe> getRecipes() {
-        return recipes;
+    public boolean containsRecipeTwice(Recipe recipe) {
+        int count = 0;
+        for (int i=0; i<getNbOfRecipes(); i++) {
+            if (getRecipeAt(i) == recipe) {
+                count++;
+            }
+        }
+        return count > 1;
     }
 
 

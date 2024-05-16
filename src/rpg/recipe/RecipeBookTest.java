@@ -50,101 +50,72 @@ public class RecipeBookTest {
     }
 
     @Test
-    public void constructorFullValid() {
-        ArrayList<Recipe> recipeList = new ArrayList<>();
-        recipeList.add(recipe1);
-        recipeList.add(recipe2);
-        RecipeBook rb = new RecipeBook(recipeList);
-        assertEquals(2, rb.getNbOfRecipes());
-        assertTrue(recipe1.equals(rb.getRecipeAt(0)));
-        assertTrue(recipe2.equals(rb.getRecipeAt(1)));
-    }
-
-    @Test
-    public void constructorFullInvalid() {
-        ArrayList<Recipe> recipeList = new ArrayList<>();
-        recipeList.add(recipe1);
-        recipeList.add(recipe2);
-        recipeList.add(null);
-        RecipeBook rb = new RecipeBook(recipeList);
-        assertEquals(2, rb.getNbOfRecipes());
-        assertTrue(recipe1.equals(rb.getRecipeAt(0)));
-        assertTrue(recipe2.equals(rb.getRecipeAt(1)));
-    }
-
-    @Test
-    public void constructorFullInvalid2() {
-        RecipeBook rb = new RecipeBook(null);
-        assertEquals(0, rb.getNbOfRecipes());
-    }
-
-    @Test
     public void constructor() {
         RecipeBook rb = new RecipeBook();
         assertEquals(0, rb.getNbOfRecipes());
     }
 
     @Test
-    public void addRecipeValid() {
+    public void addAsRecipeValid() {
         RecipeBook rb = new RecipeBook();
-        rb.addRecipe(recipe1);
+        rb.addAsRecipe(recipe1);
         assertEquals(1, rb.getNbOfRecipes());
         assertTrue(recipe1.equals(rb.getRecipeAt(0)));
     }
 
     @Test
-    public void addRecipeInvalid() {
+    public void addAsRecipeInvalid() {
         RecipeBook rb = new RecipeBook();
-        rb.addRecipe(null);
+        rb.addAsRecipe(null);
         assertEquals(0, rb.getNbOfRecipes());
     }
 
     @Test
-    public void addRecipeInvalid2() {
+    public void addAsRecipeInvalid2() {
         RecipeBook rb = new RecipeBook();
-        rb.addRecipe(recipe1);
-        rb.addRecipe(recipe1);
+        rb.addAsRecipe(recipe1);
+        rb.addAsRecipe(recipe1);
         assertEquals(1, rb.getNbOfRecipes());
         assertTrue(recipe1.equals(rb.getRecipeAt(0)));
     }
 
     @Test
-    public void removeRecipeValid() {
+    public void removeAsRecipeValid() {
         RecipeBook rb = new RecipeBook();
-        rb.addRecipe(recipe1);
-        rb.removeRecipe(recipe1);
+        rb.addAsRecipe(recipe1);
+        rb.removeAsRecipe(recipe1);
         assertEquals(0, rb.getNbOfRecipes());
     }
 
     @Test
-    public void removeRecipeValid2() {
+    public void removeAsRecipeValid2() {
         RecipeBook rb = new RecipeBook();
-        rb.addRecipe(recipe1);
-        rb.addRecipe(recipe2);
-        rb.removeRecipe(recipe1);
+        rb.addAsRecipe(recipe1);
+        rb.addAsRecipe(recipe2);
+        rb.removeAsRecipe(recipe1);
         assertEquals(1, rb.getNbOfRecipes());
     }
 
     @Test
-    public void removeRecipeInvalid() {
+    public void removeAsRecipeInvalid() {
         RecipeBook rb = new RecipeBook();
-        rb.addRecipe(recipe1);
-        rb.removeRecipe(recipe2);
+        rb.addAsRecipe(recipe1);
+        rb.removeAsRecipe(recipe2);
         assertEquals(1, rb.getNbOfRecipes());
     }
 
     @Test
-    public void removeRecipeInvalid2() {
+    public void removeAsRecipeInvalid2() {
         RecipeBook rb = new RecipeBook();
-        rb.removeRecipe(recipe2);
+        rb.removeAsRecipe(recipe2);
         assertEquals(0, rb.getNbOfRecipes());
     }
 
     @Test
-    public void removeRecipeInvalid3() {
+    public void removeAsRecipeInvalid3() {
         RecipeBook rb = new RecipeBook();
-        rb.addRecipe(recipe1);
-        rb.removeRecipe(null);
+        rb.addAsRecipe(recipe1);
+        rb.removeAsRecipe(null);
         assertEquals(1, rb.getNbOfRecipes());
         assertTrue(recipe1.equals(rb.getRecipeAt(0)));
     }

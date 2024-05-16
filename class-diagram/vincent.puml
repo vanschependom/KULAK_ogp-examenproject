@@ -296,8 +296,8 @@ class RecipeBook {
 ..properties..
 - recipes : ArrayList<Recipe>
 ..methods..
-+ addRecipe(Recipe) : void
-+ removeRecipe(Recipe) : void
++ addAsRecipe(Recipe) : void
++ removeAsRecipe(Recipe) : void
 + getRecipeAt(int) : Recipe
 + getIndexOfRecipe(Recipe) : int
 + getNbOfRecipes() : int
@@ -308,7 +308,7 @@ class RecipeBook {
 @invar hasProperRecipes()
 }
 
-note right of RecipeBook::removeRecipe
+note right of RecipeBook::removeAsRecipe
     Er staat "de pagina wordt uit het boek gescheurd", wil dat
     zeggen dat we intern het recept op null moeten zetten?
 end note
