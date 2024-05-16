@@ -340,7 +340,7 @@ public class Laboratory extends StorageLocation {
 			throw new IllegalArgumentException("Device is not present in this laboratory!");
 		}
 		// device is certainly not null
-		if(device.getLaboratory() == this) {
+		if (device.getLaboratory() == this) {
 			throw new IllegalStateException("The given device still references this laboratory as its laboratory.");
 		}
 		try {
