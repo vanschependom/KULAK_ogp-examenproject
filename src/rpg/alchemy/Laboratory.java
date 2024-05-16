@@ -192,7 +192,7 @@ public class Laboratory extends StorageLocation {
 	 * @return 	True if a device equal to the given item is registered at some
 	 *         	position in this laboratory; false otherwise.
 	 *         	| result ==
-	 *         	|    for some I in 1..getNbOfDevices() :
+	 *         	|    for some I in 0..getNbOfDevices()-1 :
 	 *         	| 	      (getDeviceAt(I) == device)
 	 */
 	public boolean hasAsDevice(Device device) {
@@ -679,12 +679,12 @@ public class Laboratory extends StorageLocation {
 		} else {
 			kettle = getDeviceOfType(Kettle.class);
 		}
-		if (recipe.containsThisOperation(Operation.COOL) && !hasDeviceOfType(CoolingBox.class)) {
+		if (recipe.hasAsOperation(Operation.COOL) && !hasDeviceOfType(CoolingBox.class)) {
 			throw new IllegalArgumentException("Cooling Box niet aanwezig maar cool instructie is gegeven.");
 		} else {
 			oven = getDeviceOfType(Oven.class);
 		}
-		if (recipe.containsThisOperation(Operation.HEAT) && !hasDeviceOfType(Oven.class)) {
+		if (recipe.hasAsOperation(Operation.HEAT) && !hasDeviceOfType(Oven.class)) {
 			throw new IllegalArgumentException("Oven niet aanwezig maar heat instructie is gegeven.");
 		} else {
 			coolingBox = getDeviceOfType(CoolingBox.class);

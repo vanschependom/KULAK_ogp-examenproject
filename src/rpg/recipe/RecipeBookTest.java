@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RecipeBookTest {
 
-    private Recipe recipe1 = new Recipe();
-    private Recipe recipe2 = new Recipe();
+    private Recipe recipe1;
+    private Recipe recipe2;
     private IngredientType type;
     private IngredientType type2;
 
@@ -25,6 +25,12 @@ public class RecipeBookTest {
     public void setUp() {
         type = new IngredientType(new Name(null, "Beer"), State.LIQUID, new Temperature(0, 20), false);
         type2 = new IngredientType(new Name(null, "Water"), State.LIQUID, new Temperature(0, 20), false);
+        Operation[] recipe1Operations = new Operation[] {
+                Operation.ADD, Operation.COOL, Operation.COOL, Operation.ADD,
+                Operation.ADD, Operation.COOL, Operation.COOL, Operation.MIX
+        };
+
+
         recipe1.addInstruction(new AlchemicIngredient(2, Unit.BOTTLE,
                 new Temperature(0, 20), type, State.LIQUID), Operation.ADD);
         recipe1.addInstruction(Operation.COOL);

@@ -136,7 +136,7 @@ public class RecipeBook {
      * @return 	True if a recipe equal to the given recipe is registered at some
      *         	position in this laboratory; false otherwise.
      *         	| result ==
-     *         	|    for some I in 1..getNbOfRecipes() :
+     *         	|    for some I in 0..getNbOfRecipes()-1 :
      *         	| 	      (getRecipeAt(I) == recipe)
      */
     public boolean hasAsRecipe(Recipe recipe) {
@@ -153,17 +153,7 @@ public class RecipeBook {
      * A method for getting the recipe at a given index
      *
      * @param   index
-     *          The index to check for
-     * @return  If the given index is within the boundaries
-     *          of the recipes list,
-     *          the copy of the recipe at that index is returned
-     *          | if index >= 0 && index < getNbOfRecipes()
-     *          |   then TODO MAAK HIER EEN EQUALS VAN!
-     * @return  If the given index is not within the boundaries
-     *          of the recipes list,
-     *          a null reference is returned
-     *          | if (index < 0) || (index >= getNbOfRecipes())
-     *          |   then result == null
+     *          The index at which the recipe is to be returned.
      */
     @Basic
     public Recipe getRecipeAt(int index) {
