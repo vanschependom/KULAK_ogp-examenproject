@@ -699,7 +699,7 @@ public class Laboratory extends StorageLocation {
 	/**
 	 * A method to execute a recipe in a laboratory an x amount of times.
 	 */
-	public void execute(Recipe recipe, int multiplier) {
+	public void execute(Recipe recipe, int multiplier) throws IllegalArgumentException {
 		Kettle kettle = null;
 		Oven oven = null;
 		CoolingBox coolingBox = null;
@@ -721,7 +721,7 @@ public class Laboratory extends StorageLocation {
 		}
 		// execute the recipe x times
 		int nbOfTimesExecuted = 0;
-		while(nbOfTimesExecuted < multiplier && hasEnoughIngredientsForRecipe(recipe)) {
+		while (nbOfTimesExecuted < multiplier && hasEnoughIngredientsForRecipe(recipe)) {
 			executeSingleRecipe(recipe, kettle, coolingBox, oven);
 			nbOfTimesExecuted++;
 		}
@@ -777,6 +777,10 @@ public class Laboratory extends StorageLocation {
 				kettle.executeOperation();
 			}
 		}
+
+		// mix at the end
+		kettle.executeOperation();
+
 	}
 
 	/**

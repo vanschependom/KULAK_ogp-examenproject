@@ -50,7 +50,7 @@ public class LaboratoryTest {
 	private static Oven otherOven;
 	private static Transmogrifier otherTransmogrifier;
 	private static Kettle otherKettle;
-	Laboratory otherLab;
+	private static Laboratory otherLab;
 
 	@BeforeEach
 	public void setupFixture() {
@@ -83,6 +83,11 @@ public class LaboratoryTest {
 		heatedLiquid = new AlchemicIngredient(8, Unit.BOTTLE, new Temperature(0, 300), liquidTypeMixed);
 		cooledLiquid = new AlchemicIngredient(8, Unit.BOTTLE, new Temperature(300, 0), liquidTypeMixed);
 		mixedLiquid = new AlchemicIngredient(10, Unit.VIAL, liquidTypeMixed);
+
+		otherLab = new Laboratory(5);
+		kettle = new Kettle(otherLab);
+		oven = new Oven(otherLab, new Temperature(0,500));
+		coolingBox = new CoolingBox(otherLab, new Temperature(500,0));
 	}
 
 	@Test
@@ -565,6 +570,34 @@ public class LaboratoryTest {
 
 		// 15 spoons is more than the needed 2 sachets
 		assertTrue(otherLab.hasEnoughIngredientsForRecipe(recipe));
+	}
+
+	@Test
+	public void testExecute_CoolSingleIngredient() {
+		AlchemicIngredient ingrRecipe1 = new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType);
+		recipe.addAsInstruction(ingrRecipe1, Operation.ADD);
+		recipe.addAsInstruction(Operation.COOL);
+		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType)));
+		assertEquals(1, otherLab.getNbOfIngredients());
+		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
+		assertEquals(20, otherLab.getIngredientAt(0).getHotness());
+		otherLab.execute(recipe, 1);
+		assertEquals(1, otherLab.getNbOfIngredients());
+		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
+		assertEquals(10, otherLab.getIngredientAt(0).getHotness());
+	}
+
+	@Test
+	public void testExecute_HeatSingleIngredient() {
+		AlchemicIngredient ingrRecipe1 = new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType);
+		recipe.addAsInstruction(ingrRecipe1, Operation.ADD);
+		recipe.addAsInstruction(Operation.HEAT);
+		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType)));
+		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
+		assertEquals(20, otherLab.getIngredientAt(0).getHotness());
+		otherLab.execute(recipe, 1);
+		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
+		assertEquals(30, otherLab.getIngredientAt(0).getHotness());
 	}
 
 }
