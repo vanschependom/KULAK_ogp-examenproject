@@ -137,6 +137,16 @@ public class Recipe {
                 (operation != null && operation != Operation.ADD && ingredient == null));
     }
 
+    @Model
+    private ArrayList<Operation> getOperations() {
+        return operations;
+    }
+
+    @Model
+    private ArrayList<AlchemicIngredient> getIngredients() {
+        return ingredients;
+    }
+
     /**
      * A method for adding an ingredient to the ingredients of the recipe.
      *
