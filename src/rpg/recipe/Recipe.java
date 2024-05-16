@@ -185,6 +185,14 @@ public class Recipe {
         return null;
     }
 
+    @Basic
+    public AlchemicIngredient getIngredientAt(int index, int multiplier) {
+        AlchemicIngredient ingredient = getIngredientAt(index);
+        if (ingredient != null) {
+            return ingredient.makeMultipliedCopy(multiplier);
+        }
+    }
+
     /**
      * A method to check if an ingredient is valid.
      *
