@@ -31,28 +31,28 @@ public class RecipeBookTest {
         };
 
 
-        recipe1.addInstruction(new AlchemicIngredient(2, Unit.BOTTLE,
+        recipe1.addAsInstruction(new AlchemicIngredient(2, Unit.BOTTLE,
                 new Temperature(0, 20), type, State.LIQUID), Operation.ADD);
-        recipe1.addInstruction(Operation.COOL);
-        recipe1.addInstruction(Operation.COOL);
-        recipe1.addInstruction(new AlchemicIngredient(3, Unit.SACHET,
+        recipe1.addAsInstruction(Operation.COOL);
+        recipe1.addAsInstruction(Operation.COOL);
+        recipe1.addAsInstruction(new AlchemicIngredient(3, Unit.SACHET,
                 new Temperature(20, 0), type2, State.POWDER), Operation.ADD);
-        recipe1.addInstruction(Operation.HEAT);
-        recipe1.addInstruction(Operation.MIX);
+        recipe1.addAsInstruction(Operation.HEAT);
+        recipe1.addAsInstruction(Operation.MIX);
 
-        recipe2.addInstruction(new AlchemicIngredient(2, Unit.BOTTLE,
+        recipe2.addAsInstruction(new AlchemicIngredient(2, Unit.BOTTLE,
                 new Temperature(0, 20), type, State.LIQUID), Operation.ADD);
-        recipe2.addInstruction(Operation.COOL);
-        recipe2.addInstruction(Operation.COOL);
-        recipe2.addInstruction(new AlchemicIngredient(3, Unit.SACHET,
+        recipe2.addAsInstruction(Operation.COOL);
+        recipe2.addAsInstruction(Operation.COOL);
+        recipe2.addAsInstruction(new AlchemicIngredient(3, Unit.SACHET,
                 new Temperature(20, 0), type2, State.POWDER), Operation.ADD);
-        recipe2.addInstruction(Operation.HEAT);
-        recipe2.addInstruction(Operation.MIX);
-        recipe2.addInstruction(new AlchemicIngredient(3, Unit.CHEST,
+        recipe2.addAsInstruction(Operation.HEAT);
+        recipe2.addAsInstruction(Operation.MIX);
+        recipe2.addAsInstruction(new AlchemicIngredient(3, Unit.CHEST,
                 new Temperature(0, 40), type2, State.POWDER), Operation.ADD);
-        recipe2.addInstruction(Operation.COOL);
-        recipe2.addInstruction(Operation.COOL);
-        recipe2.addInstruction(Operation.MIX);
+        recipe2.addAsInstruction(Operation.COOL);
+        recipe2.addAsInstruction(Operation.COOL);
+        recipe2.addAsInstruction(Operation.MIX);
     }
 
     @Test

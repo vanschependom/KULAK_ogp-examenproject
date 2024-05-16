@@ -38,205 +38,77 @@ public class RecipeTest {
                 new Temperature(20, 0), type2, State.POWDER));
         ingredientsSetUp.add(new AlchemicIngredient(3, Unit.CHEST,
                 new Temperature(0, 40), type2, State.POWDER));
-        operationsSetUp.add(Operation.ADD);
-        operationsSetUp.add(Operation.COOL);
-        operationsSetUp.add(Operation.COOL);
-        operationsSetUp.add(Operation.COOL);
-        operationsSetUp.add(Operation.HEAT);
-        operationsSetUp.add(Operation.ADD);
-        operationsSetUp.add(Operation.MIX);
-        operationsSetUp.add(Operation.ADD);
-        operationsSetUp.add(Operation.HEAT);
-        operationsSetUp.add(Operation.MIX);
-        preMadeRecipe = new Recipe(ingredientsSetUp, operationsSetUp);
-    }
-
-    @Test
-    public void constructorFullValidSet() {
-        ingredients.add(new AlchemicIngredient(2, Unit.BOTTLE,
-                new Temperature(0, 20), type, State.LIQUID));
-        ingredients.add(new AlchemicIngredient(3, Unit.SACHET,
-                new Temperature(20, 0), type2, State.POWDER));
-        operations.add(Operation.ADD);
-        operations.add(Operation.COOL);
-        operations.add(Operation.ADD);
-        operations.add(Operation.MIX);
-
-        Recipe recipe = new Recipe(ingredients, operations);
-        assertEquals(ingredients.size(), recipe.getNbOfIngredients());
-        assertEquals(operations.size(), recipe.getNbOfOperations());
-        for (int i = 0; i < recipe.getNbOfIngredients(); i++) {
-            assertEquals(ingredients.get(i), recipe.getIngredientAt(i));
-        }
-        for (int i = 0; i < recipe.getNbOfOperations(); i++) {
-            assertEquals(operations.get(i), recipe.getOperationAt(i));
-        }
+        preMadeRecipe = new Recipe();
+        preMadeRecipe.addAsInstruction(ingredientsSetUp.get(0), Operation.ADD);
+        preMadeRecipe.addAsInstruction(Operation.COOL);
+        preMadeRecipe.addAsInstruction(Operation.COOL);
+        preMadeRecipe.addAsInstruction(Operation.COOL);
+        preMadeRecipe.addAsInstruction(Operation.HEAT);
+        preMadeRecipe.addAsInstruction(ingredientsSetUp.get(1), Operation.ADD);
+        preMadeRecipe.addAsInstruction(Operation.MIX);
+        preMadeRecipe.addAsInstruction(ingredientsSetUp.get(2), Operation.ADD);
+        preMadeRecipe.addAsInstruction(Operation.HEAT);
+        preMadeRecipe.addAsInstruction(Operation.MIX);
     }
 
     @Test
     public void constructorFullValidSet2() {
         assertEquals(ingredientsSetUp.size(), preMadeRecipe.getNbOfIngredients());
-        assertEquals(operationsSetUp.size(), preMadeRecipe.getNbOfOperations());
+        assertEquals(10, preMadeRecipe.getNbOfOperations());
         for (int i = 0; i < preMadeRecipe.getNbOfIngredients(); i++) {
             assertEquals(ingredientsSetUp.get(i), preMadeRecipe.getIngredientAt(i));
         }
-        for (int i = 0; i < preMadeRecipe.getNbOfOperations(); i++) {
-            assertEquals(operationsSetUp.get(i), preMadeRecipe.getOperationAt(i));
-        }
+        assertEquals(Operation.COOL, preMadeRecipe.getOperationAt(1));
     }
 
     @Test
-    public void constructorFullInvalidSet() {
-        ingredientsSetUp.add(new AlchemicIngredient(7, Unit.SPOON,
-                new Temperature(0, 40), type2, State.LIQUID));
-
-        Recipe recipe = new Recipe(ingredientsSetUp, operationsSetUp);
-        assertEquals(0, recipe.getNbOfIngredients());
-        assertEquals(0, recipe.getNbOfOperations());
-    }
-
-    @Test
-    public void constructorFullInvalidSet2() {
-        ingredients.add(new AlchemicIngredient(2, Unit.BOTTLE,
-                new Temperature(0, 20), type, State.LIQUID));
-
-        operations.add(null);
-        operations.add(Operation.ADD);
-
-        Recipe recipe = new Recipe(ingredients, operations);
-        assertEquals(0, recipe.getNbOfIngredients());
-        assertEquals(0, recipe.getNbOfOperations());
-    }
-
-    @Test
-    public void constructorFullInvalidSet3() {
-        ingredients.add(new AlchemicIngredient(2, Unit.BOTTLE,
-                new Temperature(0, 20), type, State.LIQUID));
-        ingredients.add(null);
-
-        operations.add(Operation.ADD);
-        operations.add(Operation.MIX);
-
-        Recipe recipe = new Recipe(ingredients, operations);
-        assertEquals(0, recipe.getNbOfIngredients());
-        assertEquals(0, recipe.getNbOfOperations());
-    }
-
-    @Test
-    public void constructorFullInvalidSet4() {
-        ingredients.add(new AlchemicIngredient(2, Unit.BOTTLE,
-                new Temperature(0, 20), type, State.LIQUID));
-        ingredients.add(null);
-
-        operations.add(Operation.ADD);
-        operations.add(null);
-        operations.add(Operation.MIX);
-
-        Recipe recipe = new Recipe(ingredients, operations);
-        assertEquals(0, recipe.getNbOfIngredients());
-        assertEquals(0, recipe.getNbOfOperations());
-    }
-
-    @Test
-    public void constructorFullInvalidSet5() {
-        operations.add(Operation.ADD);
-        operations.add(Operation.MIX);
-        operations.add(Operation.COOL);
-
-        Recipe recipe = new Recipe(null, operations);
-        assertEquals(0, recipe.getNbOfIngredients());
-        assertEquals(0, recipe.getNbOfOperations());
-    }
-
-    @Test
-    public void constructorFullInvalidSet6() {
-        ingredients.add(new AlchemicIngredient(2, Unit.BOTTLE,
-                new Temperature(0, 20), type, State.LIQUID));
-        ingredients.add(new AlchemicIngredient(7, Unit.SACK,
-                new Temperature(0, 25), type, State.POWDER));
-
-        Recipe recipe = new Recipe(ingredients, null);
-        assertEquals(0, recipe.getNbOfIngredients());
-        assertEquals(0, recipe.getNbOfOperations());
-    }
-
-    @Test
-    public void constructorFullInvalidSet7() {
-        Recipe recipe = new Recipe(null, null);
-        assertEquals(0, recipe.getNbOfIngredients());
-        assertEquals(0, recipe.getNbOfOperations());
-    }
-
-    @Test
-    public void constructorFullInvalidSet8() {
-        operations.add(Operation.ADD);
-        operations.add(null);
-        operations.add(Operation.MIX);
-
-        Recipe recipe = new Recipe(null, operations);
-        assertEquals(0, recipe.getNbOfIngredients());
-        assertEquals(0, recipe.getNbOfOperations());
-    }
-
-    @Test
-    public void constructorFullInvalidSet9() {
-        ingredients.add(new AlchemicIngredient(2, Unit.BOTTLE,
-                new Temperature(0, 20), type, State.LIQUID));
-        ingredients.add(null);
-
-        Recipe recipe = new Recipe(ingredients, operations);
-        assertEquals(0, recipe.getNbOfIngredients());
-        assertEquals(0, recipe.getNbOfOperations());
-    }
-
-    @Test
-    public void testAddInstructionValidCase() {
+    public void testaddAsInstructionValidCase() {
         AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE,
                 new Temperature(0, 20), type, State.LIQUID);
-        preMadeRecipe.addInstruction(ingredient, Operation.ADD);
+        preMadeRecipe.addAsInstruction(ingredient, Operation.ADD);
         assertEquals(preMadeRecipe.getNbOfIngredients(), ingredientsSetUp.size()+1);
-        assertEquals(preMadeRecipe.getNbOfOperations(), operationsSetUp.size()+1);
+        assertEquals(preMadeRecipe.getNbOfOperations(), 11);
         assertEquals(preMadeRecipe.getIngredientAt(preMadeRecipe.getNbOfIngredients()-1), ingredient);
         assertEquals(preMadeRecipe.getOperationAt(preMadeRecipe.getNbOfOperations()-1), Operation.ADD);
     }
 
     @Test
-    public void testAddInstructionValidCase2() {
-        preMadeRecipe.addInstruction(null, Operation.HEAT);
+    public void testaddAsInstructionValidCase2() {
+        preMadeRecipe.addAsInstruction(null, Operation.HEAT);
         assertEquals(preMadeRecipe.getNbOfIngredients(), ingredientsSetUp.size());
-        assertEquals(preMadeRecipe.getNbOfOperations(), operationsSetUp.size()+1);
+        assertEquals(preMadeRecipe.getNbOfOperations(), 11);
         assertEquals(preMadeRecipe.getOperationAt(preMadeRecipe.getNbOfOperations()-1), Operation.HEAT);
     }
 
     @Test
-    public void testAddInstructionValidCase3() {
-        preMadeRecipe.addInstruction(Operation.HEAT);
+    public void testaddAsInstructionValidCase3() {
+        preMadeRecipe.addAsInstruction(Operation.HEAT);
         assertEquals(preMadeRecipe.getNbOfIngredients(), ingredientsSetUp.size());
-        assertEquals(preMadeRecipe.getNbOfOperations(), operationsSetUp.size()+1);
+        assertEquals(preMadeRecipe.getNbOfOperations(), 11);
         assertEquals(preMadeRecipe.getOperationAt(preMadeRecipe.getNbOfOperations()-1), Operation.HEAT);
     }
 
     @Test
-    public void testAddInstructionInvalidCase() {
+    public void testaddAsInstructionInvalidCase() {
         AlchemicIngredient ingredient = new AlchemicIngredient(2, Unit.BOTTLE,
                 new Temperature(0, 20), type, State.LIQUID);
-        preMadeRecipe.addInstruction(ingredient, Operation.HEAT);
+        preMadeRecipe.addAsInstruction(ingredient, Operation.HEAT);
         assertEquals(preMadeRecipe.getNbOfIngredients(), ingredientsSetUp.size());
-        assertEquals(preMadeRecipe.getNbOfOperations(), operationsSetUp.size());
+        assertEquals(preMadeRecipe.getNbOfOperations(), 10);
     }
 
     @Test
-    public void testAddInstructionInvalidCase2() {
-        preMadeRecipe.addInstruction(null, Operation.ADD);
+    public void testaddAsInstructionInvalidCase2() {
+        preMadeRecipe.addAsInstruction(null, Operation.ADD);
         assertEquals(preMadeRecipe.getNbOfIngredients(), ingredientsSetUp.size());
-        assertEquals(preMadeRecipe.getNbOfOperations(), operationsSetUp.size());
+        assertEquals(preMadeRecipe.getNbOfOperations(), 10);
     }
 
     @Test
-    public void testAddInstructionInvalidCase3() {
-        preMadeRecipe.addInstruction(null, null);
+    public void testaddAsInstructionInvalidCase3() {
+        preMadeRecipe.addAsInstruction(null, null);
         assertEquals(preMadeRecipe.getNbOfIngredients(), ingredientsSetUp.size());
-        assertEquals(preMadeRecipe.getNbOfOperations(), operationsSetUp.size());
+        assertEquals(preMadeRecipe.getNbOfOperations(), 10);
     }
 
 }

@@ -30,7 +30,7 @@ public class Recipe {
      *          |   ingredient != null
      * @invar   Each ingredient in the list references a non-terminated ingredient.
      *          | for each ingredient in ingredients:
-     *          | !ingredient.isTerminated()
+     *          |   !ingredient.isTerminated()
      */
     private ArrayList<AlchemicIngredient> ingredients = new ArrayList<AlchemicIngredient>();
 
@@ -54,35 +54,14 @@ public class Recipe {
     /**
      * A constructor for creating a new recipe with a given set of ingredients and operations.
      *
-     * @param   ingredients
-     *          The ingredient list for the recipe
-     * @param   operations
-     *          The operation list for the recipe
-     *
-     * @effect  The ingredient list of the recipe is set to ingredients if the instruction set is valid.
-     *          | if isValidInstructionSet(ingredients, operations)
-     *          |   then setIngredients(ingredients)
-     * @effect  The operation list of the recipe is set to operations if the instruction set is valid.
-     *          | if isValidInstructionSet(ingredients, operations)
-     *          |   then setOperations(operations)
-     */
-    @Raw
-    public Recipe(ArrayList<AlchemicIngredient> ingredients, ArrayList<Operation> operations) {
-        if (isValidInstructionSet(ingredients, operations)) {
-            setIngredients(ingredients);
-            setOperations(operations);
-        }
-    }
-
-    /**
-     * A constructor for creating a new recipe with an empty set of ingredients and operations.
-     *
-     * @effect  A recipe with no ingredients and no operations is created
-     *          | this(new ArrayList<AlchemicIngredient>(), new ArrayList<Operation>())
+     * @post    There are no instructions in the recipe.
+     *          | new.getNbOfInstructions() == 0
+     * @post    There are no ingredients in the recipe.
+     *          | new.getNbOfIngredients() == 0
      */
     @Raw
     public Recipe() {
-        this(new ArrayList<AlchemicIngredient>(), new ArrayList<Operation>());
+        super();
     }
 
 
@@ -124,10 +103,14 @@ public class Recipe {
         int nbOfAdds = 0;
         for (Operation operation : operations) {
             if (operation == Operation.ADD) {
-                if (!isValidInstruction(ingredients.get(nbOfAdds), operation)) return false;
+                if (!isValidInstruction(getIngredientAt(nbOfAdds), operation)) {
+                    return false;
+                }
                 nbOfAdds++;
             } else {
-                if (!isValidInstruction(null, operation)) return false;
+                if (!isValidInstruction(null, operation)) {
+                    return false;
+                }
             }
         }
         return ingredients.size() == nbOfAdds;
@@ -155,50 +138,6 @@ public class Recipe {
     }
 
     /**
-     * A method for getting the ingredients.
-     */
-    @Model
-    private ArrayList<AlchemicIngredient> getIngredients() {
-        return new ArrayList<AlchemicIngredient>(ingredients);
-    }
-
-    /**
-     * A method for getting the operations.
-     */
-    @Model
-    private ArrayList<Operation> getOperations() {
-        return new ArrayList<Operation>(operations);
-    }
-
-    /**
-     * A method for setting the ingredients of a recipe.
-     *
-     * @param   ingredients
-     *          The ingredients for the recipe.
-     *
-     * @post    The ingredients of the recipe are set to a copy of ingredients.
-     *          | new.getIngredients().equals(ingredients)
-     */
-    @Model @Raw
-    private void setIngredients(ArrayList<AlchemicIngredient> ingredients) {
-        this.ingredients = new ArrayList<>(ingredients);
-    }
-
-    /**
-     * A method for setting the operations of a recipe.
-     *
-     * @param   operations
-     *          The operations for the recipe.
-     *
-     * @post    The operations of the recipe are set to a copy of operations.
-     *          | new.getOperations().equals(operations)
-     */
-    @Model @Raw
-    private void setOperations(ArrayList<Operation> operations) {
-        this.operations = new ArrayList<>(operations);
-    }
-
-    /**
      * A method for adding an ingredient to the ingredients of the recipe.
      *
      * @param   ingredient
@@ -211,8 +150,14 @@ public class Recipe {
      *          | new.getIngredientAt(getNbOfIngredients()-1) == ingredient
      */
     @Model @Raw
-    private void addIngredient(AlchemicIngredient ingredient) {
-        ingredients.add(ingredient);
+    private void addAsIngredient(AlchemicIngredient ingredient) {
+        if (isValidIngredient(ingredient)) {
+            ingredients.add(ingredient);
+        }
+    }
+
+    public boolean isValidIngredient(AlchemicIngredient ingredient) {
+        return ingredient != null && !ingredient.isTerminated();
     }
 
     /**
@@ -228,8 +173,14 @@ public class Recipe {
      *          | new.getOperationAt(getNbOfOperations()-1) == operation
      */
     @Model @Raw
-    private void addOperation(Operation operation) {
-        operations.add(operation);
+    private void addAsOperation(Operation operation) {
+        if (isValidOperation(operation)) {
+            operations.add(operation);
+        }
+    }
+
+    public boolean isValidOperation(Operation operation) {
+        return operation != null;
     }
 
     /**
@@ -241,22 +192,20 @@ public class Recipe {
      * @param   operation
      *          The operation to be added as part of the instruction.
      *
-     * @effect  If the instruction is valid as a whole,
-     *          the operation is added to the recipe.
+     * @effect  TODO
+     *          | if isValidInstruction(ingredient, operation) && ingredient != null
+     *          |   addAsIngredient(ingredient)
+     * @effect  TODO
      *          | if isValidInstruction(ingredient, operation)
-     *          | then addOperation(ingredient)
-     * @effect  If the instruction is valid as a whole
-     *          and the ingredient is not a null-reference,
-     *          the ingredient is added to the recipe.
-     *          | if ( isValidInstruction(ingredient, operation)
-     *          |           && ingredient != null )
-     *          | then addIngredient(operation)
+     *          |   addAsOperation(operation)
      */
     @Raw
-    public void addInstruction(AlchemicIngredient ingredient, Operation operation) {
+    public void addAsInstruction(AlchemicIngredient ingredient, Operation operation) {
         if (isValidInstruction(ingredient, operation)) {
-            if (ingredient != null) addIngredient(ingredient);
-            addOperation(operation);
+            if (ingredient != null) {
+                addAsIngredient(ingredient);
+            }
+            addAsOperation(operation);
         }
     }
 
@@ -265,13 +214,13 @@ public class Recipe {
      *
      * @param   operation
      *          The operation to be added as part of the instruction.
-     *
      * @effect  The operation with a null reference ingredient is added.
      *          | addInstruction(null, operation)
+     * @note    This method is a convenience overloaded method for adding an operation.
      */
     @Raw
-    public void addInstruction(Operation operation) {
-        addInstruction(null, operation);
+    public void addAsInstruction(Operation operation) {
+        addAsInstruction(null, operation);
     }
 
     /**
@@ -279,19 +228,12 @@ public class Recipe {
      *
      * @param   index
      *          The index of the ingredient.
-     *
-     * @return  The ingredient at the given index if the index is positive
-     *          and the index is smaller than the length of ingredients.
-     *          | if (index >= 0) && (index < getNbOfIngredients())
-     *          | then result == getIngredients().get(index)
-     * @return  null if the index is not valid
-     *          according to the limitations above.
-     *          | if (index < 0) || (index >= getNbOfIngredients())
-     *          | then result == null
      */
     @Basic
     public AlchemicIngredient getIngredientAt(int index) {
-        if (index >= 0 && index < getNbOfIngredients()) return getIngredients().get(index);
+        if (index >= 0 && index < getNbOfIngredients()) {
+            return ingredients.get(index);
+        }
         return null;
     }
 
@@ -300,19 +242,12 @@ public class Recipe {
      *
      * @param   index
      *          The index of the operation.
-     *
-     * @return  The operation at the given index if the index is positive
-     *          and the index is smaller than the length of operations.
-     *          | if (index >= 0) && (index < getNbOfOperations())
-     *          | then result == getOperations().get(index)
-     * @return  null if the index is not valid
-     *          according to the limitations above.
-     *          | if (index < 0) || (index >= getNbOfOperations())
-     *          | then result == null
      */
     @Basic
     public Operation getOperationAt(int index) {
-        if (index >= 0 && index < getNbOfOperations()) return getOperations().get(index);
+        if (index >= 0 && index < getNbOfOperations()) {
+            return operations.get(index);
+        }
         return null;
     }
 
@@ -332,10 +267,24 @@ public class Recipe {
         return operations.size();
     }
 
-
-    public boolean containsThisOperation(Operation operation) {
-        for (Operation o : getOperations()) {
-            if (o == operation) {
+    /**
+     * Check whether the given operation is present in this recipe.
+     *
+     * @param 	operation
+     *        	The operation to check.
+     * @return 	False if the given operation is not effective.
+     * 	   		| if (operation == null)
+     * 	   		| 	then result == false
+     * @return 	True if the operation is registered at some
+     *          position in this recipe; false otherwise.
+     *         	| result ==
+     *         	|    for some I in 0..getNbOfOperations()-1 :
+     *         	| 	      (getOperationAt(I) == operation)
+     */
+    public boolean hasAsOperation(Operation operation) {
+        if (operation == null) return false;
+        for (int i=0; i<getNbOfOperations(); i++) {
+            if (getOperationAt(i) == operation) {
                 return true;
             }
         }
@@ -343,21 +292,6 @@ public class Recipe {
     }
 
 
-    /**********************************************************
-     * COPY
-     **********************************************************/
-
-    /**
-     * A method for cloning a recipe.
-     *
-     * @return  A copy of the original recipe.
-     *          | result ==
-     *          |   new Recipe(getIngredients(), getOperations())
-     */
-    @Model @Override
-    protected Recipe clone() {
-        return new Recipe(getIngredients(), getOperations());
-    }
 
     /**********************************************************
      * EQUALS
@@ -406,6 +340,8 @@ public class Recipe {
         }
         return true;
     }
+
+
 
     /**********************************************************
      * Termination
