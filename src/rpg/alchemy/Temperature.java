@@ -62,6 +62,7 @@ public class Temperature {
 	 * 			The hotness to be set.
 	 * @param 	coldness
 	 * 			The coldness to be set.
+	 *
 	 * @effect	If the given temperature is valid, the hotness and coldness
 	 * 			are set to the given hotness and coldness.
 	 * 			| if (isValidTemperature(coldness, hotness))
@@ -101,6 +102,9 @@ public class Temperature {
 	 * A constructor for creating a new Temperature object with
 	 * the given list of coldness and hotness.
 	 *
+	 * @param 	temperature
+	 * 			A long array contains two values that represent the temperature.
+	 *
 	 * @effect	A new temperature is created with the given hotness and coldness.
 	 * 			| this(temperature[0], temperature[1])
 	 */
@@ -137,8 +141,10 @@ public class Temperature {
 
 	/**
 	 * A setter for the hotness of the temperature.
+	 *
 	 * @param 	hotness
 	 * 			The new hotness to be set.
+	 *
 	 * @post	If the hotness is bigger then the upperbound then the hotness is set to the upperbound.
 	 * 			| if (hotness > UPPERBOUND)
 	 * 			| 	then new.getHotness() == UPPERBOUND
@@ -178,11 +184,14 @@ public class Temperature {
 
 	/**
 	 * A setter for the coldness of the temperature.
+	 *
 	 * @param 	coldness
 	 * 			The new coldness to be set.
+	 *
 	 * @post	If the coldness is bigger the upperbound then the coldness is set to the upperbound.
 	 * 			| if (coldness >= UPPERBOUND)
 	 * 			| 	then new.getColdness() == UPPERBOUND
+	 *
 	 * @post	If the coldness is positive and lower than the upperbound, the coldness is set to the given coldness.
 	 * 			| if (coldness >= 0 && coldness < UPPERBOUND)
 	 * 			| 	then new.getColdness() == coldness
@@ -201,6 +210,7 @@ public class Temperature {
 	 *
 	 * @param 	amount
 	 * 			The amount of heat to be added.
+	 *
 	 * @post	If the amount is positive and the current hotness, increased with the given amount,
 	 * 			doesn't succeed the maximum value and the coldness is equal to zero,
 	 * 			the temperature is increased with the given amount.
@@ -236,7 +246,7 @@ public class Temperature {
 					setColdness(difference);
 				} else {
 					setColdness(0);
-					setHotness(min(-difference,UPPERBOUND));
+					setHotness(min(-difference, UPPERBOUND));
 				}
 			} else {
 				if (amount < UPPERBOUND - getHotness()) {
@@ -254,6 +264,7 @@ public class Temperature {
 	 *
 	 * @param 	amount
 	 * 			The amount of coolness to be added.
+	 *
 	 * @post	If the amount is positive and the current coldness, increased with the given amount,
 	 * 			doesn't succeed the maximum value and the hotness is zero,
 	 * 			the coldness is increased with the given amount.
@@ -306,7 +317,8 @@ public class Temperature {
 	 * A method for checking if one temperature is hotter than the other.
 	 *
 	 * @param 	other
-	 * 			The other temperature to compare to.
+	 * 			The other temperature (an array) to compare to.
+	 *
 	 * @return	True if and only if the other is a null pointer, or
 	 * 			the other hotness is smaller than the own hotness, or
 	 * 			the other coldness is bigger than the own coldness.
@@ -320,8 +332,10 @@ public class Temperature {
 
 	/**
 	 * A method for checking if one temperature is colder than the other.
+	 *
 	 * @param 	other
-	 * 			The other temperature to compare to.
+	 * 			The other temperature (an array) to compare to.
+	 *
 	 * @return	True if and only if the other is a null pointer, or
 	 * 			the other coldness is smaller than the own coldness, or
 	 * 			the other hotness is bigger than the own hotness.
@@ -338,6 +352,7 @@ public class Temperature {
 	 *
 	 * @param 	other
 	 * 			The other temperature to calculate the difference of.
+	 *
 	 * @return	The sum of the absolute value of the difference of the coldness
 	 * 			and the absolute value of the difference of the hotness.
 	 * 			| result == abs(getColdness() - other[0]) + abs(getHotness() - other[1])
@@ -363,6 +378,7 @@ public class Temperature {
 	 * 			The hotness of the temperature.
 	 * @param 	coldness
 	 * 			The coldness of the temperature.
+	 *
 	 * @return	False if the hotness or the coldness is negative, if they are both not zero,
 	 * 			or if the upperbound is exceeded; true otherwise.
 	 * 			| result == (hotness >= 0 && hotness <= UPPERBOUND) &&
@@ -384,8 +400,10 @@ public class Temperature {
 
 	/**
 	 * A method for checking whether two temperatures are equal.
+	 *
 	 * @param 	other
 	 * 			The other temperature to compare to.
+	 *
 	 * @return	True if and only if the other temperature is effective
 	 * 			and the hotness and coldness are equal.
 	 * 			| result == (other != null && getHotness() == other.getHotness()
@@ -402,7 +420,7 @@ public class Temperature {
 	 *********************************************************/
 
 	/**
-	 * A method to add two temperatures together.
+	 * A method to add two temperatures objects together.
 	 *
 	 * @param 	t1
 	 * 			The first temperature that gets added together.
@@ -438,7 +456,7 @@ public class Temperature {
 	}
 
 	/**
-	 * A method to multiply a temperature with a given factor delta.
+	 * A method to multiply a temperature object with a given factor delta.
 	 *
 	 * @effect	The coldness of the new temperature is set to the current coldness multiplied with a factor delta,
 	 * 			if delta is greater than 0.

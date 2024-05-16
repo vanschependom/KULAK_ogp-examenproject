@@ -39,4 +39,10 @@ public class UnitTest {
 		assertEquals(expected,conversion);
 	}
 
+	@Test
+	public void maxUnitForContainer() {
+		assertEquals(Unit.BARREL, Unit.getMaxUnitForContainerWithState(State.LIQUID));
+		assertEquals(Unit.CHEST, Unit.getMaxUnitForContainerWithState(State.POWDER));
+	}
+
 }
