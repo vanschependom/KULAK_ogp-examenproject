@@ -105,11 +105,6 @@ public class Recipe {
         return operations;
     }
 
-    @Model
-    private ArrayList<AlchemicIngredient> getIngredients() {
-        return ingredients;
-    }
-
     /**
      * A method for adding an operation to the operations of the recipe.
      *
@@ -199,6 +194,11 @@ public class Recipe {
         }
     }
 
+    @Model
+    private ArrayList<AlchemicIngredient> getIngredients() {
+        return ingredients;
+    }
+
 
 
     /**********************************************************
@@ -260,16 +260,24 @@ public class Recipe {
      * @param   operation
      *          The operation to check.
      *
-     * @return  True if and only if either the operation is an add operation
-     *          and the ingredient is not null and not terminated.
-     *          Or if the operation is not null, not an add operation and the ingredient is null.
-     *          | result ==
-     *          |   ( operation == Operation.ADD && ingredient != null && !ingredient.isTerminated()) ||
-     *          |   ( operation != null && operation != Operation.ADD && ingredient == null )
+     * @return  If the current number of operations is 0, the result is true if and only if
+     *          the operation is an add operation.
+     *          | if (getNbOfOperations() == 0)
+     *          |   then result == (operation == Operation.ADD)
+     * @return  If the current number of operations is not 0, the result is true if and only if
+     *          the operation is an add operation and the ingredient is not null and not terminated,
+     *          or the operation is not an add operation and the ingredient is null.
+     *          | if (getNbOfOperations() != 0)
+     *          |   then result == ( (operation == Operation.ADD && ingredient != null && !ingredient.isTerminated()) ||
+     *          |       (operation != null && operation != Operation.ADD && ingredient == null) )
      */
     public boolean isValidInstruction(AlchemicIngredient ingredient, Operation operation) {
-        return ((operation == Operation.ADD && ingredient != null && !ingredient.isTerminated()) ||
-                (operation != null && operation != Operation.ADD && ingredient == null));
+        if (getNbOfOperations() == 0) {
+            return operation == Operation.ADD;
+        } else {
+            return ((operation == Operation.ADD && ingredient != null && !ingredient.isTerminated()) ||
+                    (operation != null && operation != Operation.ADD && ingredient == null));
+        }
     }
 
     /**

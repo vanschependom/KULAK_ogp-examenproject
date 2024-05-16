@@ -2,6 +2,9 @@ package rpg.alchemy;
 
 import org.junit.jupiter.api.*;
 import rpg.*;
+import rpg.recipe.Operation;
+import rpg.recipe.Recipe;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -28,6 +31,19 @@ public class LaboratoryTest {
 	private static Oven ovenNotAdded;
 	private static Transmogrifier transmogrifierNotAdded;
 	private static Kettle kettleNotAdded;
+	IngredientType powderType;
+	IngredientType powderTypeMixed;
+	IngredientType liquidType;
+	IngredientType liquidTypeMixed;
+
+	AlchemicIngredient powder;
+	AlchemicIngredient heatedPowder;
+	AlchemicIngredient cooledPowder;
+	AlchemicIngredient mixedPowder;
+	AlchemicIngredient liquid;
+	AlchemicIngredient heatedLiquid;
+	AlchemicIngredient cooledLiquid;
+	AlchemicIngredient mixedLiquid;
 
 	@BeforeEach
 	public void setupFixture() {
@@ -46,6 +62,20 @@ public class LaboratoryTest {
 //		oven = new Oven(lab, new Temperature(0, 1000));
 //		transmogrifier = new Transmogrifier(lab);
 //		kettle = new Kettle(lab);
+		// ingredient types
+		powderType = new IngredientType(new Name(null, "Powder Sugar"), State.POWDER, new Temperature(), false);
+		powderTypeMixed = new IngredientType(new Name("Breakfast", "Oatmeal", "Seeds"), State.POWDER, new Temperature(), true);
+		liquidType = new IngredientType(new Name(null, "Sprite"), State.LIQUID, new Temperature(0, 100), false);
+		liquidTypeMixed = new IngredientType(new Name("Watery Coke", "Water", "Coke"), State.LIQUID, new Temperature(), true);
+		// ingredients
+		powder = new AlchemicIngredient(100, Unit.PINCH, powderType);
+		heatedPowder = new AlchemicIngredient(2, Unit.CHEST, new Temperature(0, 300), powderType);
+		cooledPowder = new AlchemicIngredient(2, Unit.CHEST, new Temperature(300, 0), powderType);
+		mixedPowder = new AlchemicIngredient(5, Unit.SACHET, powderTypeMixed);
+		liquid = new AlchemicIngredient(2, Unit.JUG, liquidType);
+		heatedLiquid = new AlchemicIngredient(8, Unit.BOTTLE, new Temperature(0, 300), liquidTypeMixed);
+		cooledLiquid = new AlchemicIngredient(8, Unit.BOTTLE, new Temperature(300, 0), liquidTypeMixed);
+		mixedLiquid = new AlchemicIngredient(10, Unit.VIAL, liquidTypeMixed);
 	}
 
 	@Test
