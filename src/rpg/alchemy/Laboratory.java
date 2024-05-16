@@ -641,23 +641,22 @@ public class Laboratory extends StorageLocation {
 		} else if (container.getContent().isColderThanStandardTemperature() && !hasDeviceOfType(Oven.class)) {
 			throw new IllegalStateException("The content is colder than standard temperature, but there is no oven in the lab!");
 		}
-		if (container.getContent().isHotterThanStandardTemperature()) {
-			// too hot -> cool
-			CoolingBox coolingBox = getDeviceOfType(CoolingBox.class);
-			coolingBox.changeTemperatureTo(container.getContent().getType().getStandardTemperature()); 	// standard temperature of the ingredient type
-			coolingBox.addIngredients(container);
-			coolingBox.executeOperation();						// cooling box is exact!
-			container = coolingBox.getResult();
-		} else if (container.getContent().isColderThanStandardTemperature()) {
-			// too cold -> heat
-			Oven oven = getDeviceOfType(Oven.class);
-			oven.changeTemperatureTo(container.getContent().getType().getStandardTemperature()); 		// standard temperature of the ingredient type
-			oven.addIngredients(container);
-			// oven is not exact! +- 5 degrees
-			do {
+		while (container.getContent().isColderThanStandardTemperature() || container.getContent().isHotterThanStandardTemperature()) {
+			if (container.getContent().isHotterThanStandardTemperature()) {
+				// too hot -> cool
+				CoolingBox coolingBox = getDeviceOfType(CoolingBox.class);
+				coolingBox.changeTemperatureTo(container.getContent().getType().getStandardTemperature());    // standard temperature of the ingredient type
+				coolingBox.addIngredients(container);
+				coolingBox.executeOperation();                        // cooling box is exact!
+				container = coolingBox.getResult();
+			} else {
+				// too cold -> heat
+				Oven oven = getDeviceOfType(Oven.class);
+				oven.changeTemperatureTo(container.getContent().getType().getStandardTemperature());        // standard temperature of the ingredient type
+				oven.addIngredients(container);
 				oven.executeOperation();
-			} while (oven.getIngredientAt(0).isColderThanStandardTemperature() || oven.getIngredientAt(0).isHotterThanStandardTemperature());
-			container = oven.getResult();
+				container = oven.getResult();
+			}
 		}
 		return container;
 	}
@@ -702,7 +701,7 @@ public class Laboratory extends StorageLocation {
 	 */
 	@Model
 	private void executeSingleRecipe(Recipe recipe, Kettle kettle, CoolingBox coolingBox, Oven oven) {
-		if (!hasEnoughIngredients(recipe)) {
+		if (!hasEnoughIngredientsForRecipe(recipe)) {
 			throw new IllegalArgumentException("There isn't enough ingredient to execute the recipe.");
 		}
 		AlchemicIngredient lastUsed = null;
@@ -735,14 +734,14 @@ public class Laboratory extends StorageLocation {
 	/**
 	 * Checks if there are enough ingredients to execute the recipe.
 	 */
-	private boolean hasEnoughIngredients(Recipe recipe) {
+	protected boolean hasEnoughIngredientsForRecipe(Recipe recipe) {
 		for (int i = 0; i < recipe.getNbOfIngredients(); i++) {
-			if (!hasAsIngredient(recipe.getIngredientAt(i))) {
+			if (!hasIngredientWithSimpleName(recipe.getIngredientAt(i).getSimpleName())) {
 				return false;
 			} else {
 				// check if spoon equivalents are enough
 				AlchemicIngredient ingredient = recipe.getIngredientAt(i);
-				if (ingredient.getSpoonAmount() > getIngredientAt(getIndexOfIngredient(ingredient)).getSpoonAmount()) {
+				if (ingredient.getSpoonAmount() >= getIngredientAt(getIndexOfSimpleName(ingredient.getSimpleName())).getSpoonAmount()) {
 					return false;
 				}
 			}
