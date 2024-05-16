@@ -619,24 +619,40 @@ public class Laboratory extends StorageLocation {
 
 	/**
 	 * A help method to set the ingredient of a container to its standard temperature.
-	 * TODO aanpassen
 	 *
 	 * @param 	container
 	 * 			The container of which the ingredient will be set to its standard temperature.
 	 *
-	 * @return 	If the ingredient is warmer than its standard temperature and there is a cooling box then
+	 * @effect	The ingredient in the container is set to the standard temperature of its type.
+	 * 			| bringToTemperature(container, container.getContent().getType().getStandardTemperature())
+	 */
+	@Model
+	private IngredientContainer bringToStandardTemperature(IngredientContainer container) throws IllegalStateException {
+		return bringToTemperature(container, container.getContent().getType().getStandardTemperature());
+	}
+
+
+	/**
+	 * A method to bring the ingredient of a container to a certain temperature.
+	 *
+	 * @param 	container
+	 * 			The container that contains the ingredient.
+	 * @param 	temperature
+	 * 			The temperature (an array of two longs) that the ingredient will be set to.
+	 *
+	 * @return 	If the ingredient is warmer than the given temperature and there is a cooling box then
 	 * 			use to cooling box to set the ingredient to its standard temperature.
-	 * 			| if (container.getContent().isHotterThanStandardTemperature() && hasDeviceOfType(CoolingBox.class))
-	 * 			| 	then result.getTemperature()[0] == container.getContent().getStandardTemperature()[0]
-	 * 			|			&& result.getTemperature()[1] == container.getContent().getStandardTemperature()[1]
-	 * @return	If the ingredient is colder than its standard temperature and there is an oven then use
+	 * 			| if (container.getContent().isHotterThan(temperature) && hasDeviceOfType(CoolingBox.class))
+	 * 			| 	then result.getTemperature()[0] == temperature[0]
+	 * 			|			&& result.getTemperature()[1] == temperature[1]
+	 * @return	If the ingredient is colder than the given temperature and there is an oven then use
 	 * 			the oven to set the ingredient to its standard temperature.
-	 * 			| if (container.getContent().isColderThanStandardTemperature() && hasDeviceOfType(Oven.class))
-	 * 			| 	then result.getTemperature()[0] == container.getContent().getStandardTemperature()[0]
-	 * 			|		&& result.getTemperature()[1] == container.getContent().getStandardTemperature()[1]
-	 * @return 	If the ingredient is already at standard temperature, then no modifications are made.
-	 * 			| if (container.getContent().getTemperature()[0] == container.getContent().getStandardTemperature()[0]
-	 * 			|		&& container.getContent().getTemperature()[1] == container.getContent().getStandardTemperature()[1])
+	 * 			| if (container.getContent().isColderThan(temperature) && hasDeviceOfType(Oven.class))
+	 * 			| 	then result.getTemperature()[0] == temperature[0]
+	 * 			|		&& result.getTemperature()[1] == temperature[1]
+	 * @return 	If the ingredient is already at the given temperature, then no modifications are made.
+	 * 			| if ( container.getContent().getTemperature()[0] == temperature[0]
+	 * 			|		 && container.getContent().getTemperature()[1] == temperature[1] )
 	 * 			| 	then result == container
 	 *
 	 * @throws 	IllegalStateException
@@ -647,12 +663,7 @@ public class Laboratory extends StorageLocation {
 	 * 			| container.getContent().isColderThanStandardTemperature() && !hasDeviceOfType(Oven.class)
 	 */
 	@Model
-	private IngredientContainer bringToStandardTemperature(IngredientContainer container) throws IllegalStateException {
-		return bringToTemperature(container, container.getContent().getType().getStandardTemperature());
-	}
-
-	// TODO
-	private IngredientContainer bringToTemperature(IngredientContainer container, long[] temperature) {
+	private IngredientContainer bringToTemperature(IngredientContainer container, long[] temperature) throws IllegalStateException {
 		if (container.getContent().isHotterThan(temperature) && !hasDeviceOfType(CoolingBox.class)) {
 			throw new IllegalStateException("The content is hotter than the provided temperature, but there is no cooling box in the lab!");
 		} else if (container.getContent().isColderThan(temperature) && !hasDeviceOfType(Oven.class)) {
@@ -720,14 +731,13 @@ public class Laboratory extends StorageLocation {
 	/**
 	 * A method to execute a single recipe.
 	 */
-	@Model
 	private void executeSingleRecipe(Recipe recipe, Kettle kettle, CoolingBox coolingBox, Oven oven) {
 		
 		AlchemicIngredient previouslyAdded = null;
 		int ingrCounter = 0;
 
 		// iterate over the operations
-		for (int i=0; i < recipe.getNbOfOperations(); i++){
+		for (int i=0; i < recipe.getNbOfOperations(); i++) {
 
 			Operation operation = recipe.getOperationAt(i);
 
@@ -735,6 +745,7 @@ public class Laboratory extends StorageLocation {
 				previouslyAdded = recipe.getIngredientAt(ingrCounter);
 				kettle.addIngredients(new IngredientContainer(previouslyAdded));
 			}
+
 			if (operation == Operation.HEAT) {
 				IngredientContainer result;
 				// the last operation was add
@@ -747,6 +758,7 @@ public class Laboratory extends StorageLocation {
 				}
 				kettle.addIngredients(result);
 			}
+
 			if (operation == Operation.COOL) {
 				IngredientContainer result;
 				// the last operation was add
@@ -759,6 +771,7 @@ public class Laboratory extends StorageLocation {
 				}
 				kettle.addIngredients(result);
 			}
+
 			if (operation == Operation.MIX) {
 				previouslyAdded = null;
 				kettle.executeOperation();

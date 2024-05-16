@@ -30,6 +30,8 @@ public class RecipeBookTest {
                 Operation.ADD, Operation.COOL, Operation.COOL, Operation.MIX
         };
 
+        recipe1 = new Recipe();
+        recipe2 = new Recipe();
 
         recipe1.addAsInstruction(new AlchemicIngredient(2, Unit.BOTTLE,
                 new Temperature(0, 20), type, State.LIQUID), Operation.ADD);
