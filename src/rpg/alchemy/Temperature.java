@@ -31,7 +31,7 @@ public class Temperature {
 	private static final long UPPERBOUND = 10000;
 
 	/**
-	 * Return the upper bound of temperature
+	 * Return the upper bound of temperature.
 	 */
 	@Immutable @Basic
 	protected static long getUpperbound() {
@@ -63,7 +63,7 @@ public class Temperature {
 	 * @param 	coldness
 	 * 			The coldness to be set.
 	 * @effect	If the given temperature is valid, the hotness and coldness
-	 * 			are set to the given hotness and coldness
+	 * 			are set to the given hotness and coldness.
 	 * 			| if (isValidTemperature(coldness, hotness))
 	 * 			| 	then setHotness(hotness) && setColdness(coldness)
 	 * @effect	If the given temperature is not valid, the hotness and coldness
@@ -99,7 +99,7 @@ public class Temperature {
 
 	/**
 	 * A constructor for creating a new Temperature object with
-	 * the given list of coldness and hotness
+	 * the given list of coldness and hotness.
 	 *
 	 * @effect	A new temperature is created with the given hotness and coldness.
 	 * 			| this(temperature[0], temperature[1])
@@ -138,12 +138,12 @@ public class Temperature {
 	/**
 	 * A setter for the hotness of the temperature.
 	 * @param 	hotness
-	 * 			The new hotness to be set
+	 * 			The new hotness to be set.
 	 * @post	If the hotness is bigger then the upperbound then the hotness is set to the upperbound.
 	 * 			| if (hotness > UPPERBOUND)
 	 * 			| 	then new.getHotness() == UPPERBOUND
 	 * @post	If the hotness is positive and lower than the upperbound, the hotness is set to the given hotness.
-	 * 			| if (hotness >= 0 && hotness < UPPERBOUND)
+	 * 			| if (hotness >= 0 && hotness <= UPPERBOUND)
 	 * 			| 	then new.getHotness() == hotness
 	 */
 	@Model
@@ -179,11 +179,11 @@ public class Temperature {
 	/**
 	 * A setter for the coldness of the temperature.
 	 * @param 	coldness
-	 * 			The new coldness to be set
+	 * 			The new coldness to be set.
 	 * @post	If the coldness is bigger the upperbound then the coldness is set to the upperbound.
 	 * 			| if (coldness >= UPPERBOUND)
 	 * 			| 	then new.getColdness() == UPPERBOUND
-	 * @post	If the coldness is positive and lower than the upperbound, the coldness is set to the given coldness
+	 * @post	If the coldness is positive and lower than the upperbound, the coldness is set to the given coldness.
 	 * 			| if (coldness >= 0 && coldness < UPPERBOUND)
 	 * 			| 	then new.getColdness() == coldness
 	 */
@@ -306,7 +306,7 @@ public class Temperature {
 	 * A method for checking if one temperature is hotter than the other.
 	 *
 	 * @param 	other
-	 * 			The other temperature to compare to
+	 * 			The other temperature to compare to.
 	 * @return	True if and only if the other is a null pointer, or
 	 * 			the other hotness is smaller than the own hotness, or
 	 * 			the other coldness is bigger than the own coldness.
@@ -321,7 +321,7 @@ public class Temperature {
 	/**
 	 * A method for checking if one temperature is colder than the other.
 	 * @param 	other
-	 * 			The other temperature to compare to
+	 * 			The other temperature to compare to.
 	 * @return	True if and only if the other is a null pointer, or
 	 * 			the other coldness is smaller than the own coldness, or
 	 * 			the other hotness is bigger than the own hotness.
@@ -360,9 +360,9 @@ public class Temperature {
 	 * A method for checking whether a given temperature is valid.
 	 *
 	 * @param 	hotness
-	 * 			The hotness of the temperature
+	 * 			The hotness of the temperature.
 	 * @param 	coldness
-	 * 			The coldness of the temperature
+	 * 			The coldness of the temperature.
 	 * @return	False if the hotness or the coldness is negative, if they are both not zero,
 	 * 			or if the upperbound is exceeded; true otherwise.
 	 * 			| result == (hotness >= 0 && hotness <= UPPERBOUND) &&
@@ -386,8 +386,8 @@ public class Temperature {
 	 * A method for checking whether two temperatures are equal.
 	 * @param 	other
 	 * 			The other temperature to compare to.
-	 * @return	True if and only if the other temperature is effective and the hotness and coldness
-	 * 			are equal.
+	 * @return	True if and only if the other temperature is effective
+	 * 			and the hotness and coldness are equal.
 	 * 			| result == (other != null && getHotness() == other.getHotness()
 	 * 			| 						   && getColdness() == other.getColdness())
 	 */
@@ -405,9 +405,9 @@ public class Temperature {
 	 * A method to add two temperatures together.
 	 *
 	 * @param 	t1
-	 * 			The first temperature that you want to add together
+	 * 			The first temperature that gets added together.
 	 * @param	t2
-	 * 			The other temperature that you want to add together
+	 * 			The other temperature that gets added together.
 	 *
 	 * @return	If the difference between the sum of the hotness and the sum of the coldness
 	 * 			is positive then return a new temperature with coldness zero and hotness the minimum of the difference and the upperbound.

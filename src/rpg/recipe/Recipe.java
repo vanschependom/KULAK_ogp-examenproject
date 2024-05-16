@@ -111,11 +111,14 @@ public class Recipe {
      * @param   operation
      *          The operation to be added.
      *
-     * @post    The number of operations of this recipe is
+     * @post    If the operation is valid, the number of operations of this recipe is
      *          incremented with 1.
-     *          | new.getNbOfOperations() == getNbOfOperations() + 1
-     * @post    The given operation is inserted at the end of the list.
-     *          | new.getOperationAt(getNbOfOperations()-1) == operation
+     *          | if (isValidOperation())
+     *          | then new.getNbOfOperations() == getNbOfOperations() + 1
+     * @post    If the operation is valid, the given operation is inserted at the end of the list.
+     *          | if (isValidOperation())
+     *          | then new.getOperationAt(getNbOfOperations()-1) == operation
+     *
      */
     @Model @Raw
     private void addAsOperation(Operation operation) {
@@ -124,6 +127,14 @@ public class Recipe {
         }
     }
 
+    /**
+     * A method that checks if a given operation is valid.
+     *
+     * @param   operation
+     *          The operation to check.
+     * @return  True if and only if the operation is not a null reference.
+     *          | result == ( operation != null )
+     */
     public boolean isValidOperation(Operation operation) {
         return operation != null;
     }
@@ -158,7 +169,7 @@ public class Recipe {
 
 
     /**
-     * A method for getting the ingredient at a certain index.
+     * A method for getting the ingredient at a certain index (null if the index is not valid).
      *
      * @param   index
      *          The index of the ingredient.
@@ -293,10 +304,13 @@ public class Recipe {
      * @param   operation
      *          The operation to be added as part of the instruction.
      *
-     * @effect  TODO
+     * @effect  If the given ingredient and operation are valid
+     *          and the ingredient is not a null reference,
+     *          the given ingredient is added.
      *          | if isValidInstruction(ingredient, operation) && ingredient != null
      *          |   addAsIngredient(ingredient)
-     * @effect  TODO
+     * @effect  If the given ingredient and operation are valid,
+     *          the given operation is added.
      *          | if isValidInstruction(ingredient, operation)
      *          |   addAsOperation(operation)
      */

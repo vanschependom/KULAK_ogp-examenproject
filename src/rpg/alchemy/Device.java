@@ -295,7 +295,7 @@ public abstract class Device extends StorageLocation {
             throw new IllegalStateException("The device can't be used, since the device is terminated!");
         }
         if (isEmpty()) {
-            throw new IllegalStateException("There are no items in the device!");
+            throw new IllegalStateException("There are no ingredients in the device!");
         }
         // subclasses should override this method
     }

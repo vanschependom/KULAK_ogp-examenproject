@@ -50,7 +50,7 @@ public abstract class StorageLocation {
     /**
      * A variable for keeping track of the ingredients in a storage location
      *
-     * @invar   ingredients references an effective list
+     * @invar   ingredients references an effective list.
      *          | ingredients != null
      * @invar   Each ingredient in the list references an effective ingredient.
      *          | for each ingredient in ingredients:
@@ -58,7 +58,7 @@ public abstract class StorageLocation {
      * @invar   Each ingredient in the list references a non-terminated ingredient.
      *          | for each ingredient in ingredients:
      *          |   !ingredient.isTerminated()
-     * @invar   Each element in the list is unique (looking at the properties of the ingredient)
+     * @invar   Each element in the list is unique (looking at the properties of the ingredient).
      *          | for each index in 0..getNbOfIngredients()-1:
      *          |   for each otherIndex in 0..getNbOfIngredients()-1:
      *          |       if index != otherIndex
@@ -136,12 +136,12 @@ public abstract class StorageLocation {
      * A method for getting the ingredient at a given index.
      *
      * @param   index
-     *          The index of the ingredient to be returned
+     *          The index of the ingredient to be returned.
      * @throws  IndexOutOfBoundsException
-     *          The index is negative or is bigger than the size of ingredients
+     *          The index is negative or is bigger than the size of ingredients.
      *          | (index < 0) || (index > getNbOfIngredients())
      */
-    protected AlchemicIngredient getIngredientAt(int index) throws IndexOutOfBoundsException {
+    public AlchemicIngredient getIngredientAt(int index) throws IndexOutOfBoundsException {
         if (index < 0 || index >= getNbOfIngredients()) {
             throw new IndexOutOfBoundsException();
         }
@@ -155,9 +155,9 @@ public abstract class StorageLocation {
      *          The index of the ingredient to be removed
      * @throws  IndexOutOfBoundsException
      *          The index is negative or is bigger than the size of ingredients
-     *          | (index < 0) || (index > getNbOfIngredients())
+     *          | (index < 0) || (index >= getNbOfIngredients())
      */
-    protected void removeIngredientAt(int index) throws IndexOutOfBoundsException {
+    public void removeIngredientAt(int index) throws IndexOutOfBoundsException {
         if (index < 0 || index >= getNbOfIngredients()) {
             throw new IndexOutOfBoundsException();
         }
@@ -180,10 +180,10 @@ public abstract class StorageLocation {
     }
 
     /**
-     * A method for adding an ingredient to the storage location
+     * A method for adding an ingredient to the storage location.
      *
      * @param   ingredient
-     *          The ingredient to add
+     *          The ingredient to add.
      *
      * @post    The number of ingredients registered in this storage location is
      *          incremented with 1.
@@ -192,10 +192,10 @@ public abstract class StorageLocation {
      *          | new.getIngredientAt(getNbOfIngredients()-1) == ingredient
      *
      * @throws  IllegalArgumentException
-     *          The ingredient is not valid
+     *          The ingredient is not valid.
      *          | !canHaveAsIngredient(ingredient)
      * @throws  IllegalArgumentException
-     *          The ingredient is already present
+     *          The ingredient is already present.
      *          | hasAsIngredient(ingredient)
      */
     protected void addAsIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
@@ -222,6 +222,7 @@ public abstract class StorageLocation {
      *          | !hasAsIngredient(ingredient)
      * @throws  NullPointerException
      *          The ingredient is null.
+     *          | ingredient == null
      */
     protected void removeAsIngredient(AlchemicIngredient ingredient) throws IngredientNotPresentException, NullPointerException {
         try {
@@ -241,10 +242,10 @@ public abstract class StorageLocation {
      *          The ingredient to get the index of.
      *
      * @return  The index of the ingredient in the storage location, if it is present.
-     *          | getItemAt(result).equals(ingredient)
+     *          | getIngredientAt(result).equals(ingredient)
      *
      * @throws  NullPointerException
-     *          The given ingredient is null
+     *          The given ingredient is null.
      *          | ingredient == null
      * @throws  IngredientNotPresentException
      *          The given ingredient is not present in the storage location.
@@ -412,11 +413,11 @@ public abstract class StorageLocation {
      * A method for terminating this storage location.
      *
      * @post    If the storage location is not already terminated,
-     *          the storage location becomes terminated
+     *          the storage location becomes terminated.
      *          | if (!isTerminated())
      *          |   then new.isTerminated() == true
      * @throws  IllegalStateException
-     *          The storage location is already terminated
+     *          The storage location is already terminated.
      *          | isTerminated()
      */
     public void terminate() throws IllegalStateException {

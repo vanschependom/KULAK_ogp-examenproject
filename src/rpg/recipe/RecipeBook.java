@@ -6,7 +6,7 @@ import rpg.alchemy.Device;
 import java.util.ArrayList;
 
 /**
- * A class representing a recipeBook
+ * A class representing a recipeBook.
  *
  * @invar   The recipes of the recipe book are valid.
  *          | hasProperRecipes()
@@ -42,22 +42,22 @@ public class RecipeBook {
     /**
      * A variable for keeping track of all the recipes in the recipe book.
      *
-     * @invar   recipes references an effective list
+     * @invar   recipes references an effective list.
      *          | recipes != null
      * @invar   Each element in the list must be a valid recipe.
      *          | for each recipe in recipes:
      *          |   canHaveAsRecipe(recipe)
-     * @invar   Elements are deleted by setting them to null
+     * @invar   Elements are deleted by setting them to null.
      *          | for some recipe in recipes:
      *          |   recipe == null
-     * @invar   No two recipes are the same
+     * @invar   No two recipes are the same.
      *          | for each I in 0..getNbOfRecipes()-1:
      *          |   !containsRecipeTwice(getRecipeAt(I))
      */
     private ArrayList<Recipe> recipes = new ArrayList<>();
 
     /**
-     * A method for checking whether the recipebook has proper recipes inside of it
+     * A method for checking whether the recipebook has proper recipes inside of it.
      *
      * @return  True if and only if this recipebook can have all its recipes
      * 			at their respective indices.
@@ -76,10 +76,10 @@ public class RecipeBook {
     }
 
     /**
-     * A method for adding a recipe to a recipe book
+     * A method for adding a recipe to a recipe book.
      *
      * @param   recipe
-     *          The recipe to be added
+     *          The recipe to be added.
      *
      * @post    If the recipe is valid,
      *          the number of recipes of this recipe book is
@@ -98,10 +98,10 @@ public class RecipeBook {
     }
 
     /**
-     * A method for removing a recipe out of a recipe book
+     * A method for removing a recipe out of a recipe book.
      *
      * @param   recipe
-     *          The recipe to be removed
+     *          The recipe to be removed.
      *
      * @post    If the recipe is present in the recipe book,
      *          the recipe at the index of the given recipe is set to null.
@@ -118,7 +118,7 @@ public class RecipeBook {
     }
 
     /**
-     * Return the number of recipes in a recipe book
+     * Return the number of recipes in a recipe book.
      */
     @Basic
     public int getNbOfRecipes() {
@@ -150,7 +150,7 @@ public class RecipeBook {
     }
 
     /**
-     * A method for getting the recipe at a given index
+     * A method for getting the recipe at a given index.
      *
      * @param   index
      *          The index at which the recipe is to be returned.
@@ -165,15 +165,15 @@ public class RecipeBook {
 
     /**
      * A method that gives back the index
-     * of a recipe in a recipe book
+     * of a recipe in a recipe book.
      *
      * @param   recipe
-     *          The recipe to get the index of
+     *          The recipe to get the index of.
      * @return  If the recipe is present in the recipe book
-     *          the index of the recipe is returned
+     *          the index of the recipe is returned.
      *          | if hasAsRecipe(recipe)
      *          |   then getRecipeAt(result) == recipe
-     * @return  Negative one is returned if the recipe is not present
+     * @return  Negative one is returned if the recipe is not present.
      *          | if !hasAsRecipe(recipe)
      *          |   then result == -1
      */
@@ -189,7 +189,7 @@ public class RecipeBook {
 
     /**
      * A method for checking if a recipe book
-     * can contain a given recipe
+     * can contain a given recipe.
      *
      * @param   recipe
      *          The recipe to check

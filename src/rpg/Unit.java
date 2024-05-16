@@ -85,7 +85,7 @@ public enum Unit {
 	 * 			| new.isAllowedForContainer() == isAllowedForContainer
 	 */
 	@Model
-	private Unit(double spoonEquivalent, State[] allowedStates, boolean isAllowedForContainer) {
+    Unit(double spoonEquivalent, State[] allowedStates, boolean isAllowedForContainer) {
 		this.spoonEquivalent = spoonEquivalent;
 		this.allowedStates = allowedStates;
 		this.isAllowedForContainer = isAllowedForContainer;
@@ -110,21 +110,27 @@ public enum Unit {
 	 * @return	The equivalent of this unit in storerooms.
 	 * 			| result == getConversionFor(Unit.STOREROOM)
 	 */
+	@Immutable
 	public double getStoreroomEquivalent() {
 		return getConversionFor(Unit.STOREROOM);
 	}
 
 	/**
-	 * Return a copy of the (fixed length) list of allowed states of this unit.
+	 * A method that returns the allowed states.
+	 *
+	 * @return	A copy of the allowed states for this unit.
+	 * 			| result == getAllowedStatesObject().clone()
+	 *
+	 * @note 	This is not Immutable because the clone method creates a new clone everytime.
 	 */
-	@Basic @Immutable
 	public State[] getAllowedStates() {
-		return allowedStates.clone();
+		return getAllowedStatesObject().clone();
 	}
 
 	/**
 	 * Return the private list of allowed states of this unit.
 	 */
+	@Model @Basic @Immutable
 	private State[] getAllowedStatesObject() {
 		return allowedStates;
 	}
@@ -136,7 +142,7 @@ public enum Unit {
 	 * 			The state to check.
 	 * @return	True if and only if the given state is in the list of allowed states of this unit.
 	 * 			| result == ( for some allowedState in getAllowedStates():
-	 * 			|	allowedState == state )
+	 * 			|				allowedState == state )
 	 */
 	public boolean hasAsAllowedState(State state) {
 		for (State allowedState : getAllowedStatesObject()) {
@@ -209,9 +215,7 @@ public enum Unit {
 	 * 			|	if (unit.isAllowedForContainer()
 	 * 			|		&& unit.hasAsAllowedState(state))
 	 * 			|			then unit.getSpoonEquivalent() < result.getSpoonEquivalent()
-	 * @note	Called from getResult(), which is Raw.
 	 */
-	@Raw
 	public static Unit getMaxUnitForContainerWithState(State state) {
 		Unit maxUnit = null;
 		for (Unit unit : Unit.values()) {
@@ -230,7 +234,7 @@ public enum Unit {
 	 *
 	 * @param 	ingredient
 	 * 			The alchemic ingredient that needs to be in a container.
-	 * @pre 	The given ingredient must be effective
+	 * @pre 	The given ingredient must be effective.
 	 * 			| ingredient != null
 	 * @pre 	The spoonAmount of the given ingredient must be less than or equal to the spoon equivalent
 	 * 			of the maximum unit for a container.

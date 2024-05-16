@@ -129,6 +129,7 @@ public class Kettle extends Device {
 	private Temperature getNewTemperature() {
 		double totalColdness = 0;
 		double totalHotness = 0;
+
 		for (int i = 0; i < getNbOfIngredients(); i++) {
 			double spoonAmount = getIngredientAt(i).getSpoonAmount();
 			double currentColdness = getIngredientAt(i).getColdness() * spoonAmount;

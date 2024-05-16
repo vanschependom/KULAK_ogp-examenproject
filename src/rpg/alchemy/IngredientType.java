@@ -47,8 +47,7 @@ public class IngredientType {
 	 *
 	 * @post	If the given state is valid, the state of the new ingredient type is set to the
 	 * 			given state.
-	 * 			| if (isValidState(state))
-	 * 			| then new.getStandardState() == state
+	 * 			| new.getStandardState() == standardState
 	 * @post    If the given temperature is not a valid standard temperature, the temperature is
 	 * 			set to the standard temperature.
 	 *          | if (!isValidStandardTemperature(temperature))
@@ -57,7 +56,7 @@ public class IngredientType {
 	 * @post    If the given temperature is a valid standard temperature, the temperature
 	 * 			standard temperature is set to the given temperature.
 	 *          | if (isValidStandardTemperature(temperature))
-	 *          | 	then new.getStandardTemperatureObject() == temperature
+	 *          | 	then new.getStandardTemperatureObject() == standardTemperature
 	 * @post	The mixed state of the new ingredient type is set to the given mixed state.
 	 * 			| new.isMixed() == isMixed
 	 *
@@ -66,7 +65,7 @@ public class IngredientType {
 	 *
 	 * @throws	IllegalStateException
 	 * 			The given state is not a valid state for an ingredient type.
-	 * 			| !isValidState(state)
+	 * 			| !isValidState(standardState)
 	 */
 	@Raw
 	public IngredientType(Name name, State standardState, Temperature standardTemperature, boolean isMixed)

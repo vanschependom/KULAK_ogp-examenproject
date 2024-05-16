@@ -85,6 +85,15 @@ public class Laboratory extends StorageLocation {
 
 	/**
 	 * A variable for keeping track of the devices within this laboratory.
+	 *
+	 * @invar	devices references an effective list.
+	 * 			| devices != null
+	 * @invar   Each device in the list references an effective device.
+	 *          | for each device in devices:
+	 *          |   device != null
+	 * @invar   Each device in the list references a non-terminated device.
+	 *          | for each device in devices:
+	 *          |   !device.isTerminated()
 	 */
 	private final ArrayList<Device> devices = new ArrayList<>();
 
@@ -103,8 +112,8 @@ public class Laboratory extends StorageLocation {
 	 *        	The index of the device to be returned.
 	 * @throws 	IndexOutOfBoundsException
 	 *         	The given index is not positive or exceeds the number
-	 *         	of items registered in this directory minus 1.
-	 *         	| (index < 0) || (index > getNbItems()-1)
+	 *         	of devices registered in this laboratory minus 1.
+	 *         	| (index < 0) || (index > getNbOfDevices()-1)
 	 */
 	@Basic
 	public <T extends Device> T getDeviceAt(int index) throws IndexOutOfBoundsException {
@@ -124,7 +133,7 @@ public class Laboratory extends StorageLocation {
 	 *          resulting position.
 	 *          | getDeviceAt(result) == device
 	 * @throws  IllegalArgumentException
-	 *          The given device is not in the laboratory
+	 *          The given device is not in the laboratory.
 	 *          | !hasAsDevice(device)
 	 */
 	public int getIndexOfDevice(Device device) {
@@ -146,8 +155,10 @@ public class Laboratory extends StorageLocation {
 	 *          | result == ( for some I in 0..getNbOfDevices()-1:
 	 *          |   for some J in 0..getNbOfDevices()-1:
 	 *          |       (I != J) && getDeviceAt(I).getClass() == getIngredientAt(J).getClass() )
+	 *
+	 * @note 	The device can be raw because it is called from canHaveAsDevice.
 	 */
-	public boolean hasTwiceSameTypeAs(Device device) {
+	public boolean hasTwiceSameTypeAs(@Raw Device device) {
 		int count = 0;
 		for (int i=0; i<getNbOfDevices(); i++) {
 			if (getDeviceAt(i).getClass() == device.getClass()) {
@@ -189,7 +200,7 @@ public class Laboratory extends StorageLocation {
 	 * @return 	False if the given device is not effective.
 	 * 	   		| if (device == null)
 	 * 	   		| 	then result == false
-	 * @return 	True if a device equal to the given item is registered at some
+	 * @return 	True if a device equal to the given device is registered at some
 	 *         	position in this laboratory; false otherwise.
 	 *         	| result ==
 	 *         	|    for some I in 0..getNbOfDevices()-1 :
@@ -252,7 +263,7 @@ public class Laboratory extends StorageLocation {
 
 	/**
 	 * A method for checking whether the laboratory has proper devices inside of it;
-	 * thus this checks 1) the relation is correct 2) the contents are correct
+	 * thus this checks 1) the relation is correct 2) the contents are correct.
 	 *
 	 * @return  True if and only if this laboratory can have all its devices
 	 * 			at their respective indices.
@@ -280,12 +291,12 @@ public class Laboratory extends StorageLocation {
 	 * @post    The number of devices registered in this laboratory is
 	 *          incremented with 1.
 	 *          | new.getNbOfDevices() == getNbOfDevices() + 1
-	 * @post    The given item is inserted at the last index.
+	 * @post    The given device is inserted at the last index.
 	 *          | new.getDeviceAt(getNbOfDevices()-1) == device
 	 *
 	 * @throws	IllegalArgumentException
-	 * 			A device of this type is already present in this laboratory
-	 * 			| hasDeviceOfType(device.getClass())	.
+	 * 			A device of this type is already present in this laboratory.
+	 * 			| hasDeviceOfType(device.getClass())
 	 * @throws	IllegalArgumentException
 	 * 			This device is not allowed for this laboratory.
 	 * 			| !canHaveAsDevice(device)
@@ -311,17 +322,17 @@ public class Laboratory extends StorageLocation {
 	 * A method for removing a device out of this laboratory.
 	 *
 	 * @param 	device
-	 * 			The device to remove
+	 * 			The device to remove.
 	 *
-	 * @effect 	The given item is removed from the position it was registered at.
-	 *         	| removeItemAt(getIndexOfIngredient(item))
+	 * @effect 	The given device is removed from the position it was registered at.
+	 *         	| removeAsDeviceAt(getIndexOfDevice(device))
 	 *
 	 * @throws 	IllegalArgumentException
-	 *         	The given device is not in the laboratory
+	 *         	The given device is not in the laboratory.
 	 *         	| !hasAsDevice(device)
 	 * @throws	IllegalStateException
 	 * 			The reference of the given (effective) device to its laboratory must already be broken down.
-	 * 			| (item != null) && item.getLaboratory() != this
+	 * 			| (device != null) && device.getLaboratory() != this
 	 */
 	@Raw
 	protected void removeAsDevice(Device device) throws IndexOutOfBoundsException, IllegalStateException, IllegalArgumentException {
@@ -346,7 +357,7 @@ public class Laboratory extends StorageLocation {
 	 * @param 	index
 	 *        	The index from the device to remove.
 	 *
-	 * @post  	The number of items has decreased by one
+	 * @post  	The number of devices has decreased by one
 	 *        	| new.getNbOfDevices() == getNbOfDevices() - 1
 	 * @post	This laboratory no longer has the device at the given index as a device
 	 * 			| !new.hasAsDevice(getDeviceAt(index))
@@ -358,7 +369,7 @@ public class Laboratory extends StorageLocation {
 	 * @throws	IndexOutOfBoundsException
 	 *        	The given position is not positive or is equal to or exceeds the number
 	 *        	of devices registered in this laboratory.
-	 *        	| (index < 0) || (index >= getNbItems())
+	 *        	| (index < 0) || (index >= getNbDevices())
 	 */
 	@Model
 	private void removeAsDeviceAt(int index) throws IndexOutOfBoundsException {

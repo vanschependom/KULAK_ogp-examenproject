@@ -31,7 +31,7 @@ public abstract class TemperatureDevice extends Device {
      * @effect  A device with a maximum number of ingredients equal to 1 and
      *          the given laboratory as its laboratory is created.
      *          | super(laboratory, 1)
-     * @effect  The temperature of the temperature device is set to temperature
+     * @effect  The temperature of the temperature device is set to temperature.
      *          | setTemperature(temperature)
      */
     @Raw
@@ -66,9 +66,9 @@ public abstract class TemperatureDevice extends Device {
      **********************************************************/
 
     /**
-     * A variable that keeps track of the heating or cooling temperature of a temperature device
+     * A variable that keeps track of the heating or cooling temperature of a temperature device.
      */
-    private Temperature temperature = null;
+    private Temperature temperature = new Temperature();
 
     /**
      * A getter for the temperature of a temperature device.
@@ -83,10 +83,8 @@ public abstract class TemperatureDevice extends Device {
      * @param   temperature
      *          The temperature to check.
      *
-     * @return  False if the temperature is a null pointer.
-     *          | temperature == null
-     *
-     * @note    We don't close the specification yet!
+     * @return  False if the temperature is a null pointer, true otherwise.
+     *          | result == ( temperature != null )
      */
     public boolean isValidTemperature(Temperature temperature) {
         return temperature != null;
@@ -107,7 +105,7 @@ public abstract class TemperatureDevice extends Device {
     }
 
     /**
-     * A method to set the temperature of a temperature device
+     * A method to set the temperature of a temperature device.
      *
      * @param   temperature
      *          The temperature to set the device to.
@@ -136,11 +134,11 @@ public abstract class TemperatureDevice extends Device {
      * @param   temperature
      *          The new temperature for the device.
      * @effect  The new temperature is set, if the given temperature is valid.
-     *          | if (temperature != null) && (temperature.length == 2)
+     *          | if (isValidTemperature(new Temperature(temperature)) && (temperature.length == 2)
      *          | then setTemperature(new Temperature(temperature))
      */
     public void changeTemperatureTo(long[] temperature) {
-        if (temperature != null && temperature.length == 2) {
+        if (isValidTemperature(new Temperature(temperature)) && temperature.length == 2) {
             setTemperature(new Temperature(temperature));
         }
     }
@@ -151,11 +149,11 @@ public abstract class TemperatureDevice extends Device {
      * @param   temperature
      *          The new temperature for the device.
      * @effect  The new temperature is set, if the given temperature is valid.
-     *          | if (temperature != null)
+     *          | if (isValidTemperature(temperature))
      *          |   then setTemperature(temperature)
      */
     public void changeTemperatureTo(Temperature temperature) {
-        if (temperature != null) {
+        if (isValidTemperature(temperature)) {
             setTemperature(temperature);
         }
     }

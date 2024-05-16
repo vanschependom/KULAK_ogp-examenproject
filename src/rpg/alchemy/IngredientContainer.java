@@ -97,7 +97,7 @@ public class IngredientContainer {
      * A method to check if the content (ingredient) could be stored in the container.
      *
      * @param   content
-     *          The content that you want to check
+     *          The content that is to be checked.
      * @return  If the content is a null pointer, return true.
      *          | if (content == null)
      *          |   then result == true
@@ -163,7 +163,7 @@ public class IngredientContainer {
     private boolean isTerminated = false;
 
     /**
-     * Gets the value of isTerminated
+     * Gets the value of isTerminated.
      */
     @Basic
     public boolean isTerminated() {
@@ -179,6 +179,7 @@ public class IngredientContainer {
      *          | content.setContainerized(false)
      * @throws  IllegalStateException
      *          The container is already terminated.
+     *          | isTerminated()
      */
     public void terminate() throws IllegalStateException {
         if (isTerminated()){
