@@ -20,6 +20,7 @@ import java.util.List;
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
  * @author	Flor De Meulemeester
+ *
  * @version	1.0
  */
 public class AlchemicIngredient {
@@ -53,14 +54,21 @@ public class AlchemicIngredient {
      *          | new.getUnit() == unit
      * @post    If the given temperature is not a valid temperature, the temperature is set to the standard temperature of the ingredient type.
      *          | if (!isValidTemperature(temperature))
-     *          | then new.getTemperature()[0] == 0
-     *          |      && new.getTemperature()[1] == 20
+     *          |   then new.getTemperature()[0] == type.getTemperature()[0]
+     *          |       && new.getTemperature()[1] == type.getTemperature()[1]
      * @post    If the given temperature is a valid temperature, the temperature is set to
      *          the given temperature.
      *          | if (isValidTemperature(temperature))
-     *          |   then new.getTemperatureObject().equals(temperature)
+     *          |   then new.getTemperatureObject().equals(IngredientType.DEFAULT)
+     * @post    If the given type is not a valid type, the type is set to the standard type.
+     *          | if (!isValidType(type))
+     *          |   then new.getType().equals(type)
+     * @post    If the given type is a valid type, the type is set to the given type.
+     *          | if (isValidType(type))
+     *          |   then new.getType().equals(type)
      * @post    If the given state is a valid state, the state is set to the given state.
-     *          | new.getState() == state
+     *          | if (isValidState(state))
+     *          |   then new.getState() == state
      *
      * @throws  IllegalStateException
      *          The given state is not valid.
@@ -80,7 +88,7 @@ public class AlchemicIngredient {
         }
         if (!isValidTemperature(temperature)) {
             // default temperature (because this is implemented totally)
-            this.temperature = new Temperature();
+            this.temperature = new Temperature(type.getStandardTemperature()[0], type.getStandardTemperature()[1]);
         } else {
             this.temperature = temperature;
         }
