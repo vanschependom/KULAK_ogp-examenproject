@@ -143,6 +143,30 @@ public class KettleTest {
     }
 
     @Test
+    public void executeOperationValid5() {
+        AlchemicIngredient ingredient = new AlchemicIngredient(5, Unit.BOTTLE, new Temperature(200, 0), type1, State.LIQUID);
+        IngredientContainer container = new IngredientContainer(ingredient);
+        kettle.addIngredients(container3);
+        kettle.addIngredients(container);
+        kettle.executeOperation();
+        container = kettle.getResult();
+        AlchemicIngredient result = container.getContent();
+        // 5 bottles and 3 jugs, the 3 jugs being 21 bottles equal 26 bottles
+        assertEquals(26*Unit.BOTTLE.getSpoonEquivalent(), (int) result.getSpoonAmount());
+        // milk, beer and coca cola are added
+        assertEquals("Beer mixed with Coca Cola and Milk", result.getSimpleName());
+        assertEquals(State.LIQUID, result.getState());
+        assertEquals(0,result.getType().getStandardTemperature()[0]);
+        assertEquals(15, result.getType().getStandardTemperature()[1]);
+        // total hotness = 5 * 105 * 3 = 1575
+        // total coldness = 200 * 15 * 5 = 15000
+        // lower bound = (15000 - 1575) / (15 * 5 + 105 * 3) = 34.4
+        assertEquals(34, result.getColdness());
+        assertEquals(0, result.getHotness());
+        assertTrue(result.getType().isMixed());
+    }
+
+    @Test
     public void executeOperation_onlyOneIngredient() {
         kettle.addIngredients(container1);
         assertEquals(1,kettle.getNbOfIngredients());
