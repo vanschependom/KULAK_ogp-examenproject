@@ -100,6 +100,9 @@ public class Recipe {
         return false;
     }
 
+    /**
+     * A method for getting the array list of operations.
+     */
     @Model
     private ArrayList<Operation> getOperations() {
         return operations;
@@ -182,6 +185,14 @@ public class Recipe {
         return null;
     }
 
+    /**
+     * A method to check if an ingredient is valid.
+     *
+     * @param   ingredient
+     *          The ingredient to check.
+     * @return  Return true if and only if the ingredient isn't null and the ingredient isn't terminated.
+     *          | result == ingredient != null && !ingredient.isTerminated()
+     */
     public boolean isValidIngredient(AlchemicIngredient ingredient) {
         return ingredient != null && !ingredient.isTerminated();
     }
@@ -205,6 +216,9 @@ public class Recipe {
         }
     }
 
+    /**
+     * A method for getting the array list with ingredients.
+     */
     @Model
     private ArrayList<AlchemicIngredient> getIngredients() {
         return ingredients;
@@ -227,13 +241,13 @@ public class Recipe {
      *
      * @return  False if either ingredients or operations is a null reference.
      *          | if (ingredients == null || operations == null)
-     *          | then result == false
+     *          |   then result == false
      * @return  False if one of the instructions is not valid.
      *          | result == ( for some I in 0..getNbOfOperations()-1:
      *          |   if (getOperationAt(I) == Operation.ADD)
      *          |       then !isValidInstruction( getIngredientAt(getOperations.subList(0, I).stream().filter(operation -> operation == Operation.ADD).count()), getOperationAt(I) )
      *          |   else
-     *          |   then !isValidInstruction(null, getOperationAt(I))
+     *          |       then !isValidInstruction(null, getOperationAt(I))
      *          |   (I != J) && getDeviceAt(I).getClass() == getIngredientAt(J).getClass() )
      * @return  Otherwise true if the amount of operations in operations
      *          which are equal to the add operation,
@@ -242,6 +256,7 @@ public class Recipe {
      *          |   getOperations.stream().filter(operation -> operation == Operation.ADD).count() )
      *
      */
+    @Raw
     public boolean isValidInstructionSet(ArrayList<AlchemicIngredient> ingredients, ArrayList<Operation> operations) {
         if (ingredients == null || operations == null) {
             return false;
@@ -264,7 +279,6 @@ public class Recipe {
             }
         }
         return ingredients.size() == nbOfAdds;
-
     }
 
     /**
@@ -307,7 +321,7 @@ public class Recipe {
      * @effect  If the given ingredient and operation are valid
      *          and the ingredient is not a null reference,
      *          the given ingredient is added.
-     *          | if isValidInstruction(ingredient, operation) && ingredient != null
+     *          | if ( isValidInstruction(ingredient, operation) && ingredient != null )
      *          |   addAsIngredient(ingredient)
      * @effect  If the given ingredient and operation are valid,
      *          the given operation is added.
@@ -329,8 +343,10 @@ public class Recipe {
      *
      * @param   operation
      *          The operation to be added as part of the instruction.
+     *
      * @effect  The operation with a null reference ingredient is added.
      *          | addInstruction(null, operation)
+     *
      * @note    This method is a convenience overloaded method for adding an operation.
      */
     @Raw
@@ -349,15 +365,16 @@ public class Recipe {
      *
      * @param   other
      *          The recipe to compare with.
+     *
      * @return  If the recipes don't have the same amount of operations or
      *          the same amount of ingredients, return false.
      *          | if ( getNbOfIngredients() != other.getNbOfIngredients()
      *          |       || getNbOfOperations() != other.getNbOfOperations() )
-     *          | then result == false
+     *          |   then result == false
      * @return  If not all the ingredients and all the operations are equal, return false.
-     *          | if ( ( for some I in 0..getNbOfOperations()-1:
+     *          | if ( for some I in 0..getNbOfOperations()-1:
      *          |       ! getIngredientAt(I).equals(other.getIngredientAt(I)) ||
-     *          |       ! getOperationAt(I).equals(other.getOperationAt(I)))) )
+     *          |       ! getOperationAt(I).equals(other.getOperationAt(I)) )
      *          |   then result == false
      * @return  True otherwise.
      *          | if ( (getNbOfIngredients() != other.getNbOfIngredients()
@@ -422,7 +439,7 @@ public class Recipe {
      *
      * @post    The recipe is terminated if it can be terminated.
      *          | if canBeTerminated()
-     *          | then new.isTerminated() == true
+     *          |   then new.isTerminated() == true
      */
     public void terminate() {
         if (canBeTerminated()) {isTerminated = true;}

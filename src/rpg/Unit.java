@@ -107,6 +107,7 @@ public enum Unit {
 
 	/**
 	 * A method for returning the equivalent of this unit in storerooms.
+	 *
 	 * @return	The equivalent of this unit in storerooms.
 	 * 			| result == getConversionFor(Unit.STOREROOM)
 	 */
@@ -140,6 +141,7 @@ public enum Unit {
 	 *
 	 * @param 	state
 	 * 			The state to check.
+	 *
 	 * @return	True if and only if the given state is in the list of allowed states of this unit.
 	 * 			| result == ( for some allowedState in getAllowedStates():
 	 * 			|				allowedState == state )
@@ -158,14 +160,15 @@ public enum Unit {
 	 *
 	 * @param 	unit
 	 * 			The unit to convert to.
+	 *
 	 * @return	False if the given unit is not effective.
 	 * 			| if (unit == null)
 	 * 			|	then result == false
 	 * @return	True if and only if the given effective unit has an allowed state which is also an allowed
 	 *			state of this unit.
-	 * 			| if ( (unit != null)
-	 * 			|	then result == (for some allowedState in getAllowedStates():
-	 * 			|			unit.hasAsAllowedState(allowedState))
+	 * 			| if (unit != null)
+	 * 			|	then result == ( for some allowedState in getAllowedStates():
+	 * 			|			unit.hasAsAllowedState(allowedState) )
 	 */
 	public boolean conversionAllowed(Unit unit) {
 		if (unit == null) {
@@ -184,10 +187,12 @@ public enum Unit {
 	 *
 	 * @param 	unit
 	 * 			The unit you want to convert to.
+	 *
 	 * @pre 	The given unit must be effective.
 	 * 			| unit != null
 	 * @pre		The conversion must be allowed.
 	 * 			| conversionAllowed(unit)
+	 *
 	 * @return 	The conversion factor between this unit and the given unit.
 	 * 			| result == this.getSpoonEquivalent() / unit.getSpoonEquivalent()
 	 */
@@ -208,8 +213,10 @@ public enum Unit {
 	 *
 	 * @param 	state
 	 * 			The state of the container.
+	 *
 	 * @pre 	The given state must be effective.
 	 * 			| state != null
+	 *
 	 * @return	The maximum unit a container with contents of the given state can have.
 	 * 			| for each unit in Unit.values():
 	 * 			|	if (unit.isAllowedForContainer()
@@ -235,11 +242,13 @@ public enum Unit {
 	 *
 	 * @param 	ingredient
 	 * 			The alchemic ingredient that needs to be in a container.
+	 *
 	 * @pre 	The given ingredient must be effective.
 	 * 			| ingredient != null
 	 * @pre 	The spoonAmount of the given ingredient must be less than or equal to the spoon equivalent
 	 * 			of the maximum unit for a container.
 	 * 			| ingredient.getSpoonAmount() <= getMaxUnitForContainerWithState(ingredient.getState()).getSpoonEquivalent()
+	 *
 	 * @return	The minimum unit for a container for the result.
 	 * 			| for each unit in Unit.values():
 	 * 			|	if (unit.isAllowedForContainer()

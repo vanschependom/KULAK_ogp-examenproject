@@ -135,11 +135,18 @@ public class Name {
 	}
 
 	/**
-	 * A method for checking whether a simple name parts array.
+	 * A method for checking whether a simple name parts array is valid.
 	 *
-	 * @return	True if all simple name parts are valid.
-	 * 			| result == (for all simpleNamePart in simpleNameParts:
-	 * 			|	isValidName(simpleNamePart) )
+	 * @return	False if the simple name parts array is a null pointer or
+	 * 			if the length of the array is zero.
+	 * 			| if (simpleNameParts == null || simpleNameParts.length == 0)
+	 * 			| 	then result == false
+	 * @return	If the simple name parts array isn't a null pointer and
+	 *			if the length of the array isn't zero then return true if
+	 *			all simple name parts are valid.
+	 *			| if (simpleNameParts != null && simpleNameParts.length != 0)
+	 * 			| 	result == (for all simpleNamePart in simpleNameParts:
+	 * 			|		isValidName(simpleNamePart) )
 	 */
 	@Raw
 	public static boolean isValidSimpleNameParts(String[] simpleNameParts) {
@@ -249,7 +256,8 @@ public class Name {
 	 *
 	 * @param 	str
 	 * 			The string to check.
-	 * @return	True if and only if the string contains (ignoring case) mixed, with, and heated or cooled.
+	 *
+	 * @return	True if and only if the string contains (ignoring case) mixed, with, and, heated or cooled.
 	 * 			| result ==
 	 * 			|	( str.toLowerCase().contains("mixed")
 	 * 			|		|| str.toLowerCase().contains("with")
@@ -271,6 +279,7 @@ public class Name {
 	 *
 	 * @param 	parts
 	 * 			The list of strings to check.
+	 *
 	 * @return	If there is only one part, true if and only if the part is not correctly cased
 	 * 			or the length of this part is smaller than 3.
 	 * 			| if (parts.length == 1) then
@@ -301,9 +310,10 @@ public class Name {
 	 *
 	 * @param 	str
 	 * 			The string to check.
+	 *
 	 * @return	True if the string contains a symbol that is not a letter or an allowed symbol.
-	 * 			| result == for some i in 0..str.length()-1:
-	 * 			|	!Character.isLetter(str.charAt(i)) && !isLegalSymbol(str.charAt(i))
+	 * 			| result == ( for some i in 0..str.length()-1:
+	 * 			|	!Character.isLetter(str.charAt(i)) && !isLegalSymbol(str.charAt(i)) )
 	 */
 	public static boolean containsIllegalSymbols(String str) {
 		for (int i = 0; i < str.length(); i++) {
@@ -321,6 +331,7 @@ public class Name {
 	 *
 	 * @param 	str
 	 * 			The string to check.
+	 *
 	 * @return	False if the first letter is not uppercase or a legal symbol.
 	 * 			| if (!Character.isUpperCase(str.charAt(0)) && !isLegalSymbol(str.charAt(0)))
 	 * 			| 	then result == false
@@ -347,6 +358,7 @@ public class Name {
 	 *
 	 * @param 	symbol
 	 * 			The symbol to check.
+	 *
 	 * @return	True if the symbol is contained in the allowed name symbols.
 	 * 			| result == (ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1)
 	 */

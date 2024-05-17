@@ -81,6 +81,11 @@ public class Kettle extends Device {
 
 	/**
 	 * A method that calculates the new spoon amount for the new ingredient.
+	 *
+	 * @return 	The sum of all the spoon amounts of the ingredients.
+	 * 			| result == getIngredients().stream()
+	 *          |   .mapToDouble(AlchemicIngredient::getSpoonAmount)
+	 *          |   .sum()
 	 */
 	@Model
 	private double getNewSpoonAmount() {

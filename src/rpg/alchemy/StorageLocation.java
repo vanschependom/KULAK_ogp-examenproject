@@ -372,7 +372,7 @@ public abstract class StorageLocation {
             // if the ingredient is already present, combine them
             AlchemicIngredient alreadyInLocation = getIngredientAt(getIndexOfIngredient(container.getContent()));
             AlchemicIngredient replacement = new AlchemicIngredient(
-                    (int) (alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount()),
+                    alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount(),
                     Unit.SPOON,
                     new Temperature(alreadyInLocation.getTemperature()),
                     alreadyInLocation.getType(),

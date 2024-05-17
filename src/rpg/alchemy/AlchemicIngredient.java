@@ -20,6 +20,7 @@ import java.util.List;
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
  * @author	Flor De Meulemeester
+ *
  * @version	1.0
  */
 public class AlchemicIngredient {
@@ -53,21 +54,29 @@ public class AlchemicIngredient {
      *          | new.getUnit() == unit
      * @post    If the given temperature is not a valid temperature, the temperature is set to the standard temperature of the ingredient type.
      *          | if (!isValidTemperature(temperature))
-     *          | then new.getTemperature()[0] == 0
-     *          |      && new.getTemperature()[1] == 20
+     *          |   then new.getTemperature()[0] == type.getTemperature()[0]
+     *          |       && new.getTemperature()[1] == type.getTemperature()[1]
      * @post    If the given temperature is a valid temperature, the temperature is set to
      *          the given temperature.
      *          | if (isValidTemperature(temperature))
-     *          |   then new.getTemperatureObject().equals(temperature)
+     *          |   then new.getTemperature()[0] == temperature.getTemperature()[0]
+     *                  && new.getTemperature()[1] == temperature.getTemperature()[1]
+     * @post    If the given type is not a valid type, the type is set to the standard type.
+     *          | if (!isValidType(type))
+     *          |   then new.getType().equals(IngredientType.DEFAULT)
+     * @post    If the given type is a valid type, the type is set to the given type.
+     *          | if (isValidType(type))
+     *          |   then new.getType().equals(type)
      * @post    If the given state is a valid state, the state is set to the given state.
-     *          | new.getState() == state
+     *          | if (isValidState(state))
+     *          |   then new.getState() == state
      *
      * @throws  IllegalStateException
      *          The given state is not valid.
      *          | !isValidState(state)
      */
     @Raw
-    public AlchemicIngredient(int amount, Unit unit, Temperature temperature, IngredientType type, State state) throws IllegalStateException {
+    public AlchemicIngredient(double amount, Unit unit, Temperature temperature, IngredientType type, State state) throws IllegalStateException {
         super();
         if (!isValidState(state)) {
             throw new IllegalStateException("The given state is not valid!");
@@ -80,7 +89,7 @@ public class AlchemicIngredient {
         }
         if (!isValidTemperature(temperature)) {
             // default temperature (because this is implemented totally)
-            this.temperature = new Temperature();
+            this.temperature = new Temperature(type.getStandardTemperature()[0], type.getStandardTemperature()[1]);
         } else {
             this.temperature = temperature;
         }
@@ -105,7 +114,7 @@ public class AlchemicIngredient {
      *          | this( amount, unit, new Temperature(type.getStandardTemperature()), type, type.getStandardState() )
      */
     @Raw
-    public AlchemicIngredient(int amount, Unit unit, IngredientType type) {
+    public AlchemicIngredient(double amount, Unit unit, IngredientType type) {
         this(amount, unit, new Temperature(type.getStandardTemperature()), type, type.getStandardState());
     }
 
@@ -124,7 +133,7 @@ public class AlchemicIngredient {
      *          | this( amount, unit, temperature, type, type.getStandardState() )
      */
     @Raw
-    public AlchemicIngredient(int amount, Unit unit, Temperature temperature, IngredientType type) {
+    public AlchemicIngredient(double amount, Unit unit, Temperature temperature, IngredientType type) {
         this(amount, unit, temperature, type, type.getStandardState());
     }
 
@@ -140,13 +149,13 @@ public class AlchemicIngredient {
     /**
      * A variable for keeping track of the amount of the ingredient.
      */
-    private final int amount;
+    private final double amount;
 
     /**
      * A method to get the amount of this alchemic ingredient.
      */
     @Basic @Immutable
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
@@ -242,10 +251,11 @@ public class AlchemicIngredient {
      * @return  The result is a temperature object with the coldness and hotness of
      *          the AlchemicIngredient.
      *          | result.equals( new Temperature(getColdness(), getHotness()) )
+     *
      * @note    Not to be used by other classes!
      */
     @Model
-    protected Temperature getTemperatureObject() {
+    private Temperature getTemperatureObject() {
         return temperature;
     }
 
@@ -295,10 +305,10 @@ public class AlchemicIngredient {
      *
      * @param 	amount
      * 			The amount of heat to be added.
+     *
      * @effect  The ingredient is heated if it is not terminated.
      *          | if (!isTerminated())
-     *          | then getTemperatureObject().heat(amount)
-     *
+     *          |   then getTemperatureObject().heat(amount)
      *
      * @note    Temperatures are implemented totally, so we don't throw an exception,
      *          if any illegal cases come up (e.g. terminated ingredient, negative amounts, etc.).
@@ -314,9 +324,10 @@ public class AlchemicIngredient {
      *
      * @param 	amount
      * 			The amount of cold to be added.
+     *
      * @effect  The ingredient is cooled if it is not terminated.
      *          | if (!isTerminated())
-     *          | then getTemperatureObject().cool(amount)
+     *          |   then getTemperatureObject().cool(amount)
      *
      * @note    Temperatures are implemented totally, so we don't throw an exception
      *          if any illegal cases come up (e.g. terminated ingredient, negative amounts, etc.)
@@ -328,7 +339,6 @@ public class AlchemicIngredient {
     }
 
     /**
-     * TODO
      * A method to check whether the ingredient is hotter than the standard temperature.
      *
      * @return  True if and only if the ingredient is hotter than the standard temperature.
@@ -338,13 +348,21 @@ public class AlchemicIngredient {
         return isHotterThan(getType().getStandardTemperature());
     }
 
-    // TODO
+    /**
+     * A method to check if the ingredient is hotter than the given temperature.
+     *
+     * @param   temperature
+     *          The temperature to compare with.
+     *
+     * @return  Return true if and only if the temperature object is hotter than the given
+     *          temperature.
+     *          | result == getTemperatureObject().isHotterThan(temperature)
+     */
     public boolean isHotterThan(long[] temperature) {
         return getTemperatureObject().isHotterThan(temperature);
     }
 
     /**
-     * TODO
      * A method to check whether the ingredient is colder than the standard temperature.
      *
      * @return  True if and only if the ingredient is colder than the standard temperature.
@@ -354,7 +372,16 @@ public class AlchemicIngredient {
         return isColderThan(getType().getStandardTemperature());
     }
 
-    // TODO
+    /**
+     * A method to check if the ingredient is colder than the given temperature.
+     *
+     * @param   temperature
+     *          The temperature to compare with.
+     *
+     * @return  Return true if and only if the temperature object is colder than the given
+     *          temperature.
+     *          | result == getTemperatureObject().isColderThan(temperature)
+     */
     public boolean isColderThan(long[] temperature) {
         return getTemperatureObject().isColderThan(temperature);
     }
@@ -383,6 +410,7 @@ public class AlchemicIngredient {
      *
      * @param 	type
      * 			The type to check.
+     *
      * @return	True if and only if the type is effective.
      * 			| result == (type != null)
      */
@@ -415,6 +443,7 @@ public class AlchemicIngredient {
      *
      * @param 	state
      * 			The state to check.
+     *
      * @return	True if and only if the state is effective.
      * 			| result == (state != null)
      */
@@ -447,8 +476,10 @@ public class AlchemicIngredient {
      *
      * @param   containerized
      *          The new containerized state for the ingredient.
+     *
      * @post    The containerized state of the ingredient is set to the given containerized state.
      *          | new.isContainerized() == containerized
+     *
      * @throws  IllegalStateException
      *          The ingredient is terminated and it is to be containerized.
      *          | isTerminated() && containerized
@@ -494,6 +525,7 @@ public class AlchemicIngredient {
      *
      * @param   specialName
      *          The special name to change to.
+     *
      * @effect  The special name of the ingredient type of this ingredient
      *          is set to the given special name.
      *          | getType().getName().setSpecialName(specialName)
@@ -514,7 +546,7 @@ public class AlchemicIngredient {
      * @return  If the ingredient is neither heated nor cooled, the extended name is the simple name.
      *          | if (temperature.getHotness() == getType().getStandardTemperature()[1] &&
      *          |   temperature.getColdness() == getType().getStandardTemperature()[0] )
-     *          | then result.equals(getSimpleName())
+     *          |   then result.equals(getSimpleName())
      */
     @Model
     private String getExtendedSimpleName() {
@@ -558,6 +590,7 @@ public class AlchemicIngredient {
      *
      * @param   other
      *          The other ingredient to compare with.
+     *
      * @return  True if and only if the hotness, coldness, type and state of the ingredients are equal.
      *          | result == (
      *          |      this.getHotness() == other.getHotness()

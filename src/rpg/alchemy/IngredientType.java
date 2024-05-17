@@ -19,6 +19,7 @@ import rpg.*;
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
  * @author	Flor De Meulemeester
+ *
  * @version	1.0
  */
 public class IngredientType {
@@ -47,12 +48,13 @@ public class IngredientType {
 	 *
 	 * @post	If the given state is valid, the state of the new ingredient type is set to the
 	 * 			given state.
-	 * 			| new.getStandardState() == standardState
+	 * 			| if (isValidState(standardState))
+	 * 			| 	then new.getStandardState() == standardState
 	 * @post    If the given temperature is not a valid standard temperature, the temperature is
 	 * 			set to the standard temperature.
 	 *          | if (!isValidStandardTemperature(temperature))
-	 *          | then new.getStandardTemperature()[0] == 0
-	 *          |      && new.getStandardTemperature()[1] == 20
+	 *          | 	then new.getStandardTemperature()[0] == 0
+	 *          |      	&& new.getStandardTemperature()[1] == 20
 	 * @post    If the given temperature is a valid standard temperature, the temperature
 	 * 			standard temperature is set to the given temperature.
 	 *          | if (isValidStandardTemperature(temperature))
@@ -126,10 +128,12 @@ public class IngredientType {
 	 *
 	 * @param 	name
 	 * 			The name to set.
+	 *
 	 * @post	If the given name is a valid name for an ingredient type, the name of the ingredient type
 	 * 			is set to the given name.
 	 * 			| if (canHaveAsName(name))
 	 * 			| 	then new.getName() == name
+	 *
 	 * @throws	IllegalArgumentException
 	 * 			The given name is not a valid name for an ingredient type.
 	 * 			| !canHaveAsName(name)
@@ -147,6 +151,7 @@ public class IngredientType {
 	 *
 	 * @param 	name
 	 * 			The name to check.
+	 *
 	 * @return	True if and only if the name is effective and if the
 	 * 			mixed state of the name is equal to the mixed state of the ingredient type.
 	 * 			| result == ( name != null && name.isMixed() == isMixed() )
@@ -180,6 +185,7 @@ public class IngredientType {
 	 *
 	 * @param 	state
 	 * 			The state to check.
+	 *
 	 * @return	True if and only if the state is effective.
 	 * 			| result == (state != null)
 	 */
@@ -227,6 +233,7 @@ public class IngredientType {
 	 *
 	 * @param 	temperature
 	 * 			The temperature array to compare with the standard temperature.
+	 *
 	 * @return	The difference between the given temperature and the standard temperature.
 	 * 			| result == getStandardTemperatureObject().difference(temperature)
 	 */

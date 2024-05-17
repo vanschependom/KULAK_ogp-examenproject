@@ -38,7 +38,8 @@ public class TransmogrifierTest {
         AlchemicIngredient ingredient = container.getContent();
         assertEquals((int)ingredient.getSpoonAmount(), (int)ingredient1.getSpoonAmount());
         assertEquals(ingredient.getType(), ingredient1.getType());
-        assertEquals(ingredient.getTemperatureObject(), ingredient1.getTemperatureObject());
+        assertEquals(ingredient.getTemperature()[0], ingredient1.getTemperature()[0]);
+        assertEquals(ingredient.getTemperature()[1], ingredient1.getTemperature()[1]);
         assertEquals(Unit.SPOON, ingredient.getUnit());
         assertEquals(State.POWDER, ingredient.getState());
     }
@@ -51,7 +52,8 @@ public class TransmogrifierTest {
         AlchemicIngredient ingredient = container.getContent();
         assertEquals((int) ingredient.getSpoonAmount(), (int) ingredient2.getSpoonAmount());
         assertEquals(ingredient.getType(), ingredient2.getType());
-        assertEquals(ingredient.getTemperatureObject(), ingredient2.getTemperatureObject());
+        assertEquals(ingredient.getTemperature()[0], ingredient2.getTemperature()[0]);
+        assertEquals(ingredient.getTemperature()[1], ingredient2.getTemperature()[1]);
         assertEquals(Unit.SPOON, ingredient.getUnit());
         assertEquals(State.LIQUID, ingredient.getState());
     }

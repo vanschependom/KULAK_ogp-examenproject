@@ -1,7 +1,6 @@
 package rpg.recipe;
 
 import be.kuleuven.cs.som.annotate.*;
-import rpg.alchemy.Device;
 
 import java.util.ArrayList;
 
@@ -11,7 +10,7 @@ import java.util.ArrayList;
  * @invar   The recipes of the recipe book are valid.
  *          | hasProperRecipes()
  *
- * @note    We doen aan TOTAL programming
+ * @note    We use TOTAL programming for this class.
  *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
@@ -86,13 +85,13 @@ public class RecipeBook {
      *          incremented with 1.
      *          | if canHaveAsRecipe(recipe)
      *          |   then new.getNbOfRecipes() == getNbOfRecipes() + 1
-     * @post    If the recipe is valid,
+     * @post    If the recipe is valid, the recipe is not already present, and the recipe is not null
      *          the given recipe is inserted at the last index.
-     *          | if (canHaveAsRecipe(recipe) && !hasAsRecipe(recipe))
+     *          | if (canHaveAsRecipe(recipe) && !hasAsRecipe(recipe) && recipe != null)
      *          |   then new.getRecipeAt(getNbOfRecipes()-1) == recipe
      */
     public void addAsRecipe(Recipe recipe) {
-        if (canHaveAsRecipe(recipe) && !hasAsRecipe(recipe)) {
+        if (canHaveAsRecipe(recipe) && !hasAsRecipe(recipe) && recipe != null) {
             recipes.add(recipe);
         }
     }
@@ -164,11 +163,11 @@ public class RecipeBook {
     }
 
     /**
-     * A method that gives back the index
-     * of a recipe in a recipe book.
+     * A method that gives back the index of a recipe in a recipe book.
      *
      * @param   recipe
      *          The recipe to get the index of.
+     *
      * @return  If the recipe is present in the recipe book
      *          the index of the recipe is returned.
      *          | if hasAsRecipe(recipe)
@@ -222,7 +221,8 @@ public class RecipeBook {
      *          |   for some J in 0..getNbOfRecipes()-1:
      *          |       (I != J) && getRecipeAt(I) == getRecipeAt(J) )
      */
-    public boolean containsRecipeTwice(Recipe recipe) {
+    @Raw @Model
+    private boolean containsRecipeTwice(Recipe recipe) {
         int count = 0;
         for (int i=0; i<getNbOfRecipes(); i++) {
             if (getRecipeAt(i) == recipe) {
