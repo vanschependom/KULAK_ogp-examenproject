@@ -718,14 +718,27 @@ public class Laboratory extends StorageLocation {
 
 		AlchemicIngredient currentIngredient = null;
 		int addCounter = 0;
-		int operationCounter = 0;
+		int i = 0;
+		int numberOfIterations = recipe.getNbOfOperations();
 		boolean enoughIngredientsLeft = true;
 
-		// loop over all iterations, while there are enough ingredients left
-		while (operationCounter < recipe.getNbOfOperations() && enoughIngredientsLeft) {
+		// check if last instruction is a mix
+		if (recipe.getOperationAt(recipe.getNbOfOperations()-1) != Operation.MIX) {
+			numberOfIterations++;
+		}
 
-			// the current operation
-			Operation operation = recipe.getOperationAt(operationCounter);
+		// loop over all iterations, while there are enough ingredients left
+		while ((i < numberOfIterations) && enoughIngredientsLeft) {
+
+			Operation operation;
+
+			if (i < recipe.getNbOfOperations()) {
+				// get the operation at the current index
+				operation = recipe.getOperationAt(i);
+			} else {
+				// the last operation was not a mix
+				operation = Operation.MIX;
+			}
 
 			// the first instruction is always add (cfr. class invariant on recipe)
 			if (operation == Operation.ADD) {
@@ -764,6 +777,9 @@ public class Laboratory extends StorageLocation {
 
 			} else {
 
+				// this is executed if the operation is MIX,
+				// or if the last operation was not a MIX (then we need to mix everything)
+
 				Kettle kettle = getDeviceOfType(Kettle.class);
 
 				// ingredients can already be added in the ADD instruction,
@@ -777,9 +793,13 @@ public class Laboratory extends StorageLocation {
 			}
 
 			// increment the operation counter (for the while loop)
-			operationCounter++;
+			i++;
 
 		}
+
+		// add the resulting ingredient to the laboratory
+		addIngredients(new IngredientContainer(currentIngredient));
+
 	}
 
 	public boolean hasDevicesForRecipe(Recipe recipe) {
