@@ -5,6 +5,7 @@ import rpg.Unit;
 import rpg.exceptions.IngredientNotPresentException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class representing a location for a storage, i.e. a location that contains
@@ -64,7 +65,7 @@ public abstract class StorageLocation {
      *          |       if index != otherIndex
      *          |           then !getIngredientAt(index).equals(getIngredientAt(otherIndex))
      */
-    private final ArrayList<AlchemicIngredient> ingredients = new ArrayList<>();
+    private final List<AlchemicIngredient> ingredients = new ArrayList<>();
 
     /**
      * A method for checking if a storage location is empty.
@@ -170,13 +171,6 @@ public abstract class StorageLocation {
     @Basic
     public int getNbOfIngredients() {
         return ingredients.size();
-    }
-
-    /**
-     * Return the ingredients of this laboratory.
-     */
-    private ArrayList<AlchemicIngredient> getIngredients() {
-        return ingredients;
     }
 
     /**

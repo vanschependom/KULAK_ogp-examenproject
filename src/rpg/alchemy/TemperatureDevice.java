@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * A class representing a temperature device inside a laboratory.
  *
  * @invar   The temperature device must always have a valid temperature.
- *          | isValidTemperature(getTemperature())
+ *          | isValidTemperature(getTemperatureObject())
  *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
@@ -72,8 +72,12 @@ public abstract class TemperatureDevice extends Device {
 
     /**
      * A getter for the temperature of a temperature device.
+     *
+     * @return  The temperature of the temperature device.
+     *          | result.getHotness() == getHotness() && result.getColdness() == getColdness()
      */
-    protected Temperature getTemperature() {
+    @Model @Raw
+    protected Temperature getTemperatureObject() {
         return temperature;
     }
 
@@ -93,15 +97,17 @@ public abstract class TemperatureDevice extends Device {
     /**
      * A method to get the hotness of a temperature device.
      */
+    @Basic
     public long getHotness() {
-        return getTemperature().getHotness();
+        return getTemperatureObject().getHotness();
     }
 
     /**
      * A method to get the coldness of a temperature device.
      */
+    @Basic
     public long getColdness() {
-        return getTemperature().getColdness();
+        return getTemperatureObject().getColdness();
     }
 
     /**
@@ -111,7 +117,7 @@ public abstract class TemperatureDevice extends Device {
      *          The temperature to set the device to.
      *
      * @post    The temperature of the device is set to temperature.
-     *          | new.getTemperature().equals(temperature)
+     *          | new.getHotness() == temperature.getHotness() && new.getColdness() == temperature.getColdness()
      *
      * @throws  NullPointerException
      *          The given temperature is a null pointer
@@ -171,7 +177,7 @@ public abstract class TemperatureDevice extends Device {
      *          | super.executeOperation()
      */
     @Override
-    public void executeOperation () {
+    public void executeOperation() {
        super.executeOperation();
     }
 

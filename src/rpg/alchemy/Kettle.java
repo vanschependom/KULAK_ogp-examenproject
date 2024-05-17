@@ -68,7 +68,7 @@ public class Kettle extends Device {
 		long smallestDifferenceTemperature = Long.MAX_VALUE;
 		for (int i = 0; i < getNbOfIngredients(); i++) {
 			// We get the ingredient with a standard temperature closest to [0, 20]
-			long difference = getIngredientAt(i).getType().standardTemperatureDifference(new long[]{0, 20});
+			long difference = getIngredientAt(i).getType().getStandardTemperatureDifference(new long[]{0, 20});
 			if (difference < smallestDifferenceTemperature) {
 				smallestDifferenceTemperature = difference;
 				closestTemperatureIndex = i;
@@ -108,7 +108,7 @@ public class Kettle extends Device {
 		Temperature smallestDifferenceTemperature = new Temperature(0, Temperature.getUpperbound());
 		long smallestDifference = smallestDifferenceTemperature.difference(new long[]{0, 20});
 		for (int i = 0; i < getNbOfIngredients(); i++) {
-			long difference = getIngredientAt(i).getType().standardTemperatureDifference(new long[]{0, 20});
+			long difference = getIngredientAt(i).getType().getStandardTemperatureDifference(new long[]{0, 20});
 			// We get the ingredient with a standard temperature closest to [0, 20]
 			if ( difference < smallestDifference || ( difference == smallestDifference &&
 					getIngredientAt(i).getHotness() > smallestDifferenceTemperature.getHotness() ) ) {

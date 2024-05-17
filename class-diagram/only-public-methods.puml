@@ -1,6 +1,302 @@
 @startuml
 
-'Dit wordt de UML die we indienen uiteindelijk
-'Voorlopig even leeg laten
+skinparam linetype ortho
+
+package rpg {
+
+
+
+
+enum State {
+LIQUID, POWDER
+}
+
+enum Unit {
+- Unit(double, State[], boolean)
+..possible values..
+DROP, PINCH, SPOON, VIAL, SACHET, BOTTLE,
+BOX, JUG, SACK, BARREL, CHEST, STOREROOM
+..
+- {final} spoonEquivalent : double
+- {final} allowedStates : State[]
+- {final} isAllowedForContainer : boolean
+..
++ getSpoonEquivalent() : double
++ getStoreroomEquivalent() : double
++ getAllowedStates() : State[]
++ hasAsAllowedState(State) : boolean
++ conversionAllowed(Unit) : boolean
++ getConversionFor(Unit) : double
++ isAllowedForContainer() : boolean
++ getMaxUnitForContainerWithState(State) : Unit
++ getMinUnitForContainerWithIngredient(AlchemicIngredient) : Unit
++ getBestUnitForStateAndSpoons(State, double) : Unit
+}
+
+Unit::allowedStates -->"1..2" State
+
+package recipe {
+
+enum Operation {
+ADD, HEAT, COOL, MIX
+}
+
+class Recipe {
++ Recipe()
+..
+- {final} operations : List<Operation>
+- {final} ingredients : List<AlchemicIngredient>
+- isTerminated : boolean
+..
++ getNbOfOperations() : int
++ getOperationAt(int) : Operation
++ hasAsOperation(Operation) : boolean
++ isValidOperation(Operation) : boolean
++ getNbOfIngredients() : int
++ getIngredientAt(int) : AlchemicIngredient
++ isValidIngredient(AlchemicIngredient) : boolean
++ isValidInstructionSet(List<AlchemicIngredient>, List<Operation>) : boolean
++ isValidInstruction(AlchemicIngredient, Operation) : boolean
++ addAsInstruction(AlchemicIngredient, Operation) : void
++ addAsInstruction(Operation) : void
++ equals(Recipe) : boolean
++ isTerminated() : boolean
++ canBeTerminated() : boolean
++ terminate() : void
+}
+
+Recipe::operations -->"0..*" Operation
+Recipe::ingredients -->"0..*" AlchemicIngredient
+
+class RecipeBook {
++ RecipeBook()
+..
+- {final} recipes : List<Recipe>
+..
++ hasProperRecipes() : boolean
++ addAsRecipe(Recipe) : void
++ removeAsRecipe(Recipe) : void
++ getNbOfRecipes() : int
++ hasAsRecipe(Recipe) : boolean
++ getRecipeAt(int) : Recipe
++ getIndexOfRecipe(Recipe) : int
++ canHaveAsRecipe(Recipe) : boolean
+}
+
+RecipeBook::recipes -->"0..*" Recipe
+
+}
+
+package alchemy {
+
+abstract class StorageLocation {
++ StorageLocation()
+..
+- {final} ingredients : List<AlchemicIngredient>
+- isTerminated : boolean
+..
++ isEmpty() : boolean
++ hasProperIngredients() : boolean
++ canHaveAsIngredient(AlchemicIngredient) : boolean
++ containsIngredientTwice(AlchemicIngredient) : boolean
++ getIngredientAt(int) : AlchemicIngredient
++ getIndexOfIngredient(AlchemicIngredient) : int
++ hasAsIngredient(AlchemicIngredient) : boolean
++ hasIngredientWithSimpleName(String) : boolean
++ hasIngredientWithSpecialName(String) : boolean
++ addContainer(IngredientContainer) : void
++ isTerminated() : boolean
++ terminate() : void
+}
+
+StorageLocation::ingredients -->"0..*" AlchemicIngredient
+
+abstract class Device {
++ Device(Laboratory, int)
+..
+- laboratory : Laboratory
+- {final} maxNbOfIngredients : int
+..
++ getResult() : IngredientContainer
++ getMaxNbOfIngredients() : int
++ move(Laboratory) : void
++ getLaboratory() : Laboratory
++ canHaveAsLaboratory(Laboratory) : boolean
++ hasProperLaboratory() : boolean
++ executeOperation() : void
+..override..
++ terminate() : void
+}
+
+Device::laboratory "0..*"<-->"1" Laboratory::devices
+
+abstract class TemperatureDevice extends Device {
++ TemperatureDevice(Laboratory, Temperature)
+..
+- temperature : Temperature
+..
++ isValidTemperature(Temperature) : boolean
++ getHotness() : long
++ getColdness() : long
++ changeTemperatureTo(long []) : void
++ changeTemperatureTo(Temperature) : void
+..override..
++ hasProperIngredients() : boolean
++ executeOperation() : void
+}
+
+TemperatureDevice::temperature -->"1" Temperature
+
+class Oven extends TemperatureDevice {
++ Oven(Laboratory, Temperature)
+..override..
++ executeOperation() : void
+}
+
+class CoolingBox extends TemperatureDevice {
++ CoolingBox(Laboratory, Temperature)
+..override..
++ executeOperation() : void
+}
+
+class Transmogrifier extends Device {
++ Transmogrifier(Laboratory)
+..override..
++ executeOperation() : void
+}
+
+class Kettle extends Device {
++ Kettle(Laboratory)
+..override..
++ executeOperation() : void
+}
+
+class IngredientType {
++ IngredientType(Name, State, Temperature, boolean)
+..
++ {static} {final} DEFAULT : IngredientType
+- name : Name
+- {final} standardState : State
+- {final} temperature : Temperature
+- {final} isMixed : boolean
+..
++ isMixed() : boolean
++ getName() : Name
++ canHaveAsName(Name) : boolean
++ getStandardState() : State
++ isValidState(State) : boolean
++ getStandardTemperature() : long[2]
++ getStandardTemperatureDifference(long[2]) : long
++ isValidStandardTemperature(Temperature) : boolean
+}
+
+IngredientType::name -->"1" Name
+IngredientType::standardState -->"1" State
+IngredientType::temperature -->"1" Temperature
+
+class AlchemicIngredient {
++ AlchemicIngredient(double, Unit, Temperature, IngredientType, State)
++ AlchemicIngredient(double, Unit, Temperature, IngredientType)
++ AlchemicIngredient(double, Unit, IngredientType)
+..
+- {final} amount : double
+- {final} unit : Unit
+- {final} temperature : Temperature
+- {final} type : IngredientType
+- {final} state : State
+- isContainerized : boolean
+..
++ getAmount() : double
++ getSpoonAmount() : double
++ getStoreroomAmount: double
++ isValidAmount(double) : boolean
++ getUnit() : Unit
++ canHaveAsUnit(Unit) : boolean
++ isValidTemperature(Temperature) : boolean
++ getHotness() : long
++ getColdness() : long
++ getTemperature() : long[2]
++ isHotterThan() : boolean
++ isHotterThanStandardTemperature() : boolean
++ isColderThan() : boolean
++ isColderThanStandardTemperature() : boolean
++ getType() : IngredientType
++ isValidType(IngredientType) : boolean
++ getState() : State
++ isValidState(State) : boolean
++ isContainerized() : boolean
++ getSimpleName() : String
++ getSpecialName() : String
++ setSpecialName() : void
++ getFullName() : String
++ equals(AlchemicIngredient) : boolean
++ isTerminated() : boolean
++ terminate() : void
+}
+
+AlchemicIngredient::unit -->"1" Unit
+AlchemicIngredient::temperature -->"1" Temperature
+AlchemicIngredient::type -->"1" IngredientType
+AlchemicIngredient::state -->"1" State
+
+class Name {
++ Name(String, String[1..*])
+..
++ {static} {final} WATER : Name
+- {static} {final} ALLOWED_NAME_SYMBOLS : String
+- {final} simpleNameParts : String[1..*]
+- specialName : String
+..
++ getSimpleNameParts() : String[1..*]
++ getSimpleName() : String
++ isValidSimpleNameParts(String[]) : boolean
++ getSpecialName() : String
++ isMixed() : boolean
++ isValidName(String) : boolean
++ containsIllegalWords(String) : boolean
++ containsIllegalPart(String[]) : boolean
++ containsIllegalSymbols(String) : boolean
++ isCorrectlyCased(String) : boolean
+}
+
+class Laboratory extends StorageLocation {
++ Laboratory(int)
+..
+- capacity : int
+- devices : List<Device>
+..
++ getCapacity() : int
++ isValidCapacity(int) : boolean
++ getNbOfDevices() : int
++ getDeviceAt(int) : Device
++ getIndexOfDevice(Device) : int
++ hasTwiceSameTypeAs(Device) : boolean
++ hasDeviceOfType(Class<? extends Device>) : boolean
++ hasAsDevice(Device) : boolean
++ getDeviceOfType(Class<? extends Device>) : Device
++ canHaveAsDevice(Device) : boolean
++ hasProperDevices() : boolean
++ getAllOfIngredientAt(int) : IngredientContainer
++ getAmountOfIngredientAt(int) : IngredientContainer
++ canHaveAsIndexForIngredient(int) : boolean
++ getIndexOfSimpleName(String) : int
++ getIndexOfSpecialName(String) : int
++ getStoredAmount() : double
++ exceedsCapacity(IngredientContainer) : boolean
++ execute(Recipe, int) : void
++ hasDevicesForRecipe(Recipe) : boolean
++ hasEnoughToObtain(AlchemicIngredient, int) : boolean
++ isValidMultiplier(int) : boolean
+..override..
++ addContainer(IngredientContainer) : void
+}
+
+}
+
+
+
+
+
+}
 
 @enduml

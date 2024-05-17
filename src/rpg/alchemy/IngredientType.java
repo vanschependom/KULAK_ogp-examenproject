@@ -237,7 +237,7 @@ public class IngredientType {
 	 * @return	The difference between the given temperature and the standard temperature.
 	 * 			| result == getStandardTemperatureObject().difference(temperature)
 	 */
-	public long standardTemperatureDifference(long[] temperature) {
+	public long getStandardTemperatureDifference(long[] temperature) {
 		return getStandardTemperatureObject().difference(temperature);
 	}
 

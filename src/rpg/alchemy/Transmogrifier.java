@@ -38,7 +38,7 @@ public class Transmogrifier extends Device{
 	 * @effect	The only ingredient is removed and added again with the next state.
 	 * 			| removeAsIngredient(getIngredientAt(0))
 	 * 			| && addAsIngredient (new AlchemicIngredient( getIngredientAt(0).getSpoonAmount(),
-	 * 			|	Unit.SPOON, getIngredientAt(0).getTemperatureObject(),
+	 * 			|	Unit.SPOON, new Temperature(getIngredientAt(0).getTemperature()),
 	 * 			|	getIngredientAt(0).getType(), getIngredientAt(0).getState().getNext() ) )
 	 */
 	@Override
@@ -46,7 +46,7 @@ public class Transmogrifier extends Device{
 		super.executeOperation();
 		AlchemicIngredient ing = getIngredientAt(0);
 		removeAsIngredient(ing);
-		addAsIngredient( new AlchemicIngredient( ing.getSpoonAmount(), Unit.SPOON, new Temperature(ing.getTemperature()[0], ing.getTemperature()[1]), ing.getType(), ing.getState().getNext() ) );
+		addAsIngredient( new AlchemicIngredient( ing.getSpoonAmount(), Unit.SPOON, new Temperature(ing.getTemperature()), ing.getType(), ing.getState().getNext() ) );
 	}
 
 

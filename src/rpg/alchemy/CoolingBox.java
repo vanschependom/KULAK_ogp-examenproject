@@ -53,9 +53,9 @@ public class CoolingBox extends TemperatureDevice {
 	public void executeOperation() throws IllegalStateException {
 		super.executeOperation();
 		// if the temperature of the cooling box is higher than the temperature of the ingredient, do nothing
-		if (!getTemperature().isHotterThan(getIngredientAt(0).getTemperature())) {
+		if (!getTemperatureObject().isHotterThan(getIngredientAt(0).getTemperature())) {
 			// if the temperature of the ingredient is higher than the temperature of the cooling box, cool the ingredient
-			long difference = getTemperature().difference(getIngredientAt(0).getTemperature());
+			long difference = getTemperatureObject().difference(getIngredientAt(0).getTemperature());
 			getIngredientAt(0).cool(difference);
 		}
 	}

@@ -3,6 +3,7 @@ package rpg.recipe;
 import be.kuleuven.cs.som.annotate.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class representing a recipeBook.
@@ -54,7 +55,7 @@ public class RecipeBook {
      *          | for each I in 0..getNbOfRecipes()-1:
      *          |   !containsRecipeTwice(getRecipeAt(I))
      */
-    private ArrayList<Recipe> recipes = new ArrayList<>();
+    private final List<Recipe> recipes = new ArrayList<>();
 
     /**
      * A method for checking whether the recipebook has proper recipes inside of it.

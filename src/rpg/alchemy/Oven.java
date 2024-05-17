@@ -57,10 +57,10 @@ public class Oven extends TemperatureDevice {
 	public void executeOperation() throws IllegalStateException {
 		super.executeOperation();
 		// if the temperature of the oven is higher than the temperature of the ingredient, do nothing
-		if (!getTemperature().isColderThan(getIngredientAt(0).getTemperature())) {
+		if (!getTemperatureObject().isColderThan(getIngredientAt(0).getTemperature())) {
 			Random random = new Random();
 			// if the temperature of the ingredient is lower than the temperature of the oven, heat the ingredient
-			long difference = getTemperature().difference(getIngredientAt(0).getTemperature())
+			long difference = getTemperatureObject().difference(getIngredientAt(0).getTemperature())
 					+ random.nextInt(-5,5);
 			// negative differences do nothing
 			getIngredientAt(0).heat(difference);

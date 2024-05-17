@@ -181,17 +181,6 @@ public class AlchemicIngredient {
     }
 
     /**
-     * A method to get the floored amount of this alchemic ingredient in spoons.
-     *
-     * @return  The amount of this alchemic ingredient in spoons.
-     *          | result == (int) amount * getUnit().getSpoonEquivalent()
-     */
-    @Immutable
-    public int getFlooredSpoonAmount() {
-        return (int) (amount * getUnit().getSpoonEquivalent());
-    }
-
-    /**
      * A method to check whether the given amount is a valid amount for an alchemic ingredient.
      *
      * @param 	amount

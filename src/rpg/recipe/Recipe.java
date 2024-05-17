@@ -4,6 +4,7 @@ import be.kuleuven.cs.som.annotate.*;
 import rpg.alchemy.AlchemicIngredient;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A class representing a recipe in a recipeBook
@@ -52,7 +53,7 @@ public class Recipe {
      *          | for each operation in operations:
      *          |   operation != null
      */
-    private ArrayList<Operation> operations = new ArrayList<Operation>();
+    private final List<Operation> operations = new ArrayList<Operation>();
 
     /**
      * A method for getting the length of operations of a recipe.
@@ -104,7 +105,7 @@ public class Recipe {
      * A method for getting the array list of operations.
      */
     @Model
-    private ArrayList<Operation> getOperations() {
+    private List<Operation> getOperations() {
         return operations;
     }
 
@@ -160,7 +161,7 @@ public class Recipe {
      *          | for each ingredient in ingredients:
      *          |   !ingredient.isTerminated()
      */
-    private ArrayList<AlchemicIngredient> ingredients = new ArrayList<AlchemicIngredient>();
+    private final List<AlchemicIngredient> ingredients = new ArrayList<AlchemicIngredient>();
 
     /**
      * A method for getting the length of ingredients of a recipe.
@@ -220,7 +221,7 @@ public class Recipe {
      * A method for getting the array list with ingredients.
      */
     @Model
-    private ArrayList<AlchemicIngredient> getIngredients() {
+    private List<AlchemicIngredient> getIngredients() {
         return ingredients;
     }
 
@@ -257,7 +258,7 @@ public class Recipe {
      *
      */
     @Raw
-    public boolean isValidInstructionSet(ArrayList<AlchemicIngredient> ingredients, ArrayList<Operation> operations) {
+    public boolean isValidInstructionSet(List<AlchemicIngredient> ingredients, List<Operation> operations) {
         if (ingredients == null || operations == null) {
             return false;
         }

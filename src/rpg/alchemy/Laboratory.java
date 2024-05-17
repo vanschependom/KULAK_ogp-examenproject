@@ -7,6 +7,7 @@ import rpg.recipe.Operation;
 import rpg.recipe.Recipe;
 
 import java.awt.*;
+import java.util.List;
 import java.util.ArrayList;
 
 /**
@@ -96,7 +97,7 @@ public class Laboratory extends StorageLocation {
 	 *          | for each device in devices:
 	 *          |   !device.isTerminated()
 	 */
-	private final ArrayList<Device> devices = new ArrayList<>();
+	private final List<Device> devices = new ArrayList<>();
 
 	/**
 	 * Return the number of devices.
@@ -482,6 +483,14 @@ public class Laboratory extends StorageLocation {
 		));
 	}
 
+	/**
+	 * A method for checking if a given index is a valid index for an ingredient.
+	 * @param 	index
+	 * 			The index to check.
+	 * @return	True if and only if the index is greater than or equal to zero
+	 * 			and smaller than the number of ingredients in this laboratory.
+	 * 			| result == (index >= 0) && (index < getNbOfIngredients())
+	 */
 	public boolean canHaveAsIndexForIngredient(int index) {
 		return (index >= 0 || index < getNbOfIngredients());
 	}
@@ -815,6 +824,9 @@ public class Laboratory extends StorageLocation {
 
 	}
 
+	/**
+	 * A method to check if the laboratory has the required devices for a recipe.
+	 */
 	public boolean hasDevicesForRecipe(Recipe recipe) {
 		if (!hasDeviceOfType(Kettle.class)) {
 			return false;
@@ -830,6 +842,7 @@ public class Laboratory extends StorageLocation {
 
 	/**
 	 * Checks if there are enough ingredients to execute the recipe.
+	 * TODO!!
 	 */
 	public boolean hasEnoughToObtain(AlchemicIngredient ingredient, int multiplier) {
 		if (!isValidMultiplier(multiplier)) {
@@ -845,6 +858,13 @@ public class Laboratory extends StorageLocation {
 		return true;
 	}
 
+	/**
+	 * A method for checking if a given multiplier is a valid multiplier.
+	 * @param 	multiplier
+	 * 			The multiplier to check.
+	 * @return	True if and only if the multiplier is greater than zero.
+	 * 			| result == (multiplier > 0)
+	 */
 	public static boolean isValidMultiplier(int multiplier) {
 		return multiplier > 0;
 	}
