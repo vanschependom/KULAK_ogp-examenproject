@@ -75,7 +75,7 @@ public class AlchemicIngredient {
      *          | !isValidState(state)
      */
     @Raw
-    public AlchemicIngredient(int amount, Unit unit, Temperature temperature, IngredientType type, State state) throws IllegalStateException {
+    public AlchemicIngredient(double amount, Unit unit, Temperature temperature, IngredientType type, State state) throws IllegalStateException {
         super();
         if (!isValidState(state)) {
             throw new IllegalStateException("The given state is not valid!");
@@ -113,7 +113,7 @@ public class AlchemicIngredient {
      *          | this( amount, unit, new Temperature(type.getStandardTemperature()), type, type.getStandardState() )
      */
     @Raw
-    public AlchemicIngredient(int amount, Unit unit, IngredientType type) {
+    public AlchemicIngredient(double amount, Unit unit, IngredientType type) {
         this(amount, unit, new Temperature(type.getStandardTemperature()), type, type.getStandardState());
     }
 
@@ -132,7 +132,7 @@ public class AlchemicIngredient {
      *          | this( amount, unit, temperature, type, type.getStandardState() )
      */
     @Raw
-    public AlchemicIngredient(int amount, Unit unit, Temperature temperature, IngredientType type) {
+    public AlchemicIngredient(double amount, Unit unit, Temperature temperature, IngredientType type) {
         this(amount, unit, temperature, type, type.getStandardState());
     }
 
@@ -148,13 +148,13 @@ public class AlchemicIngredient {
     /**
      * A variable for keeping track of the amount of the ingredient.
      */
-    private final int amount;
+    private final double amount;
 
     /**
      * A method to get the amount of this alchemic ingredient.
      */
     @Basic @Immutable
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 

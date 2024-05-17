@@ -162,6 +162,8 @@ public class Kettle extends Device {
 		}
 	}
 
+
+
 	/**********************************************************
 	 * OPERATION EXECUTION
 	 **********************************************************/
@@ -198,7 +200,7 @@ public class Kettle extends Device {
 
 		// Create the new ingredient(type) and add to the kettle
 		IngredientType newType = new IngredientType(newName, newState, newStandardTemperature, newName.isMixed());
-		addAsIngredient(new AlchemicIngredient((int) newSpoonAmount, Unit.SPOON, newTemperature, newType, newState));
+		addAsIngredient(new AlchemicIngredient(newSpoonAmount, Unit.SPOON, newTemperature, newType, newState));
 	}
 
 }

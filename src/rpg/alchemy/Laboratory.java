@@ -457,7 +457,7 @@ public class Laboratory extends StorageLocation {
 	 * 			| index < 0 || index >= getNbOfIngredients()
 	 */
 	@Raw
-	public IngredientContainer getAmountOfIngredientAt(int index, int amount, Unit unit) throws IndexOutOfBoundsException {
+	public IngredientContainer getAmountOfIngredientAt(int index, double amount, Unit unit) throws IndexOutOfBoundsException {
 		if (!canHaveAsIndexForIngredient(index)) {
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
 		}
@@ -466,7 +466,7 @@ public class Laboratory extends StorageLocation {
 		removeAsIngredient(ingredient);
 		if (amountLeft != 0) {
 			addAsIngredient(new AlchemicIngredient(
-					(int) amountLeft,  // afronding!
+					amountLeft,
 					ingredient.getUnit(),
 					new Temperature(ingredient.getTemperature()),
 					ingredient.getType(),
