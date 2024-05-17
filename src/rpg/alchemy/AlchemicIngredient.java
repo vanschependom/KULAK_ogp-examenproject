@@ -473,7 +473,7 @@ public class AlchemicIngredient {
      *          The ingredient is terminated and it is to be containerized.
      *          | isTerminated() && containerized
      */
-    @Raw
+    @Raw @Model
     protected void setContainerized(boolean containerized) throws IllegalStateException {
         if (isTerminated() && containerized) {
             throw new IllegalStateException("The ingredient is terminated!");

@@ -317,6 +317,7 @@ public class Laboratory extends StorageLocation {
 	 * 			The given device does not reference this laboratory as its parent.
 	 * 			| device.getLaboratory() != this
 	 */
+	@Model
 	protected void addAsDevice(Device device) {
 		if (!canHaveAsDevice(device)) {
 			throw new IllegalArgumentException("This device is not allowed for this laboratory.");
@@ -347,7 +348,7 @@ public class Laboratory extends StorageLocation {
 	 * 			The reference of the given (effective) device to its laboratory must already be broken down.
 	 * 			| (device != null) && device.getLaboratory() != this
 	 */
-	@Raw
+	@Raw @Model
 	protected void removeAsDevice(Device device) throws IndexOutOfBoundsException, IllegalStateException, IllegalArgumentException {
 		if (!hasAsDevice(device)) {
 			throw new IllegalArgumentException("Device is not present in this laboratory!");
@@ -571,6 +572,8 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @return	The total size of ingredients stored in this laboratory in storerooms.
 	 * 			| result == sum( {for I in 0..getNbOfIngredients()-1: getIngredientAt(I).getStoreroomAmount()} )
+	 *
+	 * @note 	This still returns a double because we want the exact stored amount of a laboratory	.
 	 */
 	public double getStoredAmount() {
 		double amount = 0;

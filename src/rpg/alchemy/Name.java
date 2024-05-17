@@ -198,7 +198,7 @@ public class Name {
 	 * 			The given special name is not null and not a valid name.
 	 * 			| specialName != null && !isValidName(specialName)
 	 */
-	@Raw
+	@Raw @Model
 	protected void setSpecialName(String specialName) throws IllegalStateException, IllegalNameException {
 		if (!isMixed() && specialName != null) {
 			throw new IllegalStateException("No special name allowed!");
@@ -362,6 +362,7 @@ public class Name {
 	 * @return	True if the symbol is contained in the allowed name symbols.
 	 * 			| result == (ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1)
 	 */
+	@Model
 	private static boolean isLegalSymbol(char symbol) {
 		return ALLOWED_NAME_SYMBOLS.indexOf(symbol) != -1;
 	}

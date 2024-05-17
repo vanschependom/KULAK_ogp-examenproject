@@ -33,7 +33,7 @@ public class Temperature {
 	/**
 	 * Return the upper bound of temperature.
 	 */
-	@Immutable @Basic
+	@Immutable @Basic @Model
 	protected static long getUpperbound() {
 		return UPPERBOUND;
 	}

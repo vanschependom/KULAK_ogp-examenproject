@@ -136,7 +136,7 @@ public abstract class Device extends StorageLocation {
      *          The maximum amount of ingredients has been reached.
      *          | getNbOfIngredients() == getMaxNbOfIngredients()
      */
-    @Override
+    @Override @Model
     protected void addAsIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException, IllegalStateException {
         if (getNbOfIngredients() == getMaxNbOfIngredients()) {
             throw new IllegalStateException();
