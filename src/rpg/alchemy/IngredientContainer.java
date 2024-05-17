@@ -93,6 +93,12 @@ public class IngredientContainer {
         return content;
     }
 
+    @Raw
+    public AlchemicIngredient obtainContent() {
+        this.terminate();
+    	return content;
+    }
+
     /**
      * A method to check if the content (ingredient) could be stored in the container.
      *

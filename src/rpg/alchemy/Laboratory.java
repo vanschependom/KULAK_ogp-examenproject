@@ -483,7 +483,7 @@ public class Laboratory extends StorageLocation {
 	}
 
 	public boolean canHaveAsIndexForIngredient(int index) {
-		return (index < 0 || index >= getNbOfIngredients());
+		return (index >= 0 || index < getNbOfIngredients());
 	}
 
 	/**
@@ -716,19 +716,21 @@ public class Laboratory extends StorageLocation {
 			throw new IllegalStateException("The laboratory does not have the required devices for this recipe.");
 		}
 
-		AlchemicIngredient currentIngredient = null;
+		IngredientContainer currentIngredientContainer = null;
 		int addCounter = 0;
 		int i = 0;
 		int numberOfIterations = recipe.getNbOfOperations();
 		boolean enoughIngredientsLeft = true;
 
 		// check if last instruction is a mix
+		// if not, add an extra while loop iteration
+		// in this last iteration, we mix everything
 		if (recipe.getOperationAt(recipe.getNbOfOperations()-1) != Operation.MIX) {
 			numberOfIterations++;
 		}
 
 		// loop over all iterations, while there are enough ingredients left
-		while ((i < numberOfIterations) && enoughIngredientsLeft) {
+		while (i < numberOfIterations && enoughIngredientsLeft) {
 
 			Operation operation;
 
@@ -745,12 +747,15 @@ public class Laboratory extends StorageLocation {
 
 				// if this is the first operation or the last operation was mix, then we need to
 				// add a new ingredient to the kettle
-				if (currentIngredient != null) {
-					getDeviceOfType(Kettle.class).addIngredients(new IngredientContainer(currentIngredient));
+				if (currentIngredientContainer != null) {
+					getDeviceOfType(Kettle.class).addIngredients(currentIngredientContainer);
 				}
+
+				AlchemicIngredient ingredientToAdd = recipe.getIngredientAt(addCounter);
+
 				// continue if we have enough ingredient left to add the next ingredient
-				if (hasEnoughToObtain(recipe.getIngredientAt(addCounter), multiplier)) {
-					currentIngredient = getAmountOfIngredientAt(getIndexOfSimpleName(recipe.getIngredientAt(addCounter).getSimpleName()), recipe.getIngredientAt(addCounter).getSpoonAmount() * multiplier, Unit.SPOON).getContent();
+				if (hasEnoughToObtain(ingredientToAdd, multiplier)) {
+					currentIngredientContainer = getAmountOfIngredientAt(getIndexOfSimpleName(ingredientToAdd.getSimpleName()), ingredientToAdd.getAmount() * multiplier, ingredientToAdd.getUnit());
 				} else {
 					enoughIngredientsLeft = false;
 				}
@@ -761,19 +766,21 @@ public class Laboratory extends StorageLocation {
 
 				// currentIngredient can't be null, since the first operation must be ADD
 				// add sets the currentIngredient to an effective object.
-				Temperature temperatureMinusTen = Temperature.add(new Temperature(currentIngredient.getTemperature()), new Temperature(10, 0));
+				Temperature temperatureMinusTen = Temperature.add(new Temperature(currentIngredientContainer.getContent().getTemperature()), new Temperature(10, 0));
+
+				IngredientContainer container = currentIngredientContainer;
 
 				// use bring to temperature method
-				currentIngredient = bringToTemperature(new IngredientContainer(currentIngredient), temperatureMinusTen.getTemperature()).getContent();
+				currentIngredientContainer = bringToTemperature(container, temperatureMinusTen.getTemperature());
 
 			} else if (operation == Operation.HEAT) {
 
 				// currentIngredient can't be null, since the first operation must be ADD
 				// add sets the currentIngredient to an effective object.
-				Temperature temperaturePlusTen = Temperature.add(new Temperature(currentIngredient.getTemperature()), new Temperature(0, 10));
+				Temperature temperaturePlusTen = Temperature.add(new Temperature(currentIngredientContainer.getContent().getTemperature()), new Temperature(0, 10));
 
 				// use bring to temperature method (oven is not exact)
-				currentIngredient = bringToTemperature(new IngredientContainer(currentIngredient), temperaturePlusTen.getTemperature()).getContent();
+				currentIngredientContainer = bringToTemperature(currentIngredientContainer, temperaturePlusTen.getTemperature());
 
 			} else {
 
@@ -784,11 +791,11 @@ public class Laboratory extends StorageLocation {
 
 				// ingredients can already be added in the ADD instruction,
 				// here we also add the last ingredient to the kettle
-				kettle.addIngredients(new IngredientContainer(currentIngredient));
+				kettle.addIngredients(currentIngredientContainer);
 				kettle.executeOperation();
 
 				// replace the current ingredient with the result of the kettle
-				currentIngredient = kettle.getResult().getContent();
+				currentIngredientContainer = kettle.getResult();
 
 			}
 
@@ -797,8 +804,11 @@ public class Laboratory extends StorageLocation {
 
 		}
 
-		// add the resulting ingredient to the laboratory
-		addIngredients(new IngredientContainer(currentIngredient));
+		// add the resulting ingredient to the laboratory,
+		// if there is a resulting ingredient and there are enough ingredients left
+		if (currentIngredientContainer != null && enoughIngredientsLeft) {
+			addIngredients(currentIngredientContainer);
+		}
 
 	}
 
@@ -825,7 +835,7 @@ public class Laboratory extends StorageLocation {
 		if (!hasIngredientWithSimpleName(ingredient.getSimpleName())) {
 			return false;
 		} else {
-			if (ingredient.getSpoonAmount() * multiplier >= getIngredientAt(getIndexOfSimpleName(ingredient.getSimpleName())).getSpoonAmount()) {
+			if (ingredient.getSpoonAmount() * multiplier > getIngredientAt(getIndexOfSimpleName(ingredient.getSimpleName())).getSpoonAmount()) {
 				return false;
 			}
 		}
