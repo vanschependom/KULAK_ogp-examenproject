@@ -241,8 +241,8 @@ public class KettleTest {
         assertEquals(Unit.SPOON, ingNew.getUnit());
         // hotness = 5/8 * 5 = 25/8
         // coldness = 3/8 * 10 = 30/8
-        // total = 25/8 - 30/8 = -5/8 --> -1 (afgerond naar beneden)
-        assertEquals(1, ingNew.getTemperature()[0]);
+        // total = [-25/8 + 30/8, 0] = [5/8, 0] --> [0, 0] (afgerond naar beneden)
+        assertEquals(0, ingNew.getTemperature()[0]);
         assertEquals(0, ingNew.getTemperature()[1]);
     }
 
@@ -266,10 +266,10 @@ public class KettleTest {
         assertTrue(ingNew.getType().isMixed());
         assertEquals(1, ingNew.getAmount()); // 5 drops + 3 drops = 1 spoon
         assertEquals(Unit.SPOON, ingNew.getUnit());
-        // coldness = 5/8 * 10 = 50/8
-        // hotness = 3/8 * 5 = 15/8
-        // total = -50/8 + 15/8 = -35/8 --> -5 (afgerond naar beneden)
-        assertEquals(5, ingNew.getTemperature()[0]);
+        // coldness = 5 * 10 = 50
+        // hotness = 3 * 5 = 15
+        // total = [50/8 - 15/8, 0] = [35/8, 0] --> [4, 0] (afgerond naar beneden)
+        assertEquals(4, ingNew.getTemperature()[0]);
         assertEquals(0, ingNew.getTemperature()[1]);
     }
 
