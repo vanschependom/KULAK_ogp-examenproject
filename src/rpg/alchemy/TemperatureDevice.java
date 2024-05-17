@@ -81,6 +81,8 @@ public abstract class TemperatureDevice extends Device {
         return temperature;
     }
 
+    
+
     /**
      * A method to check if a temperature is a valid temperature.
      *

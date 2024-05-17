@@ -513,64 +513,6 @@ public class LaboratoryTest {
 		otherTransmogrifier = new Transmogrifier(otherLab);
 		otherKettle = new Kettle(otherLab);
 	}
-//
-//	@Test
-//	public void testHasEnoughIngredient_false1() {
-//		// we try to get 3 sachets but there is only 2 sachets
-//		AlchemicIngredient present = new AlchemicIngredient(2, Unit.SACHET, new Temperature(0, 200), powderType);
-//		AlchemicIngredient inRecipe = new AlchemicIngredient(3, Unit.SACHET, new Temperature(20, 0), powderType);
-//		recipe.addAsInstruction(inRecipe, Operation.ADD);
-//		otherLab.addContainer(new IngredientContainer(present));
-//		assertFalse(otherLab.hasEnoughIngredientsForRecipe(recipe));
-//	}
-//
-//	@Test
-//	public void testHasEnoughIngredient_false2() {
-//		// we try to get an ingredient but it isn't present
-//		AlchemicIngredient inRecipe = new AlchemicIngredient(3, Unit.SACHET, new Temperature(20, 0), powderType);
-//		recipe.addAsInstruction(inRecipe, Operation.ADD);
-//		assertFalse(otherLab.hasEnoughIngredientsForRecipe(recipe));
-//	}
-//
-//	@Test
-//	public void testHasEnoughIngredient_true1() {
-//		// we try to get 2 and there is 3: possible
-//		AlchemicIngredient present = new AlchemicIngredient(3, Unit.SACHET, new Temperature(0, 200), powderType);
-//		AlchemicIngredient inRecipe = new AlchemicIngredient(2, Unit.SACHET, new Temperature(20, 0), powderType);
-//		recipe.addAsInstruction(inRecipe, Operation.ADD);
-//		otherLab.addContainer(new IngredientContainer(present));
-//		assertTrue(otherLab.hasEnoughIngredientsForRecipe(recipe));
-//	}
-//
-//	@Test
-//	public void testHasEnoughIngredient_multiple() {
-//
-//		// a powder, a liquid and a mixed liquid
-//		AlchemicIngredient recipeIngr1 = new AlchemicIngredient(2, Unit.SACHET, new Temperature(20, 0), powderType);
-//		AlchemicIngredient ingrRecipe2 = new AlchemicIngredient(3, Unit.VIAL, new Temperature(20, 0), liquidType);
-//		AlchemicIngredient ingrRecipe3 = new AlchemicIngredient(1, Unit.BOTTLE, new Temperature(20, 0), liquidTypeMixed);
-//
-//		// we add all ingredients to the recipe
-//		recipe.addAsInstruction(recipeIngr1, Operation.ADD);
-//		recipe.addAsInstruction(ingrRecipe2, Operation.ADD);
-//		recipe.addAsInstruction(ingrRecipe3, Operation.ADD);
-//
-//		// we add enough of the powder
-//		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(1, Unit.SPOON, new Temperature(0, 200), powderType)));
-//		// we add enough of the liquid
-//		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(5, Unit.JUG, new Temperature(0, 100), liquidType)));
-//		// we also add enough of the mixed liquid
-//		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(3, Unit.BOTTLE, new Temperature(50, 0), liquidTypeMixed)));
-//
-//		// because we have too little of the liquid, this must be false
-//		assertFalse(otherLab.hasEnoughIngredientsForRecipe(recipe));
-//
-//		// now we add extra powder
-//		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(14, Unit.SPOON, new Temperature(0, 200), powderType)));
-//
-//		// 15 spoons is more than the needed 2 sachets
-//		assertTrue(otherLab.hasEnoughIngredientsForRecipe(recipe));
-//	}
 
 	@Test
 	public void testExecute_CoolSingleIngredient() {
@@ -646,6 +588,35 @@ public class LaboratoryTest {
 		assertEquals(20, otherLab.getIngredientAt(0).getType().getStandardTemperature()[1]);
 		assertEquals("Oatmeal mixed with Powder Sugar and Seeds", otherLab.getIngredientAt(0).getSimpleName());
 		assertNull(otherLab.getIngredientAt(0).getSpecialName());
+	}
+
+	@Test
+	public void testExecute_MixCoolHeat() {
+		AlchemicIngredient recipeIngr1 = new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType);
+		recipe.addAsInstruction(recipeIngr1, Operation.ADD);
+		recipe.addAsInstruction(Operation.COOL);
+		recipe.addAsInstruction(mixedPowder, Operation.ADD);
+		recipe.addAsInstruction(Operation.HEAT);
+		recipe.addAsInstruction(Operation.MIX);
+		recipe.addAsInstruction(Operation.COOL);
+		recipe.addAsInstruction(heatedLiquid, Operation.ADD);
+		recipe.addAsInstruction(Operation.COOL);
+		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(2, Unit.SACHET, new Temperature(20, 0), powderType)));
+		otherLab.addContainer(new IngredientContainer(mixedPowder));
+		otherLab.addContainer(new IngredientContainer(mixedPowder));
+		otherLab.addContainer(new IngredientContainer(heatedLiquid));
+		otherLab.addContainer(new IngredientContainer(heatedLiquid));
+		assertEquals(3, otherLab.getNbOfIngredients());
+		otherLab.execute(recipe, 2);
+		// 6 sachets
+//		assertEquals(84, otherLab.getIngredientAt(0).getSpoonAmount());
+//		assertEquals(1, otherLab.getNbOfIngredients());
+//		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
+//		assertEquals(10, otherLab.getIngredientAt(0).getHotness());
+//		assertEquals(0, otherLab.getIngredientAt(0).getType().getStandardTemperature()[0]);
+//		assertEquals(20, otherLab.getIngredientAt(0).getType().getStandardTemperature()[1]);
+//		assertEquals("Oatmeal mixed with Powder Sugar and Seeds", otherLab.getIngredientAt(0).getSimpleName());
+//		assertNull(otherLab.getIngredientAt(0).getSpecialName());
 	}
 
 }

@@ -338,8 +338,9 @@ public abstract class StorageLocation {
      *          |           if getIngredientAt(I).equals(container.getContent())
      *          |               then removeAsIngredient( getIngredientAt(I)) &&
      *          |                    addAsIngredient( new AlchemicIngredient(
-     *          |                       getIngredientAt(I).getSpoonAmount() + container.getContent().getSpoonAmount(),
-     *          |                       Unit.SPOON,
+     *          |                       (int)((alreadyInLocation.getSpoonAmount() +
+     *          |                           container.getContent().getSpoonAmount())/Unit.getBestUnitForStateAndSpoons(alreadyInLocation.getState(), alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount()).getSpoonEquivalent()),
+     *          |                       Unit.getBestUnitForStateAndSpoons(alreadyInLocation.getState(), alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount()),
      *          |                       new Temperature(getIngredientAt(I).getTemperature()),
      *          |                       getIngredientAt(I).getType(),
      *          |                       getIngredientAt(I).getState()
@@ -367,9 +368,10 @@ public abstract class StorageLocation {
         try {
             // if the ingredient is already present, combine them
             AlchemicIngredient alreadyInLocation = getIngredientAt(getIndexOfIngredient(container.getContent()));
+            Unit newUnit = Unit.getBestUnitForStateAndSpoons(alreadyInLocation.getState(), alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount());
             AlchemicIngredient replacement = new AlchemicIngredient(
-                    alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount(),
-                    Unit.SPOON,
+                    (int)((alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount())/newUnit.getSpoonEquivalent()),
+                    newUnit,
                     new Temperature(alreadyInLocation.getTemperature()),
                     alreadyInLocation.getType(),
                     alreadyInLocation.getState());

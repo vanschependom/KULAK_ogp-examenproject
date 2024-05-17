@@ -436,8 +436,8 @@ public class Laboratory extends StorageLocation {
 	 * @effect	A new ingredient, with its amount subtracted with the given amount at the same unit,
 	 * 			is added to the laboratory and the ingredient at given index is removed.
 	 * 			| addAsIngredient(new AlchemicIngredient(
-	 * 			|		(int) getIngredientAt(index).getAmount()
-	 * 			|			- amount*unit.getConversionFor(getIngredientAt(index).getUnit()),
+	 * 			|		(int) (getIngredientAt(index).getAmount()*getIngredientAt(index).getUnit().getConversionFor(Unit.getBestUnitForStateAndSpoons(ingredient.getState(), ingredient.getSpoonAmount() - (amount*unit.getSpoonEquivalent())))
+	 * 			|			- amount*unit.getConversionFor(Unit.getBestUnitForStateAndSpoons(ingredient.getState(), ingredient.getSpoonAmount() - (amount*unit.getSpoonEquivalent())))),
 	 * 			|		getIngredientAt(index).getUnit(),
 	 * 			|		new Temperature(getIngredientAt(index).getTemperature()),
 	 * 			|		getIngredientAt(index).getType(),
@@ -458,13 +458,17 @@ public class Laboratory extends StorageLocation {
 	 * 			| index < 0 || index >= getNbOfIngredients()
 	 */
 	@Raw
-	public IngredientContainer getAmountOfIngredientAt(int index, double amount, Unit unit) throws IndexOutOfBoundsException {
+	public IngredientContainer getAmountOfIngredientAt(int index, int amount, Unit unit) throws IndexOutOfBoundsException {
 		if (!canHaveAsIndexForIngredient(index)) {
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
 		}
+
 		AlchemicIngredient ingredient = getIngredientAt(index);
-		double amountLeft = ingredient.getAmount() - (amount*unit.getConversionFor(ingredient.getUnit()));
+		Unit newUnit = Unit.getBestUnitForStateAndSpoons(ingredient.getState(), ingredient.getSpoonAmount() - (amount*unit.getSpoonEquivalent()));
+		int amountLeft = (int) (ingredient.getAmount()*ingredient.getUnit().getConversionFor(newUnit) - amount*unit.getConversionFor(newUnit));
+
 		removeAsIngredient(ingredient);
+		// we don't check for amountleft being positive due to nominal programming of amounts
 		if (amountLeft != 0) {
 			addAsIngredient(new AlchemicIngredient(
 					amountLeft,

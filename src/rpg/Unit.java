@@ -275,6 +275,8 @@ public enum Unit {
 	 *
 	 * @param 	state
 	 * 			The state to check.
+	 * @param   amountOfSpoons
+	 * 			The amount of spoons to use.
 	 * @pre 	The given state must be effective.
 	 * 			| state != null
 	 * @pre 	The given amount of spoons is strictly positive.

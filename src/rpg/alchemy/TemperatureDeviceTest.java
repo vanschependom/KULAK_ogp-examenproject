@@ -22,13 +22,13 @@ public class TemperatureDeviceTest {
 
     @Test
     public void constructorValid1() {
-        assertTrue(new Temperature(90, 0).equals(coolingBox.getTemperature()));
+        assertTrue(new Temperature(90, 0).equals(coolingBox.getTemperatureObject()));
     }
 
     @Test
     public void constructorValid2() {
         Oven oven1 = new Oven(otherLaboratory, new Temperature(0, 500));
-        assertTrue(new Temperature(0, 500).equals(oven1.getTemperature()));
+        assertTrue(new Temperature(0, 500).equals(oven1.getTemperatureObject()));
     }
 
     @Test

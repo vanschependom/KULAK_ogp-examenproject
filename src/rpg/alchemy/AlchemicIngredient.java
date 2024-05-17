@@ -75,7 +75,7 @@ public class AlchemicIngredient {
      *          | !isValidState(state)
      */
     @Raw
-    public AlchemicIngredient(double amount, Unit unit, Temperature temperature, IngredientType type, State state) throws IllegalStateException {
+    public AlchemicIngredient(int amount, Unit unit, Temperature temperature, IngredientType type, State state) throws IllegalStateException {
         super();
         if (!isValidState(state)) {
             throw new IllegalStateException("The given state is not valid!");
@@ -113,7 +113,7 @@ public class AlchemicIngredient {
      *          | this( amount, unit, new Temperature(type.getStandardTemperature()), type, type.getStandardState() )
      */
     @Raw
-    public AlchemicIngredient(double amount, Unit unit, IngredientType type) {
+    public AlchemicIngredient(int amount, Unit unit, IngredientType type) {
         this(amount, unit, new Temperature(type.getStandardTemperature()), type, type.getStandardState());
     }
 
@@ -132,7 +132,7 @@ public class AlchemicIngredient {
      *          | this( amount, unit, temperature, type, type.getStandardState() )
      */
     @Raw
-    public AlchemicIngredient(double amount, Unit unit, Temperature temperature, IngredientType type) {
+    public AlchemicIngredient(int amount, Unit unit, Temperature temperature, IngredientType type) {
         this(amount, unit, temperature, type, type.getStandardState());
     }
 
@@ -148,13 +148,13 @@ public class AlchemicIngredient {
     /**
      * A variable for keeping track of the amount of the ingredient.
      */
-    private final double amount;
+    private final int amount;
 
     /**
      * A method to get the amount of this alchemic ingredient.
      */
     @Basic @Immutable
-    public double getAmount() {
+    public int getAmount() {
         return amount;
     }
 
@@ -177,6 +177,7 @@ public class AlchemicIngredient {
      */
     @Immutable
     public double getStoreroomAmount() {
+        // this is already an integer so this is fine
         return amount * getUnit().getStoreroomEquivalent();
     }
 
@@ -189,7 +190,7 @@ public class AlchemicIngredient {
      * 			| result == (amount >= 0)
      */
     @Raw
-    public boolean isValidAmount(double amount) {
+    public boolean isValidAmount(int amount) {
         return amount >= 0;
     }
 

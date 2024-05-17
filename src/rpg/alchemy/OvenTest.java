@@ -47,7 +47,7 @@ public class OvenTest {
         AlchemicIngredient ingredient = container.getContent();
         assertEquals(ingredient.getAmount(), ingredient1.getAmount());
         assertEquals(ingredient.getType(), ingredient1.getType());
-        assertTrue(oven.getTemperature().difference(ingredient.getTemperature()) <= 5);
+        assertTrue(oven.getTemperatureObject().difference(ingredient.getTemperature()) <= 5);
         assertEquals(ingredient.getUnit(), ingredient1.getUnit());
         assertEquals(ingredient.getState(), ingredient1.getState());
     }
@@ -61,7 +61,7 @@ public class OvenTest {
         AlchemicIngredient ingredient = container.getContent();
         assertEquals(ingredient.getAmount(), ingredient2.getAmount());
         assertEquals(ingredient.getType(), ingredient2.getType());
-        assertTrue(oven.getTemperature().difference(ingredient.getTemperature()) <= 5);
+        assertTrue(oven.getTemperatureObject().difference(ingredient.getTemperature()) <= 5);
         assertEquals(ingredient.getUnit(), ingredient2.getUnit());
         assertEquals(ingredient.getState(), ingredient2.getState());
     }

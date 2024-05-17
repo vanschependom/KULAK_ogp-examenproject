@@ -66,7 +66,6 @@ class Recipe {
 }
 
 Recipe::operations -->"0..*" Operation
-Recipe::ingredients -->"0..*" AlchemicIngredient
 
 class RecipeBook {
 + RecipeBook()
@@ -87,7 +86,11 @@ RecipeBook::recipes -->"0..*" Recipe
 
 }
 
+
+
 package alchemy {
+
+Recipe::ingredients -->"0..*" AlchemicIngredient
 
 abstract class StorageLocation {
 + StorageLocation()
