@@ -584,8 +584,8 @@ public class LaboratoryTest {
 		// we cool the ingredient (with 10 degrees)
 		otherLab.execute(recipe, 1);
 		assertEquals(1, otherLab.getNbOfIngredients());
-		assertEquals(30, otherLab.getIngredientAt(0).getColdness());
-		assertEquals(0, otherLab.getIngredientAt(0).getHotness());
+		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
+		assertEquals(10, otherLab.getIngredientAt(0).getHotness());
 	}
 
 	@Test
@@ -597,8 +597,8 @@ public class LaboratoryTest {
 		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
 		assertEquals(20, otherLab.getIngredientAt(0).getHotness());
 		otherLab.execute(recipe, 1);
-		assertEquals(10, otherLab.getIngredientAt(0).getColdness());
-		assertEquals(0, otherLab.getIngredientAt(0).getHotness());
+		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
+		assertEquals(30, otherLab.getIngredientAt(0).getHotness());
 	}
 
 }

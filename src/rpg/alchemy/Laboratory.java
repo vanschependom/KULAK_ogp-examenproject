@@ -764,9 +764,11 @@ public class Laboratory extends StorageLocation {
 
 			} else if (operation == Operation.COOL) {
 
+				Temperature currentTemperature = new Temperature(currentIngredientContainer.getContent().getTemperature());
+
 				// currentIngredient can't be null, since the first operation must be ADD
 				// add sets the currentIngredient to an effective object.
-				Temperature temperatureMinusTen = Temperature.add(new Temperature(currentIngredientContainer.getContent().getTemperature()), new Temperature(10, 0));
+				Temperature temperatureMinusTen = Temperature.add(currentTemperature, new Temperature(10, 0));
 
 				IngredientContainer container = currentIngredientContainer;
 
@@ -807,7 +809,8 @@ public class Laboratory extends StorageLocation {
 		// add the resulting ingredient to the laboratory,
 		// if there is a resulting ingredient and there are enough ingredients left
 		if (currentIngredientContainer != null && enoughIngredientsLeft) {
-			addIngredients(currentIngredientContainer);
+			// we can't use the addIngredients method, because this brings the ingredient to standard temperature!
+			addAsIngredient(currentIngredientContainer.obtainContent());
 		}
 
 	}
