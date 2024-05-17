@@ -458,7 +458,7 @@ public class Laboratory extends StorageLocation {
 	 */
 	@Raw
 	public IngredientContainer getAmountOfIngredientAt(int index, int amount, Unit unit) throws IndexOutOfBoundsException {
-		if (index < 0 || index >= getNbOfIngredients()) {
+		if (!canHaveAsIndexForIngredient(index)) {
 			throw new IndexOutOfBoundsException("Index out of bounds: " + index);
 		}
 		AlchemicIngredient ingredient = getIngredientAt(index);
@@ -480,6 +480,10 @@ public class Laboratory extends StorageLocation {
 				ingredient.getType(),
 				ingredient.getState()
 		));
+	}
+
+	public boolean canHaveAsIndexForIngredient(int index) {
+		return (index < 0 || index >= getNbOfIngredients());
 	}
 
 	/**
@@ -712,8 +716,11 @@ public class Laboratory extends StorageLocation {
 		}
 
 		AlchemicIngredient currentIngredient = null;
+		int addCounter = 0;
+		int operationCounter = 0;
+		boolean enoughIngredientsLeft = true;
 
-		for (int i = 0; i < recipe.getNbOfOperations(); i++) {
+		while (operationCounter < recipe.getNbOfOperations() && enoughIngredientsLeft) {
 
 			Operation operation = recipe.getOperationAt(i);
 
@@ -722,7 +729,12 @@ public class Laboratory extends StorageLocation {
 				if (currentIngredient != null) {
 					getDeviceOfType(Kettle.class).addIngredients(new IngredientContainer(currentIngredient));
 				}
-				currentIngredient = recipe.getIngredientAt(i);
+
+				if (hasEnoughToObtain(recipe.getIngredientAt(addCounter), multiplier)) {
+					currentIngredient = getAmountOfIngredientAt(getIndexOfSimpleName(recipe.getIngredientAt(addCounter).getSimpleName()), recipe.getIngredientAt(addCounter).getSpoonAmount() * multiplier, Unit.SPOON).getContent();
+				} else {
+					enoughIngredientsLeft = false;
+				}
 
 			} else if (operation == Operation.COOL) {
 
@@ -768,19 +780,15 @@ public class Laboratory extends StorageLocation {
 	/**
 	 * Checks if there are enough ingredients to execute the recipe.
 	 */
-	protected boolean hasEnoughIngredientsForRecipe(Recipe recipe, int multiplier) {
+	public boolean hasEnoughToObtain(AlchemicIngredient ingredient, int multiplier) {
 		if (!isValidMultiplier(multiplier)) {
 			throw new IllegalArgumentException("The multiplier must be greater than zero.");
 		}
-		for (int i = 0; i < recipe.getNbOfIngredients(); i++) {
-			if (!hasIngredientWithSimpleName(recipe.getIngredientAt(i).getSimpleName())) {
+		if (!hasIngredientWithSimpleName(ingredient.getSimpleName())) {
+			return false;
+		} else {
+			if (ingredient.getSpoonAmount() * multiplier >= getIngredientAt(getIndexOfSimpleName(ingredient.getSimpleName())).getSpoonAmount()) {
 				return false;
-			} else {
-				// check if spoon equivalents are enough
-				AlchemicIngredient ingredient = recipe.getIngredientAt(i);
-				if (ingredient.getSpoonAmount() * multiplier >= getIngredientAt(getIndexOfSimpleName(ingredient.getSimpleName())).getSpoonAmount()) {
-					return false;
-				}
 			}
 		}
 		return true;
