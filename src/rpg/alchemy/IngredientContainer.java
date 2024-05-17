@@ -14,6 +14,7 @@ import rpg.Unit;
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
  * @author	Flor De Meulemeester
+ *
  * @version	1.0
  */
 public class IngredientContainer {
@@ -30,10 +31,13 @@ public class IngredientContainer {
      * @param   content
      *          The contents of the new container (an ingredient).
      *
-     * @post    The capacity of this new container is equal to the given capacity.
-     *          | new.getCapacity() == capacity
-     * @post    The content of this new container is equal to the given content (an ingredient).
-     *          | new.getContent() == content
+     * @post    The capacity of this new container is equal to the given capacity if it's a valid capacity.
+     *          | if (isValidCapacity(capacity))
+     *          |   then new.getCapacity() == capacity
+     * @post    The content of this new container is equal to the given content (an ingredient) if the
+     *          content is legal for the container.
+     *          | if (isValidContent())
+     *          |   then new.getContent() == content
      *
      * @effect  The content is set to containerized.
      *          | content.setContainerized(true)
@@ -67,6 +71,7 @@ public class IngredientContainer {
      *
      * @param   content
      *          The content of the new container (an ingredient).
+     *
      * @effect  A new container is created with the minimum unit for the container based on the content.
      *          | this(Unit.getMinUnitForContainerWithIngredient(content), content)
      */
@@ -93,11 +98,20 @@ public class IngredientContainer {
         return content;
     }
 
-    // TODO
+    /**
+     * A method to obtain the content of a container while
+     * terminating the container itself.
+     *
+     * @effect  The container is terminated
+     *          | this.terminate()
+     *
+     * @return  The content of the container
+     *          | result == getContent()
+     */
     @Raw
     public AlchemicIngredient obtainContent() {
         this.terminate(); // this makes sure that the ingredient is set to not containerized
-    	return content;
+    	return getContent();
     }
 
     /**
@@ -105,6 +119,7 @@ public class IngredientContainer {
      *
      * @param   content
      *          The content that is to be checked.
+     *
      * @return  If the content is a null pointer, return true.
      *          | if (content == null)
      *          |   then result == true
@@ -182,8 +197,10 @@ public class IngredientContainer {
      *
      * @post    The container is terminated.
      *          | new.isTerminated()
+     *
      * @effect  The content is set to not containerized.
      *          | content.setContainerized(false)
+     *
      * @throws  IllegalStateException
      *          The container is already terminated.
      *          | isTerminated()
@@ -206,6 +223,7 @@ public class IngredientContainer {
      *
      * @param   other
      *          The other container to compare with.
+     *
      * @return  True if and only if the capacity and the content of the two containers are equal.
      *          | result == (getCapacity() == other.getCapacity())
      *          |              && (getContent().equals(other.getContent()))
