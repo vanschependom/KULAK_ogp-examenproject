@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import rpg.State;
 import rpg.Unit;
+import rpg.recipe.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -294,9 +295,70 @@ public class KettleTest {
         assertTrue(ingNew.getType().isMixed());
         assertEquals(1, ingNew.getAmount()); // 5 drops + 3 drops = 1 spoon
         assertEquals(Unit.SPOON, ingNew.getUnit());
-        // hotness = 3/8 * 5 + 5/8 * 10 = 15/8 + 50/8 = 65/8 = 8  (afgrond naar beneden)
+        // hotness = 3/8 * 5 + 5/8 * 10 = 15/8 + 50/8 = 65/8 = 8  (afgerond naar beneden)
         assertEquals(0, ingNew.getTemperature()[0]);
         assertEquals(8, ingNew.getTemperature()[1]);
     }
+
+    @Test
+    public void executeOperationSmallAmount1() {
+
+        // the resulting state is liquid
+        // but salt is less than 1 spoon, so the salt is floored
+        // the salt goes to waste
+
+        IngredientType zout = new IngredientType(new Name(null, "Zout"), State.POWDER, new Temperature(0, 50), false);
+        AlchemicIngredient beetjeZout = new AlchemicIngredient(1, Unit.PINCH, zout);
+        IngredientType water = IngredientType.DEFAULT;
+        AlchemicIngredient beetjeWater = new AlchemicIngredient(3, Unit.BOTTLE, water);
+
+        kettle.addContainer(new IngredientContainer(beetjeZout));
+        kettle.addContainer(new IngredientContainer(beetjeWater));
+
+        kettle.executeOperation();
+
+        AlchemicIngredient resultingIngredient = kettle.getResult().getContent();
+
+        assertEquals(State.LIQUID, resultingIngredient.getState());
+        assertEquals(3, resultingIngredient.getAmount());
+        assertEquals(Unit.BOTTLE, resultingIngredient.getUnit());
+
+    }
+
+    @Test
+    public void executeOperationSmallAmount2() {
+
+        // the resulting state is liquid
+        // but salt is more than one spoon, so it isn't rounded
+        // water is less than 1 spoon, but it is not floored since it has the same state as the resulting state
+        // the best unit in this case is drops
+
+        IngredientType zout = new IngredientType(new Name(null, "Zout"), State.POWDER, new Temperature(0, 50), false);
+        AlchemicIngredient beetjeZout = new AlchemicIngredient(3, Unit.SPOON, zout);
+        IngredientType water = IngredientType.DEFAULT;
+        AlchemicIngredient beetjeWater = new AlchemicIngredient(1, Unit.DROP, water);
+
+        kettle.addContainer(new IngredientContainer(beetjeZout));
+        kettle.addContainer(new IngredientContainer(beetjeWater));
+
+        kettle.executeOperation();
+
+        AlchemicIngredient resultingIngredient = kettle.getResult().getContent();
+
+        assertEquals(State.LIQUID, resultingIngredient.getState());
+        assertEquals(25, resultingIngredient.getAmount());
+        assertEquals(Unit.DROP, resultingIngredient.getUnit());
+
+    }
+
+
+
+
+
+
+
+
+
+
 
 }

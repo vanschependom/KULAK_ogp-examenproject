@@ -548,16 +548,16 @@ public class LaboratoryTest {
 	@Test
 	public void testExecute_MixTwoIngredients() {
 		AlchemicIngredient recipeIngr1 = new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType);
-		recipe.addAsInstruction(recipeIngr1, Operation.ADD);
+		recipe.addAsInstruction(recipeIngr1, Operation.ADD); // 1 sachet
 		recipe.addAsInstruction(Operation.COOL);
-		recipe.addAsInstruction(mixedPowder, Operation.ADD);
+		recipe.addAsInstruction(mixedPowder, Operation.ADD); // 5 sachets
 		recipe.addAsInstruction(Operation.COOL);
 		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType)));
 		otherLab.addContainer(new IngredientContainer(mixedPowder));
 		assertEquals(2, otherLab.getNbOfIngredients());
 		otherLab.execute(recipe, 1);
 		// 6 sachets
-		assertEquals(42, otherLab.getIngredientAt(0).getSpoonAmount());
+		assertEquals(42, otherLab.getIngredientAt(0).getSpoonAmount()); // 6 sachets
 		assertEquals(1, otherLab.getNbOfIngredients());
 		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
 		assertEquals(10, otherLab.getIngredientAt(0).getHotness());

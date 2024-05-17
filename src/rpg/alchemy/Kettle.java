@@ -48,13 +48,17 @@ public class Kettle extends Device {
 	 */
 	@Model
 	private Name getNewName() {
+
 		Set<String> names = new HashSet<>();
+
 		for (int i = 0; i < getNbOfIngredients(); i++) {
 			// we get all names of the ingredients
 			names.addAll(Arrays.asList(getIngredientAt(i).getType().getName().getSimpleNameParts()));
 		}
+
 		// we return a new name with all the names of the ingredients
 		return new Name(null, names.toArray(new String[0]));
+
 	}
 
 	/**
@@ -64,8 +68,10 @@ public class Kettle extends Device {
 	 */
 	@Model
 	private State getNewState() {
+
 		int closestTemperatureIndex = 0;
 		long smallestDifferenceTemperature = Long.MAX_VALUE;
+
 		for (int i = 0; i < getNbOfIngredients(); i++) {
 			// We get the ingredient with a standard temperature closest to [0, 20]
 			long difference = getIngredientAt(i).getType().getStandardTemperatureDifference(new long[]{0, 20});
@@ -76,7 +82,9 @@ public class Kettle extends Device {
 				closestTemperatureIndex = i;
 			}
 		}
+
 		return getIngredientAt(closestTemperatureIndex).getState();
+
 	}
 
 	/**
@@ -84,19 +92,24 @@ public class Kettle extends Device {
 	 */
 	@Model
 	private double getNewSpoonAmount() {
+
 		// we keep track of the spoon amounts of both states in a hashmap
 		HashMap<State, Double> newSpoonAmounts = new HashMap<>();
+
 		newSpoonAmounts.put(State.POWDER, 0D);
 		newSpoonAmounts.put(State.LIQUID, 0D);
+
 		for (int i = 0; i < getNbOfIngredients(); i++) {
 			// we get the state of the ingredient
 			State state = getIngredientAt(i).getState();
 			// we add it to the old value
 			newSpoonAmounts.put(state, newSpoonAmounts.get(state)+getIngredientAt(i).getSpoonAmount());
 		}
+
 		// the values of the other state get floored, while the values of the new state don't
         return Math.floor(newSpoonAmounts.get(getNewState().getNext()))
 				+ newSpoonAmounts.get(getNewState());
+
 	}
 
 	/**
@@ -105,18 +118,25 @@ public class Kettle extends Device {
 	 */
 	@Model
 	private Temperature getNewStandardTemperature() {
+
 		Temperature smallestDifferenceTemperature = new Temperature(0, Temperature.getUpperbound());
 		long smallestDifference = smallestDifferenceTemperature.difference(new long[]{0, 20});
+
 		for (int i = 0; i < getNbOfIngredients(); i++) {
+
 			long difference = getIngredientAt(i).getType().getStandardTemperatureDifference(new long[]{0, 20});
+
 			// We get the ingredient with a standard temperature closest to [0, 20]
 			if ( difference < smallestDifference || ( difference == smallestDifference &&
 					getIngredientAt(i).getHotness() > smallestDifferenceTemperature.getHotness() ) ) {
 				smallestDifferenceTemperature = new Temperature(getIngredientAt(i).getType().getStandardTemperature());
 				smallestDifference = difference;
 			}
+
 		}
+
 		return smallestDifferenceTemperature;
+
 	}
 
 	/**
@@ -129,9 +149,11 @@ public class Kettle extends Device {
 	 */
 	@Model
 	private Temperature getNewTemperature() {
+
 		double totalColdness = 0;
 		double totalHotness = 0;
 		double addedSpoons = 0;
+
 		for (int i = 0; i < getNbOfIngredients(); i++) {
 			double spoonAmount = getIngredientAt(i).getSpoonAmount();
 			double currentColdness = getIngredientAt(i).getColdness() * spoonAmount;
@@ -140,6 +162,7 @@ public class Kettle extends Device {
 			totalHotness += currentHotness;
 			addedSpoons += spoonAmount;
 		}
+
 		double difference = (totalHotness - totalColdness) / addedSpoons;
 		return makeNewTemperature(difference);
 	}
@@ -150,6 +173,22 @@ public class Kettle extends Device {
 	 *
 	 * @param 	difference
 	 *			The difference of the new temperature with [0, 0].
+	 * @return 	If the difference is bigger than the upperbound, a new temperature object
+	 * 			with [0, getUpperBound()] is returned.
+	 * 			| if (difference > Temperature.getUpperbound())
+	 * 			|	then result.equals(new Temperature(0, Temperature.getUpperbound()))
+	 * @return 	If the difference is bigger than 0 and note greater than the upperbound
+	 * 			a new temperature object with [0, difference] is returned.
+	 * 			| if (difference > 0 && difference <= Temperature.getUpperbound())
+	 * 			|	then result.equals(new Temperature(0, (long) difference))
+	 * @return 	If the difference is smaller than the negative upperbound, a new temperature object
+	 * 			with [getUpperBound(), 0] is returned.
+	 * 			| if (difference < -Temperature.getUpperbound())
+	 * 			|	then result.equals(new Temperature(Temperature.getUpperbound(), 0))
+	 * @return 	If the difference is smaller than 0 and not smaller than the negative upperbound
+	 * 			a new temperature object with [abs(difference), 0] is returned.
+	 * 			| if (difference < 0 && difference >= -Temperature.getUpperbound())
+	 * 			|	then result.equals(new Temperature((long) Math.abs(difference), 0))
 	 */
 	private Temperature makeNewTemperature(double difference) {
 		if (difference > Temperature.getUpperbound()) {
@@ -181,9 +220,9 @@ public class Kettle extends Device {
 	 * 			a new combined name, a weighted average temperature, a new state, a new standard temperature
 	 * 			and a new amount.
 	 * 			| ( addAsIngredient(new AlchemicIngredient(
-	 * 			|	(int) (newSpoonAmount/Unit.getBestUnitForStateAndSpoons(newState, newSpoonAmount).getSpoonEquivalent()),
-	 * 			|	Unit.getBestUnitForStateAndSpoons(newState, newSpoonAmount), newTemperature,
-	 * 			|	newType, newState)) ) &&
+	 * 			|	(int) (newSpoonAmount/Unit.getBestUnitForStateAndSpoons(getNewState(), getNewSpoonAmount()).getSpoonEquivalent()),
+	 * 			|	Unit.getBestUnitForStateAndSpoons(getNewState(), getNewSpoonAmount()), getNewTemperature(),
+	 * 			|	getNewType(), getNewState())) ) &&
 	 * 			| ( for each I in 0..getNbOfIngredients()-2:
 	 * 			|	removeAsIngredient(getIngredientAt(0)) )
 	 */

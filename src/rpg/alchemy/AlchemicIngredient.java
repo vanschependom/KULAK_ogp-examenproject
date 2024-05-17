@@ -60,7 +60,7 @@ public class AlchemicIngredient {
      *          the given temperature.
      *          | if (isValidTemperature(temperature))
      *          |   then new.getTemperature()[0] == temperature.getTemperature()[0]
-     *                  && new.getTemperature()[1] == temperature.getTemperature()[1]
+     *          |        && new.getTemperature()[1] == temperature.getTemperature()[1]
      * @post    If the given type is not a valid type, the type is set to the standard type.
      *          | if (!isValidType(type))
      *          |   then new.getType().equals(IngredientType.DEFAULT)
