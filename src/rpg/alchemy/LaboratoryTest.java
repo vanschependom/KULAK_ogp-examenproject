@@ -607,16 +607,45 @@ public class LaboratoryTest {
 	public void testExecute_MixTwoIngredients() {
 		AlchemicIngredient recipeIngr1 = new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType);
 		recipe.addAsInstruction(recipeIngr1, Operation.ADD);
-		recipe.addAsInstruction(heatedPowder, Operation.ADD);
+		recipe.addAsInstruction(Operation.COOL);
+		recipe.addAsInstruction(mixedPowder, Operation.ADD);
+		recipe.addAsInstruction(Operation.COOL);
 		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType)));
-		otherLab.addIngredients(new IngredientContainer(heatedPowder));
+		otherLab.addIngredients(new IngredientContainer(mixedPowder));
+		assertEquals(2, otherLab.getNbOfIngredients());
 		otherLab.execute(recipe, 1);
-		// 2 SACK (126*2) + 1 SACHET (7)
-		assertEquals(259, otherLab.getIngredientAt(0).getSpoonAmount());
+		// 6 sachets
+		assertEquals(42, otherLab.getIngredientAt(0).getSpoonAmount());
 		assertEquals(1, otherLab.getNbOfIngredients());
 		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
-		assertEquals(20, otherLab.getIngredientAt(0).getHotness());
-		assertEquals("Powder Sugar", otherLab.getIngredientAt(0).getSimpleName());
+		assertEquals(10, otherLab.getIngredientAt(0).getHotness());
+		assertEquals(0, otherLab.getIngredientAt(0).getType().getStandardTemperature()[0]);
+		assertEquals(20, otherLab.getIngredientAt(0).getType().getStandardTemperature()[1]);
+		assertEquals("Oatmeal mixed with Powder Sugar and Seeds", otherLab.getIngredientAt(0).getSimpleName());
+		assertNull(otherLab.getIngredientAt(0).getSpecialName());
+	}
+
+	@Test
+	public void testExecute_MixTwoIngredients_Twice() {
+		AlchemicIngredient recipeIngr1 = new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType);
+		recipe.addAsInstruction(recipeIngr1, Operation.ADD);
+		recipe.addAsInstruction(Operation.COOL);
+		recipe.addAsInstruction(mixedPowder, Operation.ADD);
+		recipe.addAsInstruction(Operation.COOL);
+		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(2, Unit.SACHET, new Temperature(20, 0), powderType)));
+		otherLab.addIngredients(new IngredientContainer(mixedPowder));
+		otherLab.addIngredients(new IngredientContainer(mixedPowder));
+		assertEquals(2, otherLab.getNbOfIngredients());
+		otherLab.execute(recipe, 2);
+		// 6 sachets
+		assertEquals(84, otherLab.getIngredientAt(0).getSpoonAmount());
+		assertEquals(1, otherLab.getNbOfIngredients());
+		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
+		assertEquals(10, otherLab.getIngredientAt(0).getHotness());
+		assertEquals(0, otherLab.getIngredientAt(0).getType().getStandardTemperature()[0]);
+		assertEquals(20, otherLab.getIngredientAt(0).getType().getStandardTemperature()[1]);
+		assertEquals("Oatmeal mixed with Powder Sugar and Seeds", otherLab.getIngredientAt(0).getSimpleName());
+		assertNull(otherLab.getIngredientAt(0).getSpecialName());
 	}
 
 }
