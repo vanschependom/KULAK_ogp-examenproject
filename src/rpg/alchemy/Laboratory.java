@@ -714,6 +714,8 @@ public class Laboratory extends StorageLocation {
 
 	/**
 	 * A method to execute a recipe in a laboratory an x amount of times.
+	 *
+	 * @note 	The specification for this method is not required.
 	 */
 	public void execute(Recipe recipe, int multiplier) throws IllegalStateException {
 
@@ -826,6 +828,24 @@ public class Laboratory extends StorageLocation {
 
 	/**
 	 * A method to check if the laboratory has the required devices for a recipe.
+	 *
+	 * @return	False if the laboratory does not have a kettle.
+	 * 			| if ( !hasDeviceOfType(Kettle.class) )
+	 * 			|	then result == false
+	 * @return 	False if the recipe has a cooling operation	and the laboratory does not have a cooling box.
+	 * 			| if ( recipe.hasAsOperation(Operation.COOL)
+	 * 			|	&& !hasDeviceOfType(CoolingBox.class) )
+	 * 			|	then result == false
+	 * @return  False if the recipe has a heating operation	and the laboratory does not have an oven.
+	 * 			| if ( recipe.hasAsOperation(Operation.HEAT)
+	 * 			|	&& !hasDeviceOfType(Oven.class) )
+	 * 			| 	then result == false
+	 * @return  True otherwise.
+	 * 			| if ( hasDeviceOfType(Kettle.class) && ((recipe.hasAsOperation(Operation.COOL)
+	 * 	  		|	&& hasDeviceOfType(CoolingBox.class)) || (!recipe.hasAsOperation(Operation.COOL)))
+	 * 	  		|	&& ((recipe.hasAsOperation(Operation.HEAT)
+	 * 	  	  	|	&& hasDeviceOfType(Oven.class)) || (!recipe.hasAsOperation(Operation.HEAT))) )
+	 * 	  	  	|	then result == true
 	 */
 	public boolean hasDevicesForRecipe(Recipe recipe) {
 		if (!hasDeviceOfType(Kettle.class)) {
@@ -842,9 +862,31 @@ public class Laboratory extends StorageLocation {
 
 	/**
 	 * Checks if there are enough ingredients to execute the recipe.
-	 * TODO!!
+	 *
+	 * @param 	ingredient
+	 * 			The ingredient to check.
+	 * @param 	multiplier
+	 * 			The multiplier to use.
+	 *
+	 * @return	False if there is no ingredient in the laboratory
+	 * 			with the same simple name as the given ingredient.
+	 * 			| if !hasIngredientWithSimpleName(ingredient.getSimpleName())
+	 * 			| 	then result == false
+	 * @return  False if the amount of ingredient required is more than available in the laboratory.
+	 * 			| if ( ingredient.getSpoonAmount() * multiplier >
+	 * 			|	getIngredientAt(getIndexOfSimpleName(ingredient.getSimpleName())).getSpoonAmount() )
+	 * 			|	then result == false
+	 * @return  True otherwise.
+	 * 			| if ( hasIngredientWithSimpleName(ingredient.getSimpleName()) && (
+	 * 			|	ingredient.getSpoonAmount() * multiplier <=
+	 * 	  		|	getIngredientAt(getIndexOfSimpleName(ingredient.getSimpleName())).getSpoonAmount()) )
+	 * 	  		|	then result == true
+	 *
+	 * @throws 	IllegalArgumentException
+	 * 			The multiplier is not valid.
+	 * 			| !isValidMultiplier(multiplier)
 	 */
-	public boolean hasEnoughToObtain(AlchemicIngredient ingredient, int multiplier) {
+	public boolean hasEnoughToObtain(AlchemicIngredient ingredient, int multiplier) throws IllegalArgumentException {
 		if (!isValidMultiplier(multiplier)) {
 			throw new IllegalArgumentException("The multiplier must be greater than zero.");
 		}
