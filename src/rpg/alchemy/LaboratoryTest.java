@@ -607,16 +607,26 @@ public class LaboratoryTest {
 		otherLab.addContainer(new IngredientContainer(heatedLiquid));
 		otherLab.addContainer(new IngredientContainer(heatedLiquid));
 		assertEquals(3, otherLab.getNbOfIngredients());
+		// we use all the ingredients in the recipe
 		otherLab.execute(recipe, 2);
-		// 6 sachets
-//		assertEquals(84, otherLab.getIngredientAt(0).getSpoonAmount());
-//		assertEquals(1, otherLab.getNbOfIngredients());
-//		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
-//		assertEquals(10, otherLab.getIngredientAt(0).getHotness());
-//		assertEquals(0, otherLab.getIngredientAt(0).getType().getStandardTemperature()[0]);
-//		assertEquals(20, otherLab.getIngredientAt(0).getType().getStandardTemperature()[1]);
-//		assertEquals("Oatmeal mixed with Powder Sugar and Seeds", otherLab.getIngredientAt(0).getSimpleName());
-//		assertNull(otherLab.getIngredientAt(0).getSpecialName());
+		assertEquals(1, otherLab.getNbOfIngredients());
+		assertEquals(State.LIQUID, otherLab.getIngredientAt(0).getState());
+		// mixedpowder: 5 sachets (7 spoons), heatedliquid (15 spoons): 8 bottles, ingr1: 1 sachet
+		// (42 (powder) + 120 (liquid)) * 2 = 324 spoons in total
+		assertEquals(324, otherLab.getIngredientAt(0).getSpoonAmount());
+		// ingr: [0, 10], mixedpowder: [0, 20], heatedliquid: [0, 10]
+		// they get brought back to standardTemperature
+		// hotness1: 20*35 + 10*7 = 1120
+		// temperature1: [0, (1120)/(7+35)] = [0, 26]
+		// cool: [0, 16], 42 spoons
+		// hotness2: 16*42 + 10*120 = 1872
+		// temperature2: [0, 1872/(42+120)] = [0, 11]
+		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
+		assertEquals(11, otherLab.getIngredientAt(0).getHotness());
+		assertEquals(0, otherLab.getIngredientAt(0).getType().getStandardTemperature()[0]);
+		assertEquals(20, otherLab.getIngredientAt(0).getType().getStandardTemperature()[1]);
+		assertEquals("Coke mixed with Oatmeal, Powder Sugar, Seeds and Water", otherLab.getIngredientAt(0).getSimpleName());
+		assertNull(otherLab.getIngredientAt(0).getSpecialName());
 	}
 
 }
