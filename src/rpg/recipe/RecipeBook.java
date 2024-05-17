@@ -85,13 +85,13 @@ public class RecipeBook {
      *          incremented with 1.
      *          | if canHaveAsRecipe(recipe)
      *          |   then new.getNbOfRecipes() == getNbOfRecipes() + 1
-     * @post    If the recipe is valid,
+     * @post    If the recipe is valid, the recipe is not already present, and the recipe is not null
      *          the given recipe is inserted at the last index.
-     *          | if (canHaveAsRecipe(recipe) && !hasAsRecipe(recipe))
+     *          | if (canHaveAsRecipe(recipe) && !hasAsRecipe(recipe) && recipe != null)
      *          |   then new.getRecipeAt(getNbOfRecipes()-1) == recipe
      */
     public void addAsRecipe(Recipe recipe) {
-        if (canHaveAsRecipe(recipe) && !hasAsRecipe(recipe)) {
+        if (canHaveAsRecipe(recipe) && !hasAsRecipe(recipe) && recipe != null) {
             recipes.add(recipe);
         }
     }

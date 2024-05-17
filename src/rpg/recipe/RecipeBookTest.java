@@ -11,8 +11,7 @@ import rpg.alchemy.Temperature;
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RecipeBookTest {
 
@@ -92,7 +91,8 @@ public class RecipeBookTest {
         RecipeBook rb = new RecipeBook();
         rb.addAsRecipe(recipe1);
         rb.removeAsRecipe(recipe1);
-        assertEquals(0, rb.getNbOfRecipes());
+        assertEquals(1, rb.getNbOfRecipes());
+        assertNull(rb.getRecipeAt(0)); // the page is torn out
     }
 
     @Test
@@ -101,7 +101,8 @@ public class RecipeBookTest {
         rb.addAsRecipe(recipe1);
         rb.addAsRecipe(recipe2);
         rb.removeAsRecipe(recipe1);
-        assertEquals(1, rb.getNbOfRecipes());
+        assertEquals(2, rb.getNbOfRecipes());
+        assertNull(rb.getRecipeAt(0)); // the page is torn out
     }
 
     @Test
