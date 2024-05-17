@@ -169,10 +169,24 @@ public class KettleTest {
     @Test
     public void executeOperation_onlyOneIngredient() {
         kettle.addContainer(container1);
-        assertEquals(1,kettle.getNbOfIngredients());
+        AlchemicIngredient ingOld = container1.getContent();
+        assertNull(ingOld.getSpecialName());
+        assertEquals("Milk", ingOld.getSimpleName());
+        assertEquals(State.LIQUID, ingOld.getState());
+        assertEquals(0, ingOld.getColdness());
+        assertEquals(15, ingOld.getHotness());
+        assertFalse(ingOld.getType().isMixed());
+        assertEquals(10, ingOld.getSpoonAmount());
         kettle.executeOperation();
-        // nothing happens
-        assertEquals(1,kettle.getNbOfIngredients());
+        AlchemicIngredient ingNew = kettle.getResult().getContent();
+        // everything stays the same
+        assertNull(ingNew.getSpecialName());
+        assertEquals("Milk", ingNew.getSimpleName());
+        assertEquals(State.LIQUID, ingNew.getState());
+        assertEquals(0, ingNew.getColdness());
+        assertEquals(15, ingNew.getHotness());
+        assertFalse(ingNew.getType().isMixed());
+        assertEquals(10, ingNew.getSpoonAmount());
     }
 
     @Test
@@ -182,6 +196,107 @@ public class KettleTest {
         });
     }
 
+    @Test
+    public void executeOperation_EdgeCase1() {
+        AlchemicIngredient ingredient1 = new AlchemicIngredient(1, Unit.SPOON, type1);
+        AlchemicIngredient ingredient2 = new AlchemicIngredient(2, Unit.PINCH, type2);
+        container1 = new IngredientContainer(ingredient1);
+        container2 = new IngredientContainer(ingredient2);
+        kettle.addContainer(container1);
+        kettle.addContainer(container2);
+        kettle.executeOperation();
+        AlchemicIngredient ingNew = kettle.getResult().getContent();
+        assertNull(ingNew.getSpecialName());
+        assertEquals("Chocolate mixed with Milk", ingNew.getSimpleName());
+        assertEquals(0, ingNew.getType().getStandardTemperature()[0]);
+        assertEquals(18, ingNew.getType().getStandardTemperature()[1]);
+        assertEquals(State.POWDER, ingNew.getType().getStandardState());
+        assertEquals(State.POWDER, ingNew.getState());
+        assertTrue(ingNew.getType().isMixed());
+        assertEquals(8, ingNew.getAmount()); // 8 pinches
+        assertEquals(Unit.PINCH, ingNew.getUnit());
+        assertEquals(0, ingNew.getTemperature()[0]);
+        // (1 * 15 + 2/6 * 18) / (8/6) = 15.75
+        assertEquals(15, ingNew.getTemperature()[1]);
+    }
 
+    @Test
+    public void executeOperation_EdgeCase2() {
+        AlchemicIngredient ingredient1 = new AlchemicIngredient(5, Unit.DROP, type3); // temp = [0,5]
+        AlchemicIngredient ingredient2 = new AlchemicIngredient(3, Unit.DROP, type4); // temp = [10,0]
+        container1 = new IngredientContainer(ingredient1);
+        container2 = new IngredientContainer(ingredient2);
+        kettle.addContainer(container1);
+        kettle.addContainer(container2);
+        kettle.executeOperation();
+        AlchemicIngredient ingNew = kettle.getResult().getContent();
+        assertNull(ingNew.getSpecialName());
+        assertEquals("Beer mixed with Coca Cola and Stella Artois", ingNew.getSimpleName());
+        assertEquals(0, ingNew.getType().getStandardTemperature()[0]);
+        assertEquals(5, ingNew.getType().getStandardTemperature()[1]);
+        assertEquals(State.LIQUID, ingNew.getType().getStandardState());
+        assertEquals(State.LIQUID, ingNew.getState());
+        assertTrue(ingNew.getType().isMixed());
+        assertEquals(1, ingNew.getAmount()); // 5 drops + 3 drops = 1 spoon
+        assertEquals(Unit.SPOON, ingNew.getUnit());
+        // hotness = 5/8 * 5 = 25/8
+        // coldness = 3/8 * 10 = 30/8
+        // total = 25/8 - 30/8 = -5/8 --> -1 (afgerond naar beneden)
+        assertEquals(1, ingNew.getTemperature()[0]);
+        assertEquals(0, ingNew.getTemperature()[1]);
+    }
+
+    @Test
+    public void executeOperation_EdgeCase3() {
+        // same as previous but amounts switched
+        AlchemicIngredient ingredient1 = new AlchemicIngredient(3, Unit.DROP, type3); // temp = [0,5]
+        AlchemicIngredient ingredient2 = new AlchemicIngredient(5, Unit.DROP, type4); // temp = [10,0]
+        container1 = new IngredientContainer(ingredient1);
+        container2 = new IngredientContainer(ingredient2);
+        kettle.addContainer(container1);
+        kettle.addContainer(container2);
+        kettle.executeOperation();
+        AlchemicIngredient ingNew = kettle.getResult().getContent();
+        assertNull(ingNew.getSpecialName());
+        assertEquals("Beer mixed with Coca Cola and Stella Artois", ingNew.getSimpleName());
+        assertEquals(0, ingNew.getType().getStandardTemperature()[0]);
+        assertEquals(5, ingNew.getType().getStandardTemperature()[1]);
+        assertEquals(State.LIQUID, ingNew.getType().getStandardState());
+        assertEquals(State.LIQUID, ingNew.getState());
+        assertTrue(ingNew.getType().isMixed());
+        assertEquals(1, ingNew.getAmount()); // 5 drops + 3 drops = 1 spoon
+        assertEquals(Unit.SPOON, ingNew.getUnit());
+        // coldness = 5/8 * 10 = 50/8
+        // hotness = 3/8 * 5 = 15/8
+        // total = -50/8 + 15/8 = -35/8 --> -5 (afgerond naar beneden)
+        assertEquals(5, ingNew.getTemperature()[0]);
+        assertEquals(0, ingNew.getTemperature()[1]);
+    }
+
+    @Test
+    public void executeOperation_EdgeCase4() {
+        // similar to previous but second ingredient is warm
+        IngredientType newType = new IngredientType(new Name(null, "Stella Artois"), State.LIQUID, new Temperature(0, 10), false);
+        AlchemicIngredient ingredient1 = new AlchemicIngredient(3, Unit.DROP, type3); // temp = [0,5]
+        AlchemicIngredient ingredient2 = new AlchemicIngredient(5, Unit.DROP, newType); // temp = [0,10]
+        container1 = new IngredientContainer(ingredient1);
+        container2 = new IngredientContainer(ingredient2);
+        kettle.addContainer(container1);
+        kettle.addContainer(container2);
+        kettle.executeOperation();
+        AlchemicIngredient ingNew = kettle.getResult().getContent();
+        assertNull(ingNew.getSpecialName());
+        assertEquals("Beer mixed with Coca Cola and Stella Artois", ingNew.getSimpleName());
+        assertEquals(0, ingNew.getType().getStandardTemperature()[0]);
+        assertEquals(10, ingNew.getType().getStandardTemperature()[1]);
+        assertEquals(State.LIQUID, ingNew.getType().getStandardState());
+        assertEquals(State.LIQUID, ingNew.getState());
+        assertTrue(ingNew.getType().isMixed());
+        assertEquals(1, ingNew.getAmount()); // 5 drops + 3 drops = 1 spoon
+        assertEquals(Unit.SPOON, ingNew.getUnit());
+        // hotness = 3/8 * 5 + 5/8 * 10 = 15/8 + 50/8 = 65/8 = 8  (afgrond naar beneden)
+        assertEquals(0, ingNew.getTemperature()[0]);
+        assertEquals(8, ingNew.getTemperature()[1]);
+    }
 
 }

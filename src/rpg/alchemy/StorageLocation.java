@@ -14,11 +14,12 @@ import java.util.List;
  * @invar   The ingredients in a storage location must be valid.
  *          | hasProperIngredients()
  *
- * @note    This class is worked out using Defensive Programming
+ * @note    This class is worked out using Defensive Programming.
  *
  * @author	Vincent Van Schependom
  * @author 	Arne Claerhout
  * @author 	Flor De Meulemeester
+ *
  * @version 1.0
  */
 public abstract class StorageLocation {
@@ -34,6 +35,7 @@ public abstract class StorageLocation {
      *          | new.getNbOfIngredients() == 0
      * @post    The new storage location is not yet terminated.
      *          | !new.isTerminated()
+     *
      * @throws  NullPointerException [can]
      *          | ? true
      */
@@ -49,7 +51,7 @@ public abstract class StorageLocation {
      **********************************************************/
 
     /**
-     * A variable for keeping track of the ingredients in a storage location
+     * A variable for keeping track of the ingredients in a storage location.
      *
      * @invar   ingredients references an effective list.
      *          | ingredients != null
@@ -80,7 +82,7 @@ public abstract class StorageLocation {
     /**
      * A method for checking if the ingredients in a storage location are valid.
      *
-     * @return  False if there is an ingredient that is not valid
+     * @return  False if there is an ingredient that is not valid.
      *          | if ( for I in 0..getNbOfIngredients()-1:
      *          |       !canHaveAsIngredient(getIngredientAt(I)) )
      *          |   then result == false
@@ -97,10 +99,11 @@ public abstract class StorageLocation {
     }
 
     /**
-     * A method for checking if a storage location can contain a given ingredient
+     * A method for checking if a storage location can contain a given ingredient.
      *
      * @param   ingredient
-     *          The ingredient to check
+     *          The ingredient to check.
+     *
      * @return  True if and only if the ingredient is effective,
      *          not terminated and not already in the storage location
      *          | result == (ingredient != null
@@ -117,7 +120,8 @@ public abstract class StorageLocation {
      * A method for checking if a storage location contains two of the same ingredients.
      *
      * @param   ingredient
-     *          The ingredient to check
+     *          The ingredient to check.
+     *
      * @return  True if and only if the ingredient is present twice or more in the storage location
      *          | result == ( for some I in 0..getNbOfIngredients()-1:
      *          |   for some J in 0..getNbOfIngredients()-1:
@@ -138,10 +142,12 @@ public abstract class StorageLocation {
      *
      * @param   index
      *          The index of the ingredient to be returned.
+     *
      * @throws  IndexOutOfBoundsException
      *          The index is negative or is bigger than the size of ingredients.
      *          | (index < 0) || (index > getNbOfIngredients())
      */
+    @Basic
     public AlchemicIngredient getIngredientAt(int index) throws IndexOutOfBoundsException {
         if (index < 0 || index >= getNbOfIngredients()) {
             throw new IndexOutOfBoundsException();
@@ -153,7 +159,17 @@ public abstract class StorageLocation {
      * A method for removing an ingredient at a given index.
      *
      * @param   index
-     *          The index of the ingredient to be removed
+     *          The index of the ingredient to be removed.
+     *
+     * @post    The number of ingredients has decreased by one.
+     *          | new.getNbOfIngredients() ==getNbOfIngredients() - 1
+     * @post    This storage location no longer has the ingredient at the given index as an ingredient.
+     *          | !new.hasAsIngredient(getIngredientAt(index))
+     * @post    All the elements to the right of the removed ingredient
+     *          are shifted left by 1 position.
+     *          | for each I in index+1..getNbOfIngredients():
+     *          |   new.getIngredientAt(I-1) = getIngredientAt(I)
+     *
      * @throws  IndexOutOfBoundsException
      *          The index is negative or is bigger than the size of ingredients
      *          | (index < 0) || (index >= getNbOfIngredients())
@@ -194,6 +210,7 @@ public abstract class StorageLocation {
      * @throws  IllegalStateException [can]
      *          | ? true
      */
+    @Model
     protected void addAsIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
         if (!canHaveAsIngredient(ingredient)) {
             throw new IllegalArgumentException("Invalid ingredient!");
@@ -220,6 +237,7 @@ public abstract class StorageLocation {
      *          The ingredient is null.
      *          | ingredient == null
      */
+    @Model
     protected void removeAsIngredient(AlchemicIngredient ingredient) throws IngredientNotPresentException, NullPointerException {
         try {
             removeIngredientAt(getIndexOfIngredient(ingredient));
@@ -247,6 +265,7 @@ public abstract class StorageLocation {
      *          The given ingredient is not present in the storage location.
      *          | !hasAsIngredient(ingredient)
      */
+    @Model
     public int getIndexOfIngredient(AlchemicIngredient ingredient) throws NullPointerException, IngredientNotPresentException {
         if (ingredient == null) {
             throw new NullPointerException("Ingredient is null!");
@@ -262,12 +281,12 @@ public abstract class StorageLocation {
 
     /**
      * A method for checking if a storage location contains a given ingredient,
-     * not looking at the object reference, but only looking at the characteristics
+     * not looking at the object reference, but only looking at the characteristics.
      *
      * @param   ingredient
-     *          The ingredient to check
+     *          The ingredient to check.
      *
-     * @return  True if and only if the ingredient is present in the storage location
+     * @return  True if and only if the ingredient is present in the storage location.
      *          | result == ( for some I in 0..getNbOfIngredients()-1:
      *          |   getIngredientAt(I).equals(ingredient) )
      *
@@ -286,9 +305,9 @@ public abstract class StorageLocation {
      * A method for checking if a storage location contains an ingredient with a given simple name.
      *
      * @param   name
-     *          The simple name of the ingredient to check
+     *          The simple name of the ingredient to check.
      *
-     * @return  True if and only if the storage location contains an ingredient with the given simple name
+     * @return  True if and only if the storage location contains an ingredient with the given simple name.
      *          | result == ( for some I in 0..getNbOfIngredients()-1:
      *          |   getIngredientAt(I).getSimpleName().equals(name) )
      */
@@ -305,7 +324,7 @@ public abstract class StorageLocation {
      * A method for checking if a storage location contains an ingredient with a given special name.
      *
      * @param   name
-     *          The special name of the ingredient to check
+     *          The special name of the ingredient to check.
      *
      * @return  True if and only if the storage location
      *          contains an ingredient with the given special name
@@ -338,9 +357,9 @@ public abstract class StorageLocation {
      *          |           if getIngredientAt(I).equals(container.getContent())
      *          |               then removeAsIngredient( getIngredientAt(I)) &&
      *          |                    addAsIngredient( new AlchemicIngredient(
-     *          |                       (int)((alreadyInLocation.getSpoonAmount() +
-     *          |                           container.getContent().getSpoonAmount())/Unit.getBestUnitForStateAndSpoons(alreadyInLocation.getState(), alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount()).getSpoonEquivalent()),
-     *          |                       Unit.getBestUnitForStateAndSpoons(alreadyInLocation.getState(), alreadyInLocation.getSpoonAmount() + container.getContent().getSpoonAmount()),
+     *          |                       (int)((getIngredientAt(I).getSpoonAmount() +
+     *          |                           container.getContent().getSpoonAmount())/Unit.getBestUnitForStateAndSpoons(getIngredientAt(I).getState(), getIngredientAt(I).getSpoonAmount() + container.getContent().getSpoonAmount()).getSpoonEquivalent()),
+     *          |                       Unit.getBestUnitForStateAndSpoons(getIngredientAt(I).getState(), getIngredientAt(I).getSpoonAmount() + container.getContent().getSpoonAmount()),
      *          |                       new Temperature(getIngredientAt(I).getTemperature()),
      *          |                       getIngredientAt(I).getType(),
      *          |                       getIngredientAt(I).getState()
