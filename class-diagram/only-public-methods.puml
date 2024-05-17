@@ -1,7 +1,5 @@
 @startuml
 
-skinparam linetype ortho
-
 package rpg {
 
 
@@ -198,18 +196,18 @@ IngredientType::standardState -->"1" State
 IngredientType::temperature -->"1" Temperature
 
 class AlchemicIngredient {
-+ AlchemicIngredient(double, Unit, Temperature, IngredientType, State)
-+ AlchemicIngredient(double, Unit, Temperature, IngredientType)
-+ AlchemicIngredient(double, Unit, IngredientType)
++ AlchemicIngredient(int, Unit, Temperature, IngredientType, State)
++ AlchemicIngredient(int, Unit, Temperature, IngredientType)
++ AlchemicIngredient(int, Unit, IngredientType)
 ..
-- {final} amount : double
+- {final} amount : int
 - {final} unit : Unit
 - {final} temperature : Temperature
 - {final} type : IngredientType
 - {final} state : State
 - isContainerized : boolean
 ..
-+ getAmount() : double
++ getAmount() : int
 + getSpoonAmount() : double
 + getStoreroomAmount: double
 + isValidAmount(double) : boolean
