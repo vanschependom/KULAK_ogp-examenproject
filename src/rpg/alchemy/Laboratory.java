@@ -708,6 +708,7 @@ public class Laboratory extends StorageLocation {
 	 */
 	public void execute(Recipe recipe, int multiplier) throws IllegalStateException {
 
+		// check illegal method invocations
 		if (!isValidMultiplier(multiplier)) {
 			throw new IllegalArgumentException("The multiplier must be greater than zero.");
 		}
@@ -720,20 +721,28 @@ public class Laboratory extends StorageLocation {
 		int operationCounter = 0;
 		boolean enoughIngredientsLeft = true;
 
+		// loop over all iterations, while there are enough ingredients left
 		while (operationCounter < recipe.getNbOfOperations() && enoughIngredientsLeft) {
 
+			// the current operation
 			Operation operation = recipe.getOperationAt(operationCounter);
 
+			// the first instruction is always add (cfr. class invariant on recipe)
 			if (operation == Operation.ADD) {
 
+				// if this is the first operation or the last operation was mix, then we need to
+				// add a new ingredient to the kettle
 				if (currentIngredient != null) {
 					getDeviceOfType(Kettle.class).addIngredients(new IngredientContainer(currentIngredient));
 				}
+				// continue if we have enough ingredient left to add the next ingredient
 				if (hasEnoughToObtain(recipe.getIngredientAt(addCounter), multiplier)) {
 					currentIngredient = getAmountOfIngredientAt(getIndexOfSimpleName(recipe.getIngredientAt(addCounter).getSimpleName()), recipe.getIngredientAt(addCounter).getSpoonAmount() * multiplier, Unit.SPOON).getContent();
 				} else {
 					enoughIngredientsLeft = false;
 				}
+				// increment the add counter
+				addCounter++;
 
 			} else if (operation == Operation.COOL) {
 
@@ -741,6 +750,7 @@ public class Laboratory extends StorageLocation {
 				// add sets the currentIngredient to an effective object.
 				Temperature temperatureMinusTen = Temperature.add(new Temperature(currentIngredient.getTemperature()), new Temperature(10, 0));
 
+				// use bring to temperature method
 				currentIngredient = bringToTemperature(new IngredientContainer(currentIngredient), temperatureMinusTen.getTemperature()).getContent();
 
 			} else if (operation == Operation.HEAT) {
@@ -749,17 +759,24 @@ public class Laboratory extends StorageLocation {
 				// add sets the currentIngredient to an effective object.
 				Temperature temperaturePlusTen = Temperature.add(new Temperature(currentIngredient.getTemperature()), new Temperature(0, 10));
 
+				// use bring to temperature method (oven is not exact)
 				currentIngredient = bringToTemperature(new IngredientContainer(currentIngredient), temperaturePlusTen.getTemperature()).getContent();
 
 			} else {
 
 				Kettle kettle = getDeviceOfType(Kettle.class);
+
+				// ingredients can already be added in the ADD instruction,
+				// here we also add the last ingredient to the kettle
 				kettle.addIngredients(new IngredientContainer(currentIngredient));
 				kettle.executeOperation();
+
+				// replace the current ingredient with the result of the kettle
 				currentIngredient = kettle.getResult().getContent();
 
 			}
 
+			// increment the operation counter (for the while loop)
 			operationCounter++;
 
 		}
