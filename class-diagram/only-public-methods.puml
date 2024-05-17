@@ -1,7 +1,8 @@
 @startuml
 
-package rpg {
+skinparam linetype ortho
 
+package rpg {
 
 enum State {
 LIQUID, POWDER
