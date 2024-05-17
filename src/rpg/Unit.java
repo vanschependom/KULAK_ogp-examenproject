@@ -19,8 +19,8 @@ public enum Unit {
 	 * POSSIBLE UNITS
 	 **********************************************************/
 
-	PINCH(1.0/6, new State[]{State.POWDER}, false),
 	DROP(1.0/8, new State[]{State.LIQUID}, false),
+	PINCH(1.0/6, new State[]{State.POWDER}, false),
 	SPOON(1, new State[]{State.LIQUID, State.POWDER}, true),
 	VIAL(5, new State[]{State.LIQUID}, true),
 	SACHET(7, new State[]{State.POWDER}, true),
@@ -213,9 +213,10 @@ public enum Unit {
 	 * @return	The maximum unit a container with contents of the given state can have.
 	 * 			| for each unit in Unit.values():
 	 * 			|	if (unit.isAllowedForContainer()
-	 * 			|		&& unit.hasAsAllowedState(state))
+	 * 			|		&& unit.hasAsAllowedState(state) && unit != result)
 	 * 			|			then unit.getSpoonEquivalent() < result.getSpoonEquivalent()
 	 */
+	@Immutable
 	public static Unit getMaxUnitForContainerWithState(State state) {
 		Unit maxUnit = null;
 		for (Unit unit : Unit.values()) {
@@ -256,6 +257,39 @@ public enum Unit {
 			}
 		}
 		return minUnit;
+	}
+
+	/**
+	 * A method for getting the best unit for a given state and amount of spoons.
+	 * This being the unit where the conversion from spoons to this unit will result in an integer.
+	 * Or being the minimum unit if this is never the case.
+	 *
+	 * @param 	state
+	 * 			The state to check.
+	 * @pre 	The given state must be effective.
+	 * 			| state != null
+	 * @pre 	The given amount of spoons is strictly positive.
+	 * 			| amountOfSpoons > 0
+	 * @return	The best unit a of a state with given spoons.
+	 * 			| for each unit in Unit.values():
+	 * 			|	if (&& unit.hasAsAllowedState(state) && unit != result
+	 * 			|		&& (amountOfSpoons / unit.getSpoonEquivalent()) % 1 == 0)
+	 * 			|			then unit.getSpoonEquivalent() < result.getSpoonEquivalent()
+	 */
+	public static Unit getBestUnitForStateAndSpoons(State state, double amountOfSpoons) {
+		Unit bestUnit = null;
+		// the case of being the min. unit if the conversion will not be an integer will always be the case
+		// because then only the first unit will be chosen, which is the minimum. (they are ordered this way)
+		for (Unit unit : Unit.values()) {
+			if (unit.hasAsAllowedState(state)) {
+				// we check if amountOfSpoons is a multiple of the spoonequivalent of the unit
+				if (bestUnit == null || (unit.getSpoonEquivalent() > bestUnit.getSpoonEquivalent()
+						&& (amountOfSpoons / unit.getSpoonEquivalent()) % 1 == 0)) {
+					bestUnit = unit;
+				}
+			}
+		}
+		return bestUnit;
 	}
 
 }

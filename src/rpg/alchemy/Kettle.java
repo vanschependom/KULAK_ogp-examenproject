@@ -81,20 +81,22 @@ public class Kettle extends Device {
 
 	/**
 	 * A method that calculates the new spoon amount for the new ingredient.
-	 *
-	 * @return 	The sum of all the spoon amounts of the ingredients.
-	 * 			| result == getIngredients().stream()
-	 *          |   .mapToDouble(AlchemicIngredient::getSpoonAmount)
-	 *          |   .sum()
 	 */
 	@Model
 	private double getNewSpoonAmount() {
-		double totalSpoonAmount = 0;
+		// we keep track of the spoon amounts of both states in a hashmap
+		HashMap<State, Double> newSpoonAmounts = new HashMap<>();
+		newSpoonAmounts.put(State.POWDER, 0D);
+		newSpoonAmounts.put(State.LIQUID, 0D);
 		for (int i = 0; i < getNbOfIngredients(); i++) {
-			// We add the amount to	the total spoon amount
-			totalSpoonAmount += getIngredientAt(i).getSpoonAmount();
+			// we get the state of the ingredient
+			State state = getIngredientAt(i).getState();
+			// we add it to the old value
+			newSpoonAmounts.put(state, newSpoonAmounts.get(state)+getIngredientAt(i).getSpoonAmount());
 		}
-		return totalSpoonAmount;
+		// the values of the other state get floored, while the values of the new state don't
+        return Math.floor(newSpoonAmounts.get(getNewState().getNext()))
+				+ newSpoonAmounts.get(getNewState());
 	}
 
 	/**
@@ -129,15 +131,16 @@ public class Kettle extends Device {
 	private Temperature getNewTemperature() {
 		double totalColdness = 0;
 		double totalHotness = 0;
-
+		double addedSpoons = 0;
 		for (int i = 0; i < getNbOfIngredients(); i++) {
 			double spoonAmount = getIngredientAt(i).getSpoonAmount();
 			double currentColdness = getIngredientAt(i).getColdness() * spoonAmount;
 			double currentHotness = getIngredientAt(i).getHotness() * spoonAmount;
 			totalColdness += currentColdness;
 			totalHotness += currentHotness;
+			addedSpoons += spoonAmount;
 		}
-		double difference = (totalHotness - totalColdness) / getNewSpoonAmount();
+		double difference = (totalHotness - totalColdness) / addedSpoons;
 		return makeNewTemperature(difference);
 	}
 
@@ -198,7 +201,9 @@ public class Kettle extends Device {
 
 		// Create the new ingredient(type) and add to the kettle
 		IngredientType newType = new IngredientType(newName, newState, newStandardTemperature, newName.isMixed());
-		addAsIngredient(new AlchemicIngredient((int) newSpoonAmount, Unit.SPOON, newTemperature, newType, newState));
+		addAsIngredient(new AlchemicIngredient(
+				(int) (newSpoonAmount/Unit.getBestUnitForStateAndSpoons(newState, newSpoonAmount).getSpoonEquivalent()),
+				Unit.getBestUnitForStateAndSpoons(newState, newSpoonAmount), newTemperature, newType, newState));
 	}
 
 }
