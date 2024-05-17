@@ -722,14 +722,13 @@ public class Laboratory extends StorageLocation {
 
 		while (operationCounter < recipe.getNbOfOperations() && enoughIngredientsLeft) {
 
-			Operation operation = recipe.getOperationAt(i);
+			Operation operation = recipe.getOperationAt(operationCounter);
 
 			if (operation == Operation.ADD) {
 
 				if (currentIngredient != null) {
 					getDeviceOfType(Kettle.class).addIngredients(new IngredientContainer(currentIngredient));
 				}
-
 				if (hasEnoughToObtain(recipe.getIngredientAt(addCounter), multiplier)) {
 					currentIngredient = getAmountOfIngredientAt(getIndexOfSimpleName(recipe.getIngredientAt(addCounter).getSimpleName()), recipe.getIngredientAt(addCounter).getSpoonAmount() * multiplier, Unit.SPOON).getContent();
 				} else {
@@ -760,6 +759,8 @@ public class Laboratory extends StorageLocation {
 				currentIngredient = kettle.getResult().getContent();
 
 			}
+
+			operationCounter++;
 
 		}
 	}
