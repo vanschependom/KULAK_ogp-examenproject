@@ -67,9 +67,8 @@ public class AlchemicIngredient {
      * @post    If the given type is a valid type, the type is set to the given type.
      *          | if (isValidType(type))
      *          |   then new.getType().equals(type)
-     * @post    If the given state is a valid state, the state is set to the given state.
-     *          | if (isValidState(state))
-     *          |   then new.getState() == state
+     * @post    The state is set to the given state.
+     *          | new.getState() == state
      *
      * @throws  IllegalStateException
      *          The given state is not valid.

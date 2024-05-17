@@ -33,11 +33,11 @@ public abstract class StorageLocation {
      *          | new.getNbOfIngredients() == 0
      * @post    The new storage location is not yet terminated.
      *          | !new.isTerminated()
-     * @throws  IllegalArgumentException [can]
+     * @throws  NullPointerException [can]
      *          | ? true
      */
     @Raw
-    public StorageLocation() throws IllegalArgumentException {
+    public StorageLocation() throws NullPointerException {
         super();
     }
 
@@ -197,6 +197,8 @@ public abstract class StorageLocation {
      * @throws  IllegalArgumentException
      *          The ingredient is already present.
      *          | hasAsIngredient(ingredient)
+     * @throws  IllegalStateException [can]
+     *          | ? true
      */
     protected void addAsIngredient(AlchemicIngredient ingredient) throws IllegalArgumentException {
         if (!canHaveAsIngredient(ingredient)) {

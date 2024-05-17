@@ -27,6 +27,7 @@ public class RecipeBook {
      * A constructor for the RecipeBook class.
      *
      * @post    The new recipe book has no recipes.
+     *          | new.getNbOfRecipes() == 0
      */
     public RecipeBook() {
         super();

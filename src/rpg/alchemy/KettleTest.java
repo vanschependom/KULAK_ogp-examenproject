@@ -160,7 +160,7 @@ public class KettleTest {
         assertEquals(15, result.getType().getStandardTemperature()[1]);
         // total hotness = 5 * 105 * 3 = 1575
         // total coldness = 200 * 15 * 5 = 15000
-        // lower bound = (15000 - 1575) / (15 * 5 + 105 * 3) = 34.4
+        // coldness = (15000 - 1575) / (15 * 5 + 105 * 3) = 34.4
         assertEquals(34, result.getColdness());
         assertEquals(0, result.getHotness());
         assertTrue(result.getType().isMixed());

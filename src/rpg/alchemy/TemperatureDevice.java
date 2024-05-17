@@ -35,7 +35,7 @@ public abstract class TemperatureDevice extends Device {
      *          | setTemperature(temperature)
      */
     @Raw
-    public TemperatureDevice(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException {
+    public TemperatureDevice(Laboratory laboratory, Temperature temperature) throws NullPointerException {
         super(laboratory,1);
         setTemperature(temperature);
     }
@@ -68,7 +68,7 @@ public abstract class TemperatureDevice extends Device {
     /**
      * A variable that keeps track of the heating or cooling temperature of a temperature device.
      */
-    private Temperature temperature = new Temperature();
+    private Temperature temperature = null;
 
     /**
      * A getter for the temperature of a temperature device.
@@ -120,8 +120,8 @@ public abstract class TemperatureDevice extends Device {
      * @note    A temperature object is assumed to comply with its own invariants,
      *          so temperature.isValidTemperature() is not necessary.
      */
-    @Model
-    private void setTemperature(Temperature temperature) throws NullPointerException, IllegalArgumentException {
+    @Model @Raw
+    private void setTemperature(Temperature temperature) throws NullPointerException {
         if (temperature == null) {
             throw new NullPointerException();
         }

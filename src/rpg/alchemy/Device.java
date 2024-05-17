@@ -38,7 +38,7 @@ public abstract class Device extends StorageLocation {
      *          | setLaboratory(laboratory)
      */
     @Raw
-    public Device(Laboratory laboratory, int maxNbOfIngredients) throws IllegalArgumentException {
+    public Device(Laboratory laboratory, int maxNbOfIngredients) throws NullPointerException {
         super();
         setLaboratory(laboratory);
         this.maxNbOfIngredients = maxNbOfIngredients; // final so no setter

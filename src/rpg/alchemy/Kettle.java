@@ -81,11 +81,6 @@ public class Kettle extends Device {
 
 	/**
 	 * A method that calculates the new spoon amount for the new ingredient.
-	 *
-	 * @return 	The sum of all the spoon amounts of the ingredients.
-	 * 			| result == getIngredients().stream()
-	 *          |   .mapToDouble(AlchemicIngredient::getSpoonAmount)
-	 *          |   .sum()
 	 */
 	@Model
 	private double getNewSpoonAmount() {
@@ -183,8 +178,10 @@ public class Kettle extends Device {
 	 * @post	All ingredients are deleted and a new ingredient is created with
 	 * 			a new combined name, a weighted average temperature, a new state, a new standard temperature
 	 * 			and a new amount.
-	 * 			| ( addAsIngredient(new AlchemicIngredient((int) newSpoonAmount, Unit.SPOON, newTemperature,
-	 * 			|	new IngredientType(newName, newState, newStandardTemperature, true), newState)) ) &&
+	 * 			| ( addAsIngredient(new AlchemicIngredient(
+	 * 			|	(int) (newSpoonAmount/Unit.getBestUnitForStateAndSpoons(newState, newSpoonAmount).getSpoonEquivalent()),
+	 * 			|	Unit.getBestUnitForStateAndSpoons(newState, newSpoonAmount), newTemperature,
+	 * 			|	newType, newState)) ) &&
 	 * 			| ( for each I in 0..getNbOfIngredients()-2:
 	 * 			|	removeAsIngredient(getIngredientAt(0)) )
 	 */
