@@ -93,9 +93,10 @@ public class IngredientContainer {
         return content;
     }
 
+    // TODO
     @Raw
     public AlchemicIngredient obtainContent() {
-        this.terminate();
+        this.terminate(); // this makes sure that the ingredient is set to not containerized
     	return content;
     }
 
