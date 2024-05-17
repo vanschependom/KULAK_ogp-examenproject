@@ -3,8 +3,6 @@
 package rpg {
 
 
-
-
 enum State {
 LIQUID, POWDER
 }
@@ -239,6 +237,30 @@ AlchemicIngredient::unit -->"1" Unit
 AlchemicIngredient::temperature -->"1" Temperature
 AlchemicIngredient::type -->"1" IngredientType
 AlchemicIngredient::state -->"1" State
+
+class Temperature {
++ Temperature(long, long)
++ Temperature()
+..
+- UPPERBOUND: long
+- STANDARD_COLDNESS: long
+- STANDARD_HOTNESS: long
+- coldness: long
+- hotness: long
+- isTerminated: boolean
+..
++ getStandardColdness(): long
++ getStandardHotness(): long
++ getColdness(): long
++ getHotness(): long
++ isColderThan(long[]): boolean
++ isHotterThan(long[]): boolean
++ getTemperature(): long[]
++ difference(long[]): long
++ equals(Temperature): boolean
++ isValidTemperature(long, long): boolean
++ isTerminated(): boolean
+}
 
 class Name {
 + Name(String, String[1..*])
