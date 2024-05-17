@@ -76,7 +76,7 @@ public class LaboratoryTest {
 		liquidTypeMixed = new IngredientType(new Name("Watery Coke", "Water", "Coke"), State.LIQUID, new Temperature(), true);
 		// ingredients
 		powder = new AlchemicIngredient(100, Unit.PINCH, powderType);
-		heatedPowder = new AlchemicIngredient(2, Unit.CHEST, new Temperature(0, 300), powderType);
+		heatedPowder = new AlchemicIngredient(2, Unit.SACK, new Temperature(0, 300), powderType);
 		cooledPowder = new AlchemicIngredient(2, Unit.CHEST, new Temperature(300, 0), powderType);
 		mixedPowder = new AlchemicIngredient(5, Unit.SACHET, powderTypeMixed);
 		liquid = new AlchemicIngredient(2, Unit.JUG, liquidType);
@@ -596,9 +596,27 @@ public class LaboratoryTest {
 		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType)));
 		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
 		assertEquals(20, otherLab.getIngredientAt(0).getHotness());
+		assertEquals(1, otherLab.getNbOfIngredients());
 		otherLab.execute(recipe, 1);
+		assertEquals(1, otherLab.getNbOfIngredients());
 		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
 		assertEquals(30, otherLab.getIngredientAt(0).getHotness());
+	}
+
+	@Test
+	public void testExecute_MixTwoIngredients() {
+		AlchemicIngredient recipeIngr1 = new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType);
+		recipe.addAsInstruction(recipeIngr1, Operation.ADD);
+		recipe.addAsInstruction(heatedPowder, Operation.ADD);
+		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType)));
+		otherLab.addIngredients(new IngredientContainer(heatedPowder));
+		otherLab.execute(recipe, 1);
+		// 2 SACK (126*2) + 1 SACHET (7)
+		assertEquals(259, otherLab.getIngredientAt(0).getSpoonAmount());
+		assertEquals(1, otherLab.getNbOfIngredients());
+		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
+		assertEquals(20, otherLab.getIngredientAt(0).getHotness());
+		assertEquals("Powder Sugar", otherLab.getIngredientAt(0).getSimpleName());
 	}
 
 }

@@ -712,7 +712,7 @@ public class Laboratory extends StorageLocation {
 		if (!isValidMultiplier(multiplier)) {
 			throw new IllegalArgumentException("The multiplier must be greater than zero.");
 		}
-		if(!hasDevicesForRecipe(recipe)) {
+		if (!hasDevicesForRecipe(recipe)) {
 			throw new IllegalStateException("The laboratory does not have the required devices for this recipe.");
 		}
 
