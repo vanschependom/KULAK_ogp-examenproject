@@ -4,7 +4,7 @@ import be.kuleuven.cs.som.annotate.*;
 /**
  * A class for signaling illegal names of ingredient types.
  *
- * @invar	The illegal name must be effective
+ * @invar	The illegal name must be effective.
  * 			| isValidName(getName())
  *
  * @author	Vincent Van Schependom
@@ -44,7 +44,7 @@ public class IllegalNameException extends RuntimeException {
 	/**
 	 * Check whether the given name is a valid name for this Exception.
 	 * @param 	name
-	 * 			The name to check
+	 * 			The name to check.
 	 * @return	True if and only if the name is effective.
 	 * 			| result == (name != null)
 	 */
