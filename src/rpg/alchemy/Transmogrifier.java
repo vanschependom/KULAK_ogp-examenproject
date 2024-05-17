@@ -20,7 +20,7 @@ public class Transmogrifier extends Device{
 	 * 			| super(laboratory, 1)
 	 */
 	@Raw
-	public Transmogrifier(Laboratory laboratory) {
+	public Transmogrifier(Laboratory laboratory) throws IllegalArgumentException {
 		super(laboratory, 1);
 	}
 

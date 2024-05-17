@@ -38,9 +38,11 @@ public abstract class StorageLocation {
      *
      * @throws  NullPointerException [can]
      *          | ? true
+     * @throws  IllegalArgumentException [can]
+     *          | ? true
      */
     @Raw
-    public StorageLocation() throws NullPointerException {
+    public StorageLocation() throws NullPointerException, IllegalArgumentException {
         super();
     }
 

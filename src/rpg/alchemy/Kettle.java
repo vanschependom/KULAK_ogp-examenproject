@@ -32,7 +32,7 @@ public class Kettle extends Device {
 	 * 			| super(laboratory, Integer.MAX_VALUE)
 	 */
 	@Raw
-	public Kettle(Laboratory laboratory) {
+	public Kettle(Laboratory laboratory) throws IllegalArgumentException {
 		super(laboratory, Integer.MAX_VALUE);
 	}
 
@@ -190,6 +190,7 @@ public class Kettle extends Device {
 	 * 			| if (difference < 0 && difference >= -Temperature.getUpperbound())
 	 * 			|	then result.equals(new Temperature((long) Math.abs(difference), 0))
 	 */
+	@Model
 	private Temperature makeNewTemperature(double difference) {
 		if (difference > Temperature.getUpperbound()) {
 			return new Temperature(0, Temperature.getUpperbound());
@@ -217,14 +218,14 @@ public class Kettle extends Device {
 	 *          | super.executeOperation()
 	 *
 	 * @post	All ingredients are deleted and a new ingredient is created with
-	 * 			a new combined name, a weighted average temperature, a new state, a new standard temperature
-	 * 			and a new amount.
+	 * 			a new combined name, a weighted average temperature, a new state,
+	 * 			a new standard temperature and a new amount.
 	 * 			| ( addAsIngredient(new AlchemicIngredient(
 	 * 			|	(int) (newSpoonAmount/Unit.getBestUnitForStateAndSpoons(getNewState(), getNewSpoonAmount()).getSpoonEquivalent()),
 	 * 			|	Unit.getBestUnitForStateAndSpoons(getNewState(), getNewSpoonAmount()), getNewTemperature(),
 	 * 			|	getNewType(), getNewState())) ) &&
 	 * 			| ( for each I in 0..getNbOfIngredients()-2:
-	 * 			|	removeAsIngredient(getIngredientAt(0)) )
+	 * 			|		removeAsIngredient(getIngredientAt(0)) )
 	 */
 	@Override
 	public void executeOperation() {

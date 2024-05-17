@@ -28,7 +28,7 @@ public class CoolingBox extends TemperatureDevice {
 	 * 			| super(laboratory, temperature)
 	 */
 	@Raw
-	public CoolingBox(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException {
+	public CoolingBox(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException, NullPointerException {
 		super(laboratory, temperature);
 	}
 

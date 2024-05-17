@@ -35,7 +35,7 @@ public abstract class TemperatureDevice extends Device {
      *          | setTemperature(temperature)
      */
     @Raw
-    public TemperatureDevice(Laboratory laboratory, Temperature temperature) throws NullPointerException {
+    public TemperatureDevice(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException, NullPointerException {
         super(laboratory,1);
         setTemperature(temperature);
     }
@@ -122,7 +122,7 @@ public abstract class TemperatureDevice extends Device {
      *          | new.getHotness() == temperature.getHotness() && new.getColdness() == temperature.getColdness()
      *
      * @throws  NullPointerException
-     *          The given temperature is a null pointer
+     *          The given temperature is a null pointer.
      *          | temperature == null
      *
      * @note    A temperature object is assumed to comply with its own invariants,
@@ -141,9 +141,10 @@ public abstract class TemperatureDevice extends Device {
      *
      * @param   temperature
      *          The new temperature for the device.
+     *
      * @effect  The new temperature is set, if the given temperature is valid.
      *          | if (isValidTemperature(new Temperature(temperature)) && (temperature.length == 2)
-     *          | then setTemperature(new Temperature(temperature))
+     *          |   then setTemperature(new Temperature(temperature))
      */
     public void changeTemperatureTo(long[] temperature) {
         if (isValidTemperature(new Temperature(temperature)) && temperature.length == 2) {
@@ -156,6 +157,7 @@ public abstract class TemperatureDevice extends Device {
      *
      * @param   temperature
      *          The new temperature for the device.
+     *
      * @effect  The new temperature is set, if the given temperature is valid.
      *          | if (isValidTemperature(temperature))
      *          |   then setTemperature(temperature)
@@ -175,7 +177,7 @@ public abstract class TemperatureDevice extends Device {
     /**
      * A method for executing the device instruction.
      *
-     * @effect  Executes the operation from device
+     * @effect  Executes the operation from device.
      *          | super.executeOperation()
      */
     @Override

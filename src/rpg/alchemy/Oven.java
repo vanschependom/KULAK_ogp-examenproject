@@ -31,7 +31,7 @@ public class Oven extends TemperatureDevice {
 	 * 	 		| super(laboratory, temperature)
 	 */
 	@Raw
-	public Oven(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException {
+	public Oven(Laboratory laboratory, Temperature temperature) throws IllegalArgumentException, NullPointerException {
 		super(laboratory, temperature);
 	}
 
@@ -50,8 +50,8 @@ public class Oven extends TemperatureDevice {
 	 * @post	If the temperature of the oven is not colder than the temperature of the ingredient,
 	 * 			the ingredient is heated to the temperature of the oven (with a deviation of 5).
 	 * 			| if !getTemperature().isColderThan(getIngredientAt(0).getTemperature())
-	 * 			|	then (( new.getIngredientAt(0).getHotness() - getTemperature().getHotness() ) <= 5 )
-	 * 			|		&& (( new.getIngredientAt(0).getColdness() - getTemperature().getColdness() ) <= 5 )
+	 * 			|	then (( new.getIngredientAt(0).getHotness() - getTemperature()[1] ) <= 5 )
+	 * 			|		&& (( new.getIngredientAt(0).getColdness() - getTemperature()[0] ) <= 5 )
 	 */
 	@Override
 	public void executeOperation() throws IllegalStateException {

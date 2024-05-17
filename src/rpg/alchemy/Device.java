@@ -29,7 +29,7 @@ public abstract class Device extends StorageLocation {
      * @param   maxNbOfIngredients
      *          The maximum number of ingredients for this device.
      *
-     * @post    The max number of ingredients is set to maxNbOfIngredients
+     * @post    The max number of ingredients is set to maxNbOfIngredients.
      *          | new.getMaxNbOfIngredients() == maxNbOfIngredients
      *
      * @effect  A new storage location is created.
@@ -38,7 +38,7 @@ public abstract class Device extends StorageLocation {
      *          | setLaboratory(laboratory)
      */
     @Raw
-    public Device(Laboratory laboratory, int maxNbOfIngredients) throws NullPointerException {
+    public Device(Laboratory laboratory, int maxNbOfIngredients) throws NullPointerException, IllegalArgumentException {
         super();
         setLaboratory(laboratory);
         this.maxNbOfIngredients = maxNbOfIngredients; // final so no setter
@@ -52,17 +52,19 @@ public abstract class Device extends StorageLocation {
 
     /**
      * Return the result of the device in an ingredient container
-     * with a maximum of Unit.getMaximumUnitForContainer(getState())
+     * with a maximum of Unit.getMaximumUnitForContainer(getState()).
      * Return null if there are no ingredients in the device.
      *
-     * @return  If there are no ingredients in the device, return null
+     * @return  If there are no ingredients in the device, return null.
      *          | if getNbOfIngredients() == 0
      *          |   then result == null
      * @return  If the spoon amount of the result is more than the spoon equivalent of the maximum
      *          unit for a container with the state of the result, the excess goes to waste.
      *          | if ( result.getSpoonAmount() > Unit.getMaxUnitForContainerWithState(getIngredientAt(0).getState()).getSpoonEquivalent() )
-     *          |   then result.equals(new AlchemicIngredient(1, Unit.getMaxUnitForContainerWithState(getIngredientAt(0)), new Temperature(getIngredientAt(0).getTemperature()),
-     *          |                       getIngredientAt(0).getType(), getIngredientAt(0).getState()))
+     *          |   then result.equals(new IngredientContainer(Unit.getMaxUnitForContainerWithState(getIngredientAt(0).getState(),
+     *          |           new AlchemicIngredient(1, Unit.getMaxUnitForContainerWithState(getIngredientAt(0).getState()),
+     *          |                                   new Temperature(getIngredientAt(0).getTemperature()),
+     *          |                                   getIngredientAt(0).getType(), getIngredientAt(0).getState()))
      * @return  If the spoon amount of the result is not more than the spoon equivalent of the maximum
      *          unit for a container with the state of the result, return a new container with the minimum unit
      *          for the result, given the state and size of the result, containing the result.
@@ -125,11 +127,13 @@ public abstract class Device extends StorageLocation {
      * A method to add an ingredient to a device.
      *
      * @param   ingredient
-     *          The ingredient to add
-     * @effect  The ingredient is added to the device using the superclass method (from StorageLocation)
+     *          The ingredient to add.
+     *
+     * @effect  The ingredient is added to the device using the superclass method (from StorageLocation).
      *          | super.addAsIngredient(ingredient)
+     *
      * @throws  IllegalStateException
-     *          The maximum amount of ingredients has been reached
+     *          The maximum amount of ingredients has been reached.
      *          | getNbOfIngredients() == getMaxNbOfIngredients()
      */
     @Override
@@ -155,7 +159,7 @@ public abstract class Device extends StorageLocation {
     private Laboratory laboratory;
 
     /**
-     * A method that moves a device to a different laboratory
+     * A method that moves a device to a different laboratory.
      *
      * @param   laboratory
      *          The laboratory to move the device to.
@@ -181,17 +185,17 @@ public abstract class Device extends StorageLocation {
     }
 
     /**
-     * A method for setting the laboratory of a device to a given laboratory
+     * A method for setting the laboratory of a device to a given laboratory.
      *
      * @param   laboratory
-     *          The laboratory to put the device into
+     *          The laboratory to put the device into.
      *
-     * @post    The laboratory of this device is set to the given laboratory
+     * @post    The laboratory of this device is set to the given laboratory.
      *          | new.getLaboratory() == laboratory
-     * @effect  The device is removed from its old laboratory, if the old laboratory is effective
+     * @effect  The device is removed from its old laboratory, if the old laboratory is effective.
      *          | if getLaboratory() != null
-     *          |   getLaboratory().removeAsDevice(this)
-     * @effect  The device is added to the new laboratory
+     *          |   then getLaboratory().removeAsDevice(this)
+     * @effect  The device is added to the new laboratory.
      *          | laboratory.addAsDevice(this)
      *
      * @throws  IllegalArgumentException
@@ -205,7 +209,7 @@ public abstract class Device extends StorageLocation {
      *          between the device and the laboratory.
      */
     @Raw @Model
-    protected void setLaboratory(Laboratory laboratory) throws IllegalStateException, IllegalArgumentException {
+    protected void setLaboratory(Laboratory laboratory) throws IllegalArgumentException {
         if (!canHaveAsLaboratory(laboratory)) {
             throw new IllegalArgumentException("The given laboratory is not allowed for this device.");
         }
@@ -244,9 +248,9 @@ public abstract class Device extends StorageLocation {
      * A method for checking if a laboratory is valid for a device.
      *
      * @param   laboratory
-     *          The laboratory to check for this device
+     *          The laboratory to check for this device.
      *
-     * @return  True if the device is terminated and the laboratory is null
+     * @return  True if the device is terminated and the laboratory is null.
      *          or if the device is not terminated and the laboratory is not null.
      *          | result == ( (isTerminated() && laboratory == null) ||
      *          |   (!isTerminated() && laboratory != null) )

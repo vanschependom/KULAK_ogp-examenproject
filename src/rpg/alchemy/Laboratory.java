@@ -6,7 +6,6 @@ import rpg.exceptions.IngredientNotPresentException;
 import rpg.recipe.Operation;
 import rpg.recipe.Recipe;
 
-import java.awt.*;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -30,8 +29,10 @@ public class Laboratory extends StorageLocation {
 	 * @param 	capacity
 	 * 			The capacity of the laboratory, expressed in a certain number of storerooms.
 	 *
-	 * @post	The capacity of the new laboratory is equal to the given capacity.
-	 * 			| new.getCapacity() == capacity
+	 * @post	The capacity of the new laboratory is equal to the given capacity
+	 * 			if the capacity is legal.
+	 * 			| if (isValidCapacity())
+	 * 			| 	then new.getCapacity() == capacity
 	 *
 	 * @throws	IllegalArgumentException
 	 * 			The given capacity is not a valid capacity.
@@ -71,6 +72,7 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	capacity
 	 * 			The capacity to check.
+	 *
 	 * @return	True if and only if the capacity is greater than zero,
 	 * 			| result == (capacity > 0)
 	 */
@@ -112,6 +114,7 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	index
 	 *        	The index of the device to be returned.
+	 *
 	 * @throws 	IndexOutOfBoundsException
 	 *         	The given index is not positive or exceeds the number
 	 *         	of devices registered in this laboratory minus 1.
@@ -131,9 +134,11 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	device
 	 * 			The device to get the index of.
-	 * @return  The given device is registered in this laboratory at the
-	 *          resulting position.
-	 *          | getDeviceAt(result) == device
+	 *
+	 * @return  If the given device is registered in this laboratory
+	 * 			then return the given device at the resulting position.
+	 * 			| if (hasAsDevice(device))
+	 *          | 	then getDeviceAt(result) == device
 	 * @throws  IllegalArgumentException
 	 *          The given device is not in the laboratory.
 	 *          | !hasAsDevice(device)
@@ -175,10 +180,12 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	type
 	 * 			The class of the device to check.
+	 *
 	 * @return	True if and only if the laboratory contains a device of
 	 * 			the given class.
 	 *          | result == ( for some I in 0..getNbOfDevices()-1:
 	 *          |   getDeviceAt(I).getClass() == type )
+	 *
 	 * @throws	IllegalArgumentException
 	 * 			The given type is not a subtype of Device.
 	 * 			| !Device.class.isAssignableFrom(type)
@@ -199,9 +206,11 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	device
 	 *        	The device to check.
+	 *
 	 * @return 	False if the given device is not effective.
 	 * 	   		| if (device == null)
 	 * 	   		| 	then result == false
+	 *
 	 * @return 	True if a device equal to the given device is registered at some
 	 *         	position in this laboratory; false otherwise.
 	 *         	| result ==
@@ -223,10 +232,12 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	type
 	 * 			The class of the device to get.
+	 *
 	 * @return	The device of the given type.
 	 * 			| if ( for some I in 0..getNbOfDevices()-1:
 	 * 			|		getDeviceAt(I).getClass() == type )
 	 * 			|	then result == getDeviceAt(I)
+	 *
 	 * @throws	IllegalArgumentException
 	 * 			The given type is not a legal type for this laboratory.
 	 * 			| !hasDeviceOfType(type)
@@ -359,9 +370,9 @@ public class Laboratory extends StorageLocation {
 	 * @param 	index
 	 *        	The index from the device to remove.
 	 *
-	 * @post  	The number of devices has decreased by one
+	 * @post  	The number of devices has decreased by one.
 	 *        	| new.getNbOfDevices() == getNbOfDevices() - 1
-	 * @post	This laboratory no longer has the device at the given index as a device
+	 * @post	This laboratory no longer has the device at the given index as a device.
 	 * 			| !new.hasAsDevice(getDeviceAt(index))
 	 * @post  	All elements to the right of the removed device
 	 *        	are shifted left by 1 position.
@@ -398,10 +409,12 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	index
 	 * 			The index of the ingredient to get.
+	 *
 	 * @effect 	The ingredient is removed from the laboratory.
 	 * 			| removeAsIngredient(getIngredientAt(index))
 	 * @return 	A container with the ingredient at the given index.
 	 * 			| result.getContent().equals(getIngredientAt(index))
+	 *
 	 * @throws	IndexOutOfBoundsException
 	 * 			The given index is not valid.
 	 * 			| index < 0 || index >= getNbOfIngredients()
@@ -468,7 +481,7 @@ public class Laboratory extends StorageLocation {
 		int amountLeft = (int) (ingredient.getAmount()*ingredient.getUnit().getConversionFor(newUnit) - amount*unit.getConversionFor(newUnit));
 
 		removeAsIngredient(ingredient);
-		// we don't check for amountleft being positive due to nominal programming of amounts
+		// we don't check for amountLeft being positive due to nominal programming of amounts
 		if (amountLeft != 0) {
 			addAsIngredient(new AlchemicIngredient(
 					amountLeft,
@@ -489,8 +502,10 @@ public class Laboratory extends StorageLocation {
 
 	/**
 	 * A method for checking if a given index is a valid index for an ingredient.
+	 *
 	 * @param 	index
 	 * 			The index to check.
+	 *
 	 * @return	True if and only if the index is greater than or equal to zero
 	 * 			and smaller than the number of ingredients in this laboratory.
 	 * 			| result == (index >= 0) && (index < getNbOfIngredients())
@@ -504,9 +519,11 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	name
 	 * 			The simple name to check.
+	 *
 	 * @return  An ingredient with the given simple name is registered in this laboratory at the
 	 *          resulting position.
 	 *          | getIngredientAt(result).getSimpleName().equals(name)
+	 *
 	 * @throws  IllegalArgumentException
 	 *          An ingredient with the given name is not in the laboratory.
 	 *          | !hasIngredientWithSimpleName(name)
@@ -527,9 +544,11 @@ public class Laboratory extends StorageLocation {
 	 *
 	 * @param 	name
 	 * 			The special name to check.
+	 *
 	 * @return  An ingredient with the given special name is registered in this laboratory at the
 	 *          resulting position.
 	 *          | getIngredientAt(result).getSpecialName().equals(name)
+	 *
 	 * @throws  IllegalArgumentException
 	 *          There is no ingredient with the given special name.
 	 *          | !hasIngredientWithSpecialName(name)
@@ -906,8 +925,10 @@ public class Laboratory extends StorageLocation {
 
 	/**
 	 * A method for checking if a given multiplier is a valid multiplier.
+	 *
 	 * @param 	multiplier
 	 * 			The multiplier to check.
+	 *
 	 * @return	True if and only if the multiplier is greater than zero.
 	 * 			| result == (multiplier > 0)
 	 */
