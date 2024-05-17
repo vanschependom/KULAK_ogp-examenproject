@@ -247,8 +247,8 @@ public class LaboratoryTest {
 		AlchemicIngredient ingredient2 = new AlchemicIngredient(15, Unit.SPOON, type2);
 		IngredientContainer container1 = new IngredientContainer(ingredient1);
 		IngredientContainer container2 = new IngredientContainer(ingredient2);
-		lab.addIngredients(container1);
-		lab.addIngredients(container2);
+		lab.addContainer(container1);
+		lab.addContainer(container2);
 		assertTrue(ingredient1.equals(lab.getAllOfIngredientAt(0).getContent()));
 		assertEquals(1, lab.getNbOfIngredients());
 		assertTrue(ingredient2.equals(lab.getIngredientAt(0)));
@@ -272,8 +272,8 @@ public class LaboratoryTest {
 		AlchemicIngredient ingredient2 = new AlchemicIngredient(15, Unit.SPOON, type2);
 		IngredientContainer container1 = new IngredientContainer(ingredient1);
 		IngredientContainer container2 = new IngredientContainer(ingredient2);
-		lab.addIngredients(container1);
-		lab.addIngredients(container2);
+		lab.addContainer(container1);
+		lab.addContainer(container2);
 		AlchemicIngredient ingredient = lab.getAmountOfIngredientAt(1, 12, Unit.SPOON).getContent();
 		assertTrue(new AlchemicIngredient(1, Unit.SPOON, type).equals(lab.getAmountOfIngredientAt(0, 1, Unit.SPOON).getContent()));
 		assertTrue(new AlchemicIngredient(12, Unit.SPOON, type2).equals(ingredient));
@@ -365,8 +365,8 @@ public class LaboratoryTest {
 		AlchemicIngredient ingredient2 = new AlchemicIngredient(15, Unit.SPOON, type2);
 		IngredientContainer container1 = new IngredientContainer(ingredient1);
 		IngredientContainer container2 = new IngredientContainer(ingredient2);
-		lab.addIngredients(container1);
-		lab.addIngredients(container2);
+		lab.addContainer(container1);
+		lab.addContainer(container2);
 		assertEquals(0, lab.getIndexOfSimpleName("Name"));
 		assertEquals(1, lab.getIndexOfSimpleName("Name Hemlk"));
 	}
@@ -389,9 +389,9 @@ public class LaboratoryTest {
 		IngredientContainer container1 = new IngredientContainer(ingredient1);
 		IngredientContainer container2 = new IngredientContainer(ingredient2);
 		IngredientContainer container3 = new IngredientContainer(ingredient3);
-		lab.addIngredients(container1);
-		lab.addIngredients(container2);
-		lab.addIngredients(container3);
+		lab.addContainer(container1);
+		lab.addContainer(container2);
+		lab.addContainer(container3);
 		assertEquals(2, lab.getIndexOfSpecialName("Mazout"));
 	}
 
@@ -410,27 +410,27 @@ public class LaboratoryTest {
 		AlchemicIngredient ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		IngredientContainer container1 = new IngredientContainer(ingredient1);
 		assertFalse(otherLab.exceedsCapacity(container1));
-		otherLab.addIngredients(container1);
+		otherLab.addContainer(container1);
 		type = new IngredientType(new Name(null, "Nameezg"), State.POWDER, new Temperature(0, 20), false);
 		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		container1 = new IngredientContainer(ingredient1);
 		assertFalse(otherLab.exceedsCapacity(container1));
-		otherLab.addIngredients(container1);
+		otherLab.addContainer(container1);
 		type = new IngredientType(new Name(null, "Nameazrvnoiaerv"), State.POWDER, new Temperature(0, 20), false);
 		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		container1 = new IngredientContainer(ingredient1);
 		assertFalse(otherLab.exceedsCapacity(container1));
-		otherLab.addIngredients(container1);
+		otherLab.addContainer(container1);
 		type = new IngredientType(new Name(null, "Nameajernva"), State.POWDER, new Temperature(0, 20), false);
 		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		container1 = new IngredientContainer(ingredient1);
 		assertFalse(otherLab.exceedsCapacity(container1));
-		otherLab.addIngredients(container1);
+		otherLab.addContainer(container1);
 		type = new IngredientType(new Name(null, "Nameaeerjnjaerv"), State.POWDER, new Temperature(0, 20), false);
 		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		container1 = new IngredientContainer(ingredient1);
 		assertFalse(otherLab.exceedsCapacity(container1));
-		otherLab.addIngredients(container1);
+		otherLab.addContainer(container1);
 		type = new IngredientType(new Name(null, "Nameaerlrjkfn"), State.POWDER, new Temperature(0, 20), false);
 		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		container1 = new IngredientContainer(ingredient1);
@@ -445,51 +445,51 @@ public class LaboratoryTest {
 	}
 
 	@Test
-	public void testAddIngredients_IllegalCase() {
+	public void testaddContainer_IllegalCase() {
 		Laboratory otherLab = new Laboratory(1);
 		new Kettle(otherLab);
 		IngredientType type = new IngredientType(new Name(null, "Name"), State.POWDER, new Temperature(0, 20), false);
 		AlchemicIngredient ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		IngredientContainer container1 = new IngredientContainer(ingredient1);
-		otherLab.addIngredients(container1);
+		otherLab.addContainer(container1);
 		type = new IngredientType(new Name(null, "Nameezg"), State.POWDER, new Temperature(0, 20), false);
 		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		container1 = new IngredientContainer(ingredient1);
-		otherLab.addIngredients(container1);
+		otherLab.addContainer(container1);
 		type = new IngredientType(new Name(null, "Nameazrvnoiaerv"), State.POWDER, new Temperature(0, 20), false);
 		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		container1 = new IngredientContainer(ingredient1);
-		otherLab.addIngredients(container1);
+		otherLab.addContainer(container1);
 		type = new IngredientType(new Name(null, "Nameajernva"), State.POWDER, new Temperature(0, 20), false);
 		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		container1 = new IngredientContainer(ingredient1);
-		otherLab.addIngredients(container1);
+		otherLab.addContainer(container1);
 		type = new IngredientType(new Name(null, "Nameaeerjnjaerv"), State.POWDER, new Temperature(0, 20), false);
 		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		container1 = new IngredientContainer(ingredient1);
-		otherLab.addIngredients(container1);
+		otherLab.addContainer(container1);
 		type = new IngredientType(new Name(null, "Nameaerlrjkfn"), State.POWDER, new Temperature(0, 20), false);
 		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		container1 = new IngredientContainer(ingredient1);
 		IngredientContainer finalContainer = container1;
 		assertThrows(IllegalArgumentException.class, () -> {
-			otherLab.addIngredients(finalContainer);
+			otherLab.addContainer(finalContainer);
 		});
 	}
 
 	@Test
-	public void testAddIngredients_IllegalCase2() {
+	public void testaddContainer_IllegalCase2() {
 		Laboratory laboratory = new Laboratory(2);
 		IngredientType type = new IngredientType(new Name(null, "Name"), State.POWDER, new Temperature(0, 20), false);
 		AlchemicIngredient ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		IngredientContainer container1 = new IngredientContainer(ingredient1);
-		laboratory.addIngredients(container1);
+		laboratory.addContainer(container1);
 		 type = new IngredientType(new Name(null, "Name"), State.POWDER, new Temperature(0, 20), false);
 		ingredient1 = new AlchemicIngredient(1, Unit.CHEST, type);
 		container1 = new IngredientContainer(ingredient1);
 		IngredientContainer finalContainer = container1;
 		assertThrows(IllegalStateException.class, () -> {
-			laboratory.addIngredients(finalContainer);
+			laboratory.addContainer(finalContainer);
 		});
 	}
 
@@ -520,7 +520,7 @@ public class LaboratoryTest {
 //		AlchemicIngredient present = new AlchemicIngredient(2, Unit.SACHET, new Temperature(0, 200), powderType);
 //		AlchemicIngredient inRecipe = new AlchemicIngredient(3, Unit.SACHET, new Temperature(20, 0), powderType);
 //		recipe.addAsInstruction(inRecipe, Operation.ADD);
-//		otherLab.addIngredients(new IngredientContainer(present));
+//		otherLab.addContainer(new IngredientContainer(present));
 //		assertFalse(otherLab.hasEnoughIngredientsForRecipe(recipe));
 //	}
 //
@@ -538,7 +538,7 @@ public class LaboratoryTest {
 //		AlchemicIngredient present = new AlchemicIngredient(3, Unit.SACHET, new Temperature(0, 200), powderType);
 //		AlchemicIngredient inRecipe = new AlchemicIngredient(2, Unit.SACHET, new Temperature(20, 0), powderType);
 //		recipe.addAsInstruction(inRecipe, Operation.ADD);
-//		otherLab.addIngredients(new IngredientContainer(present));
+//		otherLab.addContainer(new IngredientContainer(present));
 //		assertTrue(otherLab.hasEnoughIngredientsForRecipe(recipe));
 //	}
 //
@@ -556,17 +556,17 @@ public class LaboratoryTest {
 //		recipe.addAsInstruction(ingrRecipe3, Operation.ADD);
 //
 //		// we add enough of the powder
-//		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(1, Unit.SPOON, new Temperature(0, 200), powderType)));
+//		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(1, Unit.SPOON, new Temperature(0, 200), powderType)));
 //		// we add enough of the liquid
-//		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(5, Unit.JUG, new Temperature(0, 100), liquidType)));
+//		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(5, Unit.JUG, new Temperature(0, 100), liquidType)));
 //		// we also add enough of the mixed liquid
-//		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(3, Unit.BOTTLE, new Temperature(50, 0), liquidTypeMixed)));
+//		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(3, Unit.BOTTLE, new Temperature(50, 0), liquidTypeMixed)));
 //
 //		// because we have too little of the liquid, this must be false
 //		assertFalse(otherLab.hasEnoughIngredientsForRecipe(recipe));
 //
 //		// now we add extra powder
-//		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(14, Unit.SPOON, new Temperature(0, 200), powderType)));
+//		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(14, Unit.SPOON, new Temperature(0, 200), powderType)));
 //
 //		// 15 spoons is more than the needed 2 sachets
 //		assertTrue(otherLab.hasEnoughIngredientsForRecipe(recipe));
@@ -577,7 +577,7 @@ public class LaboratoryTest {
 		AlchemicIngredient recipeIngr1 = new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType);
 		recipe.addAsInstruction(recipeIngr1, Operation.ADD);
 		recipe.addAsInstruction(Operation.COOL);
-		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType)));
+		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType)));
 		assertEquals(1, otherLab.getNbOfIngredients());
 		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
 		assertEquals(20, otherLab.getIngredientAt(0).getHotness());
@@ -593,7 +593,7 @@ public class LaboratoryTest {
 		AlchemicIngredient recipeIngr1 = new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType);
 		recipe.addAsInstruction(recipeIngr1, Operation.ADD);
 		recipe.addAsInstruction(Operation.HEAT);
-		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType)));
+		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType)));
 		assertEquals(0, otherLab.getIngredientAt(0).getColdness());
 		assertEquals(20, otherLab.getIngredientAt(0).getHotness());
 		assertEquals(1, otherLab.getNbOfIngredients());
@@ -610,8 +610,8 @@ public class LaboratoryTest {
 		recipe.addAsInstruction(Operation.COOL);
 		recipe.addAsInstruction(mixedPowder, Operation.ADD);
 		recipe.addAsInstruction(Operation.COOL);
-		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType)));
-		otherLab.addIngredients(new IngredientContainer(mixedPowder));
+		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(1, Unit.SACHET, new Temperature(20, 0), powderType)));
+		otherLab.addContainer(new IngredientContainer(mixedPowder));
 		assertEquals(2, otherLab.getNbOfIngredients());
 		otherLab.execute(recipe, 1);
 		// 6 sachets
@@ -632,9 +632,9 @@ public class LaboratoryTest {
 		recipe.addAsInstruction(Operation.COOL);
 		recipe.addAsInstruction(mixedPowder, Operation.ADD);
 		recipe.addAsInstruction(Operation.COOL);
-		otherLab.addIngredients(new IngredientContainer(new AlchemicIngredient(2, Unit.SACHET, new Temperature(20, 0), powderType)));
-		otherLab.addIngredients(new IngredientContainer(mixedPowder));
-		otherLab.addIngredients(new IngredientContainer(mixedPowder));
+		otherLab.addContainer(new IngredientContainer(new AlchemicIngredient(2, Unit.SACHET, new Temperature(20, 0), powderType)));
+		otherLab.addContainer(new IngredientContainer(mixedPowder));
+		otherLab.addContainer(new IngredientContainer(mixedPowder));
 		assertEquals(2, otherLab.getNbOfIngredients());
 		otherLab.execute(recipe, 2);
 		// 6 sachets

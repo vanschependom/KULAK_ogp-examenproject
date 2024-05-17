@@ -32,7 +32,7 @@ public class TransmogrifierTest {
 
     @Test
     public void executeOperationValid() {
-        transmogrifier.addIngredients(container1);
+        transmogrifier.addContainer(container1);
         transmogrifier.executeOperation();
         IngredientContainer container = transmogrifier.getResult();
         AlchemicIngredient ingredient = container.getContent();
@@ -46,7 +46,7 @@ public class TransmogrifierTest {
 
     @Test
     public void executeOperationValid2() {
-        transmogrifier.addIngredients(container2);
+        transmogrifier.addContainer(container2);
         transmogrifier.executeOperation();
         IngredientContainer container = transmogrifier.getResult();
         AlchemicIngredient ingredient = container.getContent();

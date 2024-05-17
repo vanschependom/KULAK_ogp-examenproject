@@ -54,8 +54,8 @@ public class KettleTest {
 
     @Test
     public void executeOperationValid() {
-        kettle.addIngredients(container1);
-        kettle.addIngredients(container2);
+        kettle.addContainer(container1);
+        kettle.addContainer(container2);
         kettle.executeOperation();
         IngredientContainer container = kettle.getResult();
         AlchemicIngredient result = container.getContent();
@@ -71,13 +71,13 @@ public class KettleTest {
     @Test
     public void executeOperationValid2() {
         Oven oven = new Oven(lab, new Temperature(0, 100));
-        oven.addIngredients(container2);
+        oven.addContainer(container2);
         oven.executeOperation();
         container2 = oven.getResult();
-        kettle.addIngredients(container1);
-        kettle.addIngredients(container2);
-        kettle.addIngredients(container3);
-        kettle.addIngredients(container4);
+        kettle.addContainer(container1);
+        kettle.addContainer(container2);
+        kettle.addContainer(container3);
+        kettle.addContainer(container4);
         kettle.executeOperation();
         IngredientContainer container = kettle.getResult();
         AlchemicIngredient result = container.getContent();
@@ -97,13 +97,13 @@ public class KettleTest {
     @Test
     public void executeOperationValid3() {
         Oven oven = new Oven(lab, new Temperature(0, 200));
-        oven.addIngredients(container1);
+        oven.addContainer(container1);
         oven.executeOperation();
         container1 = oven.getResult();
         AlchemicIngredient ingredient = new AlchemicIngredient(5, Unit.BOX, new Temperature(200, 0), type1, State.POWDER);
         IngredientContainer container = new IngredientContainer(ingredient);
-        kettle.addIngredients(container1);
-        kettle.addIngredients(container);
+        kettle.addContainer(container1);
+        kettle.addContainer(container);
         kettle.executeOperation();
         container = kettle.getResult();
         AlchemicIngredient result = container.getContent();
@@ -125,10 +125,10 @@ public class KettleTest {
     @Test
     public void executeOperationValid4() {
         Oven oven = new Oven(lab, new Temperature(0, 150));
-        oven.addIngredients(container1);
+        oven.addContainer(container1);
         oven.executeOperation();
         container1 = oven.getResult();
-        kettle.addIngredients(container1);
+        kettle.addContainer(container1);
         kettle.executeOperation();
         IngredientContainer container = kettle.getResult();
         AlchemicIngredient result = container.getContent();
@@ -146,8 +146,8 @@ public class KettleTest {
     public void executeOperationValid5() {
         AlchemicIngredient ingredient = new AlchemicIngredient(5, Unit.BOTTLE, new Temperature(200, 0), type1, State.LIQUID);
         IngredientContainer container = new IngredientContainer(ingredient);
-        kettle.addIngredients(container3);
-        kettle.addIngredients(container);
+        kettle.addContainer(container3);
+        kettle.addContainer(container);
         kettle.executeOperation();
         container = kettle.getResult();
         AlchemicIngredient result = container.getContent();
@@ -168,7 +168,7 @@ public class KettleTest {
 
     @Test
     public void executeOperation_onlyOneIngredient() {
-        kettle.addIngredients(container1);
+        kettle.addContainer(container1);
         assertEquals(1,kettle.getNbOfIngredients());
         kettle.executeOperation();
         // nothing happens

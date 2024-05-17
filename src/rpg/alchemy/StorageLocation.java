@@ -363,7 +363,7 @@ public abstract class StorageLocation {
      *          The contents of the container are not valid.
      *          | !canHaveAsIngredient(container.getContent())
      */
-    public void addIngredients(IngredientContainer container) throws NullPointerException, IllegalArgumentException {
+    public void addContainer(IngredientContainer container) throws NullPointerException, IllegalArgumentException {
         if (container == null) {
             throw new NullPointerException("Container is null!");
         }

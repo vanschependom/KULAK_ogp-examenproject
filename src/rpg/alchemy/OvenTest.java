@@ -41,7 +41,7 @@ public class OvenTest {
 
     @Test
     public void executeOperationValid() {
-        oven.addIngredients(container1);
+        oven.addContainer(container1);
         oven.executeOperation();
         IngredientContainer container = oven.getResult();
         AlchemicIngredient ingredient = container.getContent();
@@ -54,7 +54,7 @@ public class OvenTest {
 
     @Test
     public void executeOperationValid2() {
-        oven.addIngredients(container2);
+        oven.addContainer(container2);
         oven.changeTemperatureTo(new Temperature(0, 600));
         oven.executeOperation();
         IngredientContainer container = oven.getResult();
@@ -71,7 +71,7 @@ public class OvenTest {
         IngredientType type = new IngredientType(new Name(null, "Milk"), State.LIQUID, new Temperature(0, 500), false);
         AlchemicIngredient ingredient = new AlchemicIngredient(10, Unit.SPOON, type);
         IngredientContainer container = new IngredientContainer(Unit.BARREL, ingredient);
-        oven.addIngredients(container);
+        oven.addContainer(container);
         assertEquals(500, ingredient.getHotness());
         oven.executeOperation();
         assertEquals(500,ingredient.getHotness());

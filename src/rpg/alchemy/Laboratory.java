@@ -580,10 +580,10 @@ public class Laboratory extends StorageLocation {
 	 * @effect	If there is another ingredient with the same (simple) name and there is a kettle, then use the kettle
 	 * 			to mix these two ingredient.
 	 * 			| if (hasIngredientWithSimpleName(container.getContent().getSimpleName()) && hasDeviceOfType(Kettle.class))
-	 * 			|	then getDeviceOfType(Kettle.class).addIngredients(container)
-	 * 			|		&& getDeviceOfType(Kettle.class).addIngredients(getAllOfIngredientAt(getIndexOfSimpleName(container.getContent().getSimpleName())))
+	 * 			|	then getDeviceOfType(Kettle.class).addContainer(container)
+	 * 			|		&& getDeviceOfType(Kettle.class).addContainer(getAllOfIngredientAt(getIndexOfSimpleName(container.getContent().getSimpleName())))
 	 * 			|		&& getDeviceOfType(Kettle.class).executeOperation()
-	 * 			|		&& super.addIngredients(getDeviceOfType(Kettle.class).getResult())
+	 * 			|		&& super.addContainer(getDeviceOfType(Kettle.class).getResult())
 	 *
 	 * @throws 	NullPointerException
 	 * 			The container is null.
@@ -596,7 +596,7 @@ public class Laboratory extends StorageLocation {
 	 * 			| hasIngredientWithSimpleName(container.getContent().getSimpleName()) && !hasDeviceOfType(Kettle.class)
 	 */
 	@Override
-	public void addIngredients(IngredientContainer container) throws NullPointerException, IllegalArgumentException, IllegalStateException {
+	public void addContainer(IngredientContainer container) throws NullPointerException, IllegalArgumentException, IllegalStateException {
 		// throw exceptions
 		if (container == null) {
 			throw new NullPointerException("The container is null!");
@@ -612,14 +612,14 @@ public class Laboratory extends StorageLocation {
 		try {
 			int indexSameName = getIndexOfSimpleName(container.getContent().getSimpleName());
 			Kettle kettle = getDeviceOfType(Kettle.class);
-			kettle.addIngredients(container);
-			kettle.addIngredients(getAllOfIngredientAt(indexSameName));
+			kettle.addContainer(container);
+			kettle.addContainer(getAllOfIngredientAt(indexSameName));
 			kettle.executeOperation();
 			container = kettle.getResult();
 		} catch (IngredientNotPresentException | IllegalArgumentException e) {
 			// no ingredient with the same name
 		}
-		super.addIngredients(container);
+		super.addContainer(container);
 	}
 
 	/**
@@ -682,14 +682,14 @@ public class Laboratory extends StorageLocation {
 				// too hot -> cool
 				CoolingBox coolingBox = getDeviceOfType(CoolingBox.class);
 				coolingBox.changeTemperatureTo(temperature);    // standard temperature of the ingredient type
-				coolingBox.addIngredients(container);
+				coolingBox.addContainer(container);
 				coolingBox.executeOperation();                 	// cooling box is exact!
 				container = coolingBox.getResult();
 			} else {
 				// too cold -> heat
 				Oven oven = getDeviceOfType(Oven.class);
 				oven.changeTemperatureTo(temperature);        	// standard temperature of the ingredient type
-				oven.addIngredients(container);
+				oven.addContainer(container);
 				oven.executeOperation();
 				container = oven.getResult(); 					// oven is not exact so we need a while loop
 			}
@@ -748,7 +748,7 @@ public class Laboratory extends StorageLocation {
 				// if this is the first operation or the last operation was mix, then we need to
 				// add a new ingredient to the kettle
 				if (currentIngredientContainer != null) {
-					getDeviceOfType(Kettle.class).addIngredients(currentIngredientContainer);
+					getDeviceOfType(Kettle.class).addContainer(currentIngredientContainer);
 				}
 
 				AlchemicIngredient ingredientToAdd = recipe.getIngredientAt(addCounter);
@@ -793,7 +793,7 @@ public class Laboratory extends StorageLocation {
 
 				// ingredients can already be added in the ADD instruction,
 				// here we also add the last ingredient to the kettle
-				kettle.addIngredients(currentIngredientContainer);
+				kettle.addContainer(currentIngredientContainer);
 				kettle.executeOperation();
 
 				// replace the current ingredient with the result of the kettle
@@ -809,7 +809,7 @@ public class Laboratory extends StorageLocation {
 		// add the resulting ingredient to the laboratory,
 		// if there is a resulting ingredient and there are enough ingredients left
 		if (currentIngredientContainer != null && enoughIngredientsLeft) {
-			// we can't use the addIngredients method, because this brings the ingredient to standard temperature!
+			// we can't use the addContainer method, because this brings the ingredient to standard temperature!
 			addAsIngredient(currentIngredientContainer.obtainContent());
 		}
 

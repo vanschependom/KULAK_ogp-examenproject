@@ -225,12 +225,12 @@ public class AlchemicIngredient {
      * @return	True if and only if the unit is effective, and the unit
      *          is a legal unit for the state of the ingredient.
      * 			| result == ( (unit != null)
-     * 		    |   && List.of(unit.getAllowedStates()).contains(getState()) )
+     * 		    |   && unit.hasAsAllowedState(getState()) )
      */
     @Raw
     public boolean canHaveAsUnit(Unit unit) {
         return (unit != null) &&
-                List.of(unit.getAllowedStates()).contains(getState());
+                unit.hasAsAllowedState(getState());
     }
 
 

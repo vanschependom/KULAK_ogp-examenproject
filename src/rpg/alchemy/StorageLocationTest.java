@@ -74,8 +74,8 @@ public class StorageLocationTest {
 
     @Test
     public void testHasProperIngredients_Legal() {
-        lab.addIngredients(container1);
-        lab.addIngredients(container2);
+        lab.addContainer(container1);
+        lab.addContainer(container2);
         assertTrue(lab.hasProperIngredients());
     }
 
@@ -98,16 +98,16 @@ public class StorageLocationTest {
 
     @Test
     public void testContainsIngredientTwice_Legal() {
-        lab.addIngredients(container1); // with ingredient liquid
+        lab.addContainer(container1); // with ingredient liquid
         IngredientContainer container3 = new IngredientContainer(Unit.BARREL, liquid);
-        lab.addIngredients(container3); // dit doet niet wat het moet
+        lab.addContainer(container3); // dit doet niet wat het moet
         // this is false because the newly added ingredient is added to the old
         assertFalse(lab.containsIngredientTwice(liquid));
     }
 
     @Test
     public void testGetIngredientAt_Legal() {
-        lab.addIngredients(container1);
+        lab.addContainer(container1);
         assertEquals(liquid, lab.getIngredientAt(0));
     }
 
@@ -120,7 +120,7 @@ public class StorageLocationTest {
 
     @Test
     public void removeIngredientAt_Legal() {
-        lab.addIngredients(container1);
+        lab.addContainer(container1);
         assertEquals(1, lab.getNbOfIngredients());
         lab.removeIngredientAt(0);
         assertEquals(0,lab.getNbOfIngredients());
@@ -135,22 +135,22 @@ public class StorageLocationTest {
 
     @Test
     public void testGetNbOfIngredients_Legal() {
-        lab.addIngredients(container1);
-        lab.addIngredients(container2);
+        lab.addContainer(container1);
+        lab.addContainer(container2);
         assertEquals(2, lab.getNbOfIngredients());
     }
 
     @Test
     public void testGetIndexOfIngredient_Legal() {
-        lab.addIngredients(container1); // contains liquid
-        lab.addIngredients(container2); // contains powder
+        lab.addContainer(container1); // contains liquid
+        lab.addContainer(container2); // contains powder
         assertEquals(0, lab.getIndexOfIngredient(liquid));
         assertEquals(1, lab.getIndexOfIngredient(powder));
     }
 
     @Test
     public void testGetIndexOfIngredient_Illegal_Null() {
-        lab.addIngredients(container1); // contains liquid
+        lab.addContainer(container1); // contains liquid
         assertThrows(NullPointerException.class, () -> {
             lab.getIndexOfIngredient(null);
         });
@@ -158,7 +158,7 @@ public class StorageLocationTest {
 
     @Test
     public void  testGetIndexOfIngredient_Illegal_NotPresent() {
-        lab.addIngredients(container1); // contains liquid
+        lab.addContainer(container1); // contains liquid
         assertThrows(IngredientNotPresentException.class, () -> {
             lab.getIndexOfIngredient(powder);
         });
@@ -166,22 +166,22 @@ public class StorageLocationTest {
 
     @Test
     public void testHasAsIngredient_Legal() {
-        lab.addIngredients(container1); // contains liquid
-        lab.addIngredients(container2); // contains powder
+        lab.addContainer(container1); // contains liquid
+        lab.addContainer(container2); // contains powder
         assertTrue(lab.hasAsIngredient(liquid));
         assertTrue(lab.hasAsIngredient(powder));
     }
 
     @Test
     public void testHasAsIngredient_Illegal() {
-        lab.addIngredients(container1); // contains liquid
+        lab.addContainer(container1); // contains liquid
         assertTrue(lab.hasAsIngredient(liquid));
         assertFalse(lab.hasAsIngredient(powder));
     }
 
     @Test
     public void testHasIngredientWithSimpleName() {
-        lab.addIngredients(container1); // contains liquid
+        lab.addContainer(container1); // contains liquid
         assertTrue(lab.hasIngredientWithSimpleName("Sprite"));
         assertFalse(lab.hasIngredientWithSimpleName("Powder Sugar"));
     }
@@ -189,34 +189,34 @@ public class StorageLocationTest {
     @Test
     public void testHasIngredientWithSpecialName() {
         IngredientContainer container3 = new IngredientContainer(Unit.CHEST, mixedPowder);
-        lab.addIngredients(container3);
+        lab.addContainer(container3);
         IngredientContainer container4 = new IngredientContainer(Unit.BARREL, mixedLiquid);
-        lab.addIngredients(container4);
+        lab.addContainer(container4);
         assertTrue(lab.hasIngredientWithSpecialName("Breakfast"));
         assertTrue(lab.hasIngredientWithSpecialName("Watery Coke"));
         assertFalse(lab.hasIngredientWithSpecialName("Iets Anders"));
     }
 
     @Test
-    public void testAddIngredients_Legal() {
-        lab.addIngredients(container1); // contains liquid
+    public void testaddContainer_Legal() {
+        lab.addContainer(container1); // contains liquid
         assertEquals(1, lab.getNbOfIngredients());
         assertTrue(lab.hasAsIngredient(liquid));
         assertTrue(lab.hasIngredientWithSimpleName("Sprite"));
     }
 
     @Test
-    public void testAddIngredients_Illegal_null() {
+    public void testaddContainer_Illegal_null() {
         assertThrows(NullPointerException.class, () -> {
-            lab.addIngredients(null);
+            lab.addContainer(null);
         });
     }
 
     @Test
-    public void testAddIngredients_Illegal_IllegalIngredient() {
+    public void testaddContainer_Illegal_IllegalIngredient() {
         liquid.terminate();
         assertThrows(IllegalArgumentException.class, () -> {
-            lab.addIngredients(container1);
+            lab.addContainer(container1);
         });
     }
 

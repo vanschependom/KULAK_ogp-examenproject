@@ -32,7 +32,7 @@ public class CoolingBoxTest {
 
     @Test
     public void executeOperationValid() {
-        coolingBox.addIngredients(container1);
+        coolingBox.addContainer(container1);
         coolingBox.executeOperation();
         IngredientContainer container = coolingBox.getResult();
         AlchemicIngredient ingredient = container.getContent();
@@ -45,7 +45,7 @@ public class CoolingBoxTest {
 
     @Test
     public void executeOperationValid2() {
-        coolingBox.addIngredients(container2);
+        coolingBox.addContainer(container2);
         coolingBox.changeTemperatureTo(new Temperature(60, 0));
         coolingBox.executeOperation();
         IngredientContainer container = coolingBox.getResult();
@@ -62,7 +62,7 @@ public class CoolingBoxTest {
         IngredientType type = new IngredientType(new Name(null, "Milk"), State.LIQUID, new Temperature(50, 0), false);
         AlchemicIngredient ingredient = new AlchemicIngredient(10, Unit.SPOON, type);
         IngredientContainer container = new IngredientContainer(Unit.BARREL, ingredient);
-        coolingBox.addIngredients(container);
+        coolingBox.addContainer(container);
         assertEquals(50, ingredient.getColdness());
         coolingBox.executeOperation();
         assertEquals(50,ingredient.getColdness());
