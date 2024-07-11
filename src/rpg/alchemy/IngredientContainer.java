@@ -172,7 +172,7 @@ public class IngredientContainer {
     private static boolean isValidCapacity(Unit capacity) {
         return capacity != null && capacity.isAllowedForContainer();
     }
-
+    
 
 
     /*****************************

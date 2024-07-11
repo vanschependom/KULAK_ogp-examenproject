@@ -93,6 +93,12 @@ public class Recipe {
      */
     public boolean hasAsOperation(Operation operation) {
         if (operation == null) return false;
+        // @invar   "i" is not negative and isn't equal to or doesn't exceed the number
+        //          of operations;
+        //          | (  (0 <= i)
+        //          | && (i < getNbOfOperations())  )
+        // @variant The distance between "i" and the number of operations
+        //          | getNbOfOperations()-i
         for (int i=0; i<getNbOfOperations(); i++) {
             if (getOperationAt(i) == operation) {
                 return true;

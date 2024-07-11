@@ -234,6 +234,25 @@ class AlchemicIngredient {
 + terminate() : void
 }
 
+class IngredientContainer {
++ IngredientContainer(Unit, AlchemicIngredient)
++ IngredientContainer(AlchemicIngredient)
+..
+- {final} content : AlchemicIngredient
+- {final} capacity : Unit
+- isTerminated : boolean
+..
++ obtainContent() : AlchemicIngredient
++ canHaveAsContent(AlchemicIngredient) : boolean
++ getCapacity() : Unit
++ isTerminated() : boolean
++ terminate() : void
++ equals(IngredientContainer) : boolean
+}
+
+IngredientContainer::content -->"1" AlchemicIngredient
+IngredientContainer::capacity -->"1" Unit
+
 AlchemicIngredient::unit -->"1" Unit
 AlchemicIngredient::temperature -->"1" Temperature
 AlchemicIngredient::type -->"1" IngredientType
